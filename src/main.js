@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import Login from 'components/login';
 import Home from 'components/home';
 import App from './app';
+import store from 'store';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
@@ -32,4 +33,5 @@ new Vue({
   template: '<App/>',
   components: { App },
   router,
+  store
 });
