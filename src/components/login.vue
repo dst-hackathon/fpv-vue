@@ -14,7 +14,7 @@
       </p>
       <hr>
       <p class="control">
-        <button class="button is-primary" @click="test">Login</button>
+        <button class="button is-primary" @click="login">Login</button>
         <button class="button is-default">Cancel</button>
       </p>
     </div>
@@ -29,6 +29,29 @@ export default {
   methods: {
     login() {
       console.log('login');
+
+      var qs = require('qs');
+
+      this.axios.post('/api/authentication?cacheBuster='+ Date.now(), qs.stringify({
+        'j_username': 'admin',
+        'j_password': 'admin',
+        'remember-me': true,
+        'submit':'Login'
+      }), {
+        headers: {'Accept-Language': 'en-US'}
+      })
+      .then(function (response) {
+        console.log('success');
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log('failed');
+        console.log(error);
+      });
+      /*
+      this.axios.get('/api/users').then((response) => {
+        console.log(response.data);
+      });*/
     },
   },
 };
