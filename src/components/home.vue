@@ -1,24 +1,30 @@
 <template lang="html">
-    <div id="home">
-        <h1>{{leftNavTitle}}</h1>
-        <div v-for="menu in menuList">
-            <a v-on:click='redirect(menu.value)'>{{menu.name}}</a>
+  <div class="column is-offset-2 is-8" id="home">
+    <div class="tile">
+      <!-- Left side -->
+      <div class="tile is-vertical is-parent is-2">
+        <h1 class="title">{{leftNavTitle}}</h1>
+        <div v-for="menu in menuList" class="margin-bottom-5">
+          <h5 class="subtitle is-5"><a v-on:click='redirect(menu.value)'>{{menu.name}}</a></h5>
         </div>
-
-        <!-- Page Content -->
+      </div>
+      <!-- Page Content -->
+      <div class="tile is-parent">
         <div v-if="menuSelected === 'create'">
-            <create></create>
+          <create></create>
         </div>
         <div v-else-if="menuSelected === 'approve'">
-            <approve></approve>
+          <approve></approve>
         </div>
         <div v-else-if="menuSelected === 'manage'">
-            <manage></manage>
+          <manage></manage>
         </div>
         <div v-else>
-            <ViewPage></ViewPage>
+          <ViewPage></ViewPage>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -59,4 +65,7 @@ export default {
 </script>
 
 <style lang="css">
+.margin-bottom-5 {
+  margin-bottom: 5px;
+}
 </style>
