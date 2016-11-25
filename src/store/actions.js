@@ -10,20 +10,17 @@ export default {
       });
   },
 
+  [types.GET_BUILDINGS]: function({ commit }, { planId }) {
+    axios.get(`/api/buildings?planId=${planId}`)
+      .then(({ data: buildings }) => {
+        commit(types.UPDATE_BUILDINGS, { planId, buildings });
+      });
+  },
+
   [types.GET_FLOORS]: function({ commit }, { buildingId }) {
     axios.get(`/api/floors?buildingId=${buildingId}`)
       .then(({ data: floors }) => {
         commit(types.UPDATE_FLOORS, { floors, buildingId });
-      });
-  },
-
-  [types.GET_BUILDINGS]: function({ commit }, { planId }) {
-    axios.get('/api/buildings', {
-      params: {
-        planId: planId
-      }
-    }).then(({ data: buildings }) => {
-        commit(types.UPDATE_BUILDINGS, { planId, buildings });
       });
   }
 };

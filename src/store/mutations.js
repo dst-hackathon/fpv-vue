@@ -7,6 +7,12 @@ export default {
     state.plans = plans;
   },
 
+  [types.UPDATE_BUILDINGS]: function(state, { planId, buildings }) {
+    let plans = state.plans;
+    let plan = _.findKey(plans, {'id': planId});
+    plan.buildings = buildings;
+  },
+
   [types.UPDATE_FLOORS]: function(state, { floors, buildingId }) {
     const buildings = _.flatMap(state.plans, _.property('buildings'));
     const building = _.find(buildings, { id: buildingId });
@@ -14,11 +20,5 @@ export default {
     if (building) {
       building.floors = floors;
     }
-  },
-
-  [types.UPDATE_BUILDINGS]: function(state, { planId, buildings }) {
-    let plans = state.plans;
-    let plan = _.findKey(plans, {'id': planId});
-    plan.buildings = buildings;
   }
 };
