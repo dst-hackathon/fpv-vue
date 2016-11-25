@@ -8,6 +8,11 @@
 - Clone project repository
 
   ``` bash
+  # ปิด crlf conversion ก่อน เดี๋ยว JSint ไม่ผ่านครับ
+  git config --global core.autocrlf false
+  
+
+  ``` bash
   # สำหรับคนที่ setup ssh กับ git ไว้
   git clone git@github.com:dst-hackathon/fpv-vue.git
 
