@@ -15,9 +15,9 @@
       <hr>
       <p class="control">
         <button class="button is-primary" @click="login">Login</button>
-        <button class="button is-default">Cancel</button>
+        <button class="button is-default" @click="cancel">Cancel</button>
       </p>
-      <span>{{loading}}</span>
+      <span>{{loginStatus}}</span>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@
 var data = {
   username:'',
   password:'',
-  loading:'',
+  loginStatus:'',
 };
 
 export default {
@@ -36,7 +36,7 @@ export default {
   methods: {
     login() {
 
-      data.loading = "Attempt to Login ...";
+      data.loginStatus = "Attempt to Login ...";
       
       var qs = require('qs');
       this.axios.post('/api/authentication?cacheBuster='+ Date.now(), qs.stringify({
@@ -45,13 +45,20 @@ export default {
       }))
       .then(function (response) {
         console.log('success');
+        data.loginStatus = "";
         console.log(response);
       })
       .catch(function (error) {
         console.log('failed');
+        data.loginStatus = "Error .. Wrong username or password";
         console.log(error);
       });
     },
+    cancel() {
+      data.loginStatus = "";
+      data.username = "";
+      data.password = "";      
+    }
   },
 };
 </script>
