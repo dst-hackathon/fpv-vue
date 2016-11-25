@@ -2,7 +2,7 @@
     <div id="home">
         <h1>{{leftNavTitle}}</h1>
         <div v-for="menu in menuList">
-            <a href="#">{{menu}}</a>
+            <a v-on:click='redirect(menu.value)'>{{menu.name}}</a>
         </div>
 
         <!-- Page Content -->
@@ -35,16 +35,23 @@ export default {
     Approve,
     Manage,
   },
+  methods: {
+    redirect(select) {
+      if (select !== 'logout') {
+        this.menuSelected = select;
+      }
+    },
+  },
   data() {
     return {
       menuSelected: '',
       leftNavTitle: 'Menu',
       menuList: [
-        'ViewPage Master Plan',
-        'Create/Edit Future Plan',
-        'Approve Future Plan',
-        'Manage Floor Plan',
-        'Log out',
+        { name: 'ViewPage Master Plan', value: 'view' },
+        { name: 'Create/Edit Future Plan', value: 'create' },
+        { name: 'Approve Future Plan', value: 'approve' },
+        { name: 'Manage Floor Plan', value: 'manage' },
+        { name: 'Log out', value: 'logout' },
       ],
     };
   },
