@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    This is Manage page
+    This is view page
   </div>
 </template>
 
