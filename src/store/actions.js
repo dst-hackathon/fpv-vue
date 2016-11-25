@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as types from './types';
+var qs = require('qs');
 
 export default {
 
@@ -15,5 +16,21 @@ export default {
       .then(({ data: floors }) => {
         commit(types.UPDATE_FLOORS, { floors, buildingId });
       });
+  },
+
+  [types.LOGIN]: function({ commit }, { username, password }) {
+    return axios.post('/api/authentication?d='+ Date.now(), qs.stringify({
+      'j_username': username,
+      'j_password': password,
+    })).then( () => {
+      commit(types.LOGIN);
+    });
+  },
+
+  [types.GET_CURRENT_ACCOUNT]: function({ commit }) {
+    return axios.get('/api/account?d='+ Date.now()
+    ).then ( ({data: user}) => {
+      commit(types.GET_CURRENT_ACCOUNT, { 'user': user });
+    });
   },
 };

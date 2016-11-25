@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import * as types from 'store/types';
+
 var data = {
   username:'admin',
   password:'admin',
@@ -37,26 +39,20 @@ export default {
     login() {
       data.loginStatus = "Attempt to Login ...";
       
-      var qs = require('qs');
       var _this = this;
-      _this.axios.post('/api/authentication?d='+ Date.now(), qs.stringify({
-        'j_username': data.username,
-        'j_password': data.password,
-      }))
+      _this.$store.dispatch(types.LOGIN, {'username':data.username,'password': data.password })
       .then(function (response) {
-        console.log('login success');
+        console.log('login: login success');
         data.loginStatus = "";
-        console.log(response);
-        return _this.axios.get('/api/account?d='+ Date.now());
+        return _this.$store.dispatch(types.GET_CURRENT_ACCOUNT, {});
       })
       .then(function (response){
-        console.log('fetch account data success');
+        console.log('login: fetch account data success');
         data.loginStatus = "";
-        console.log(response.data);
         _this.$router.push('home');
       })
       .catch(function (error) {
-        console.log('failed');
+        console.log('login: failed');
         data.loginStatus = "Did you enter wrong username or password ?";
         console.log(error);
       });
