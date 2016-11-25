@@ -24,8 +24,8 @@
 
 <script>
 var data = {
-  username:'',
-  password:'',
+  username:'admin',
+  password:'admin',
   loginStatus:'',
 };
 
@@ -35,24 +35,29 @@ export default {
   },
   methods: {
     login() {
-
       data.loginStatus = "Attempt to Login ...";
       
       var qs = require('qs');
       var _this = this;
-      this.axios.post('/api/authentication?cacheBuster='+ Date.now(), qs.stringify({
+      _this.axios.post('/api/authentication?d='+ Date.now(), qs.stringify({
         'j_username': data.username,
         'j_password': data.password,
       }))
       .then(function (response) {
-        console.log('success');
+        console.log('login success');
         data.loginStatus = "";
         console.log(response);
+        return _this.axios.get('/api/account?d='+ Date.now());
+      })
+      .then(function (response){
+        console.log('fetch account data success');
+        data.loginStatus = "";
+        console.log(response.data);
         _this.$router.push('home');
       })
       .catch(function (error) {
         console.log('failed');
-        data.loginStatus = "Opp .. Wrong username or password";
+        data.loginStatus = "Did you enter wrong username or password ?";
         console.log(error);
       });
     },
