@@ -7,10 +7,12 @@ export default {
     state.plans = plans;
   },
 
-  [types.UPDATE_BUILDINGS]: function(state, { planId, buildings }) {
+  [types.UPDATE_BUILDINGS]: function(state, { buildings, planId}) {
     let plans = state.plans;
     let plan = _.findKey(plans, {'id': planId});
-    plan.buildings = buildings;
+    if (plan) {
+      plan.buildings = buildings;
+    }
   },
 
   [types.UPDATE_FLOORS]: function(state, { floors, buildingId }) {
