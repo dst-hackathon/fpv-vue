@@ -1,10 +1,13 @@
 import Vue from 'vue';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 import VueRouter from 'vue-router';
 import Login from 'components/login';
 import Home from 'components/home';
 import App from './app';
 
 Vue.use(VueRouter);
+Vue.use(VueAxios, axios);
 
 const routes = [{
   name: 'login',
