@@ -33,10 +33,10 @@ export default {
     CreateDesk
   },
 
+  props: [ 'floor', 'canvas' ],
+
   data() {
     return {
-      floor: null,
-      canvas: null,
       activeCommand: ''
     };
   },

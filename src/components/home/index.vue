@@ -5,7 +5,7 @@
 
   <!-- Page Content -->
   <div class="page-content">
-    <component :is="viewSelected" />
+    <component :is="componentSelected" />
   </div>
 
 </div>
@@ -48,7 +48,7 @@ export default {
   },
 
   computed: {
-    viewSelected() {
+    componentSelected() {
       const menu = _.find(this.menuList, { value: this.menuSelected });
 
       return menu.component;
