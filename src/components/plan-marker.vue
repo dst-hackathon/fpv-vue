@@ -10,14 +10,14 @@ import fabric from 'fabric';
 export default {
   data() {
     return {
-      imgSrc: null,
+      planSrc: null,
       width: 800,
       height: 600,
       fabricCanvas: null
     };
   },
   watch: {
-    imgSrc: 'imgSrcObserver',
+    planSrc: 'planSrcObserver',
   },
   methods: {
     initComponents() {
@@ -26,12 +26,8 @@ export default {
 
       this.fabricCanvas = fabricCanvas;
     },
-    imgSrcObserver: function (val, oldVal) {
-      var fabricCanvas = this.fabricCanvas;
-      fabricCanvas.setBackgroundImage(val, fabricCanvas.renderAll.bind(fabricCanvas), {
-        originX: 'left',
-        originY: 'top'
-      });
+    planSrcObserver: function (val, oldVal) {
+      this.setCanvasPlanSrc(val);
     },
     onCanvasMouseDown: function (event) {
       var fabricCanvas = this.fabricCanvas;
@@ -62,6 +58,13 @@ export default {
     addDeskMarkRect: function (deskMarkRect) {
       this.fabricCanvas.add(deskMarkRect);
     },
+    setCanvasPlanSrc: function (src) {
+      var fabricCanvas = this.fabricCanvas;
+      fabricCanvas.setBackgroundImage(src, fabricCanvas.renderAll.bind(fabricCanvas), {
+        originX: 'left',
+        originY: 'top'
+      });
+    }
   },
   mounted() {
     this.initComponents();
