@@ -24,6 +24,15 @@ export default {
     }
   },
 
+  [types.UPDATE_DESKS]:function(state, { desks, floorId }) {
+    const floors = _.flatMap(state.plans, _.property('floors'));
+    const floor = _.find(floors, { id: floorId });
+
+    if (floor) {
+      floor.desks = desks;
+    }
+  },
+
   [types.LOGIN]: function(state) {
     state.login.status = 'authenticated';
   },
