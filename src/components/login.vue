@@ -39,6 +39,7 @@ export default {
       data.loginStatus = "Attempt to Login ...";
       
       var qs = require('qs');
+      var _this = this;
       this.axios.post('/api/authentication?cacheBuster='+ Date.now(), qs.stringify({
         'j_username': data.username,
         'j_password': data.password,
@@ -47,10 +48,11 @@ export default {
         console.log('success');
         data.loginStatus = "";
         console.log(response);
+        _this.$router.push('home');
       })
       .catch(function (error) {
         console.log('failed');
-        data.loginStatus = "Error .. Wrong username or password";
+        data.loginStatus = "Opp .. Wrong username or password";
         console.log(error);
       });
     },
