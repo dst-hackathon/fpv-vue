@@ -3,23 +3,25 @@
     <div class="tile">
       <!-- Left side -->
       <div class="tile is-vertical is-parent is-2">
-        <h1 class="title">{{leftNavTitle}}</h1>
-        <div v-for="menu in menuList" class="margin-bottom-5">
-          <h5 class="subtitle is-5"><a v-on:click='redirect(menu.value)'>{{menu.name}}</a></h5>
+        <div class="tile is-child notification is-white">
+          <h1 class="title">{{leftNavTitle}}</h1>
+          <div v-for="menu in menuList" class="margin-bottom-5">
+            <h5 class="subtitle is-5"><a v-on:click='redirect(menu.value)'>{{menu.name}}</a></h5>
+          </div>
         </div>
       </div>
       <!-- Page Content -->
       <div class="tile is-parent">
-        <div v-if="menuSelected === 'create'">
+        <div v-if="menuSelected === 'create'" class="tile is-child notification is-white">
           <create></create>
         </div>
-        <div v-else-if="menuSelected === 'approve'">
+        <div v-else-if="menuSelected === 'approve'" class="tile is-child notification is-white">
           <approve></approve>
         </div>
-        <div v-else-if="menuSelected === 'manage'">
+        <div v-else-if="menuSelected === 'manage'" class="tile is-child notification is-white">
           <manage></manage>
         </div>
-        <div v-else>
+        <div v-else class="tile is-child notification is-white">
           <ViewPage></ViewPage>
         </div>
       </div>
