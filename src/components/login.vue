@@ -6,11 +6,11 @@
     <div class="box">
       <label class="label">Username</label>
       <p class="control">
-        <input class="input" type="text" v-model="username" placeholder="username">
+        <input class="input" type="text" v-model="username" v-on:keyup.enter="login" placeholder="username">
       </p>
       <label class="label">Password</label>
       <p class="control">
-        <input class="input" type="password" v-model="password" placeholder="password">
+        <input class="input" type="password" v-model="password"  v-on:keyup.enter="login" placeholder="password">
       </p>
       <hr>
       <p class="control">
