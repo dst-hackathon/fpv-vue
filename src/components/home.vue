@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="column is-offset-2 is-8" id="home">
+  <div class="column is-offset-1 is-10" id="home">
     <div class="tile">
       <!-- Left side -->
       <div class="tile is-vertical is-parent is-2">
