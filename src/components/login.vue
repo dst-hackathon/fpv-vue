@@ -6,40 +6,43 @@
     <div class="box">
       <label class="label">Username</label>
       <p class="control">
-        <input class="input" type="text" placeholder="username">
+        <input class="input" type="text" v-model="username" placeholder="username">
       </p>
       <label class="label">Password</label>
       <p class="control">
-        <input class="input" type="password" placeholder="password">
+        <input class="input" type="password" v-model="password" placeholder="password">
       </p>
       <hr>
       <p class="control">
         <button class="button is-primary" @click="login">Login</button>
         <button class="button is-default">Cancel</button>
       </p>
+      <span>{{loading}}</span>
     </div>
   </div>
 </template>
 
 <script>
+var data = {
+  username:'',
+  password:'',
+  loading:'',
+};
+
 export default {
   data() {
-    return {};
+    return data;
   },
   methods: {
     login() {
-      console.log('login');
 
+      data.loading = "Attempt to Login ...";
+      
       var qs = require('qs');
-
       this.axios.post('/api/authentication?cacheBuster='+ Date.now(), qs.stringify({
-        'j_username': 'admin',
-        'j_password': 'admin',
-        'remember-me': true,
-        'submit':'Login'
-      }), {
-        headers: {'Accept-Language': 'en-US'}
-      })
+        'j_username': data.username,
+        'j_password': data.password,
+      }))
       .then(function (response) {
         console.log('success');
         console.log(response);
@@ -48,10 +51,6 @@ export default {
         console.log('failed');
         console.log(error);
       });
-      /*
-      this.axios.get('/api/users').then((response) => {
-        console.log(response.data);
-      });*/
     },
   },
 };
