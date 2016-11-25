@@ -4,7 +4,7 @@
       FPV Vue Login
     </h1>
     <div class="box">
-      <label class="label">Email</label>
+      <label class="label">Username</label>
       <p class="control">
         <input class="input" type="text" placeholder="username">
       </p>
@@ -14,7 +14,7 @@
       </p>
       <hr>
       <p class="control">
-        <button class="button is-primary">Login</button>
+        <button class="button is-primary" @click="test">Login</button>
         <button class="button is-default">Cancel</button>
       </p>
     </div>
@@ -23,6 +23,14 @@
 
 <script>
 export default {
+  data() {
+    return {};
+  },
+  methods: {
+    login() {
+      console.log('login');
+    },
+  },
 };
 </script>
 
