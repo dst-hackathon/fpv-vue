@@ -8,6 +8,10 @@ import DeskShape from 'components/fabric/desk.fabric';
 
 export default {
   props: {
+    modificationLocked: {
+      type: Boolean,
+      default: false
+    },
     desk: {
       default: {}
     }
@@ -54,6 +58,35 @@ export default {
     }
   },
 
+  methods: {
+    lockPosition() {
+      this.deskShape.lockMovementX = true;
+      this.deskShape.lockMovementY = true;
+    },
+
+    lockSize() {
+      this.deskShape.lockScalingX = true;
+      this.deskShape.lockScalingY = true;
+      this.deskShape.setControlsVisibility({
+         mt: false,
+         mb: false,
+         ml: false,
+         mr: false,
+         bl: false,
+         br: false,
+         tl: false,
+         tr: false,
+       });
+    },
+
+    lockRotation() {
+      this.deskShape.lockRotation = true;
+      this.deskShape.setControlsVisibility({
+         mtr: false,
+      });
+    }
+  },
+
   created() {
     this.deskShape = new DeskShape({
       id: this.desk.id,
@@ -62,7 +95,7 @@ export default {
       ...this.position
     });
 
-    var person = new fabric.Image.fromURL('/static/img/location.png', (img) => {
+        var person = new fabric.Image.fromURL('/static/img/location.png', (img) => {
       img.setLeft(this.position.left + this.dimensions.width/2 - 25);
       img.setTop(this.position.top - this.dimensions.height/2);
       img.setWidth(50);
@@ -72,7 +105,13 @@ export default {
     });
 
 
+    if(this.modificationLocked) {
+      this.lockPosition();
+      this.lockSize();
+      this.lockRotation();
+    }
 
+    this.$emit('created', { shape: this.deskShape });
   },
 
   destroyed() {
