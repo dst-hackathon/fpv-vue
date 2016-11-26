@@ -32,7 +32,7 @@
             v-on:blur="onBlurInput">
       </span>
     </div>
-    <div v-if="editable">
+    <div v-if="!readonly">
       <button>submit</button>
       <button>cancel</button>
     </div>
@@ -45,7 +45,7 @@ export default {
   props: [ 'desk' ],
   data() {
     return {
-      editable: false,
+      readonly: true,
       fieldDetails: {
         deskCode: { editing: false, value: '' },
         employeeId: { editing: false, value: '' },
@@ -76,10 +76,10 @@ export default {
       return this.fieldDetails[fieldName];
     },
     getFieldName: function (target) {
-      return target.name || target.getAttribute('data-name');
+      return target.name;
     },
     computeEditingMode: function (fieldName) {
-      return this.editable || this.getField(fieldName).editing;
+      return !this.readonly && this.getField(fieldName).editing;
     },
   },
 };
@@ -95,5 +95,6 @@ export default {
   input[readonly] {
     background: none;
     border: none;
+    box-shadow: none;
   }
 </style>
