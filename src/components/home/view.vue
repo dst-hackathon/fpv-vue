@@ -37,7 +37,7 @@ export default {
   },
 
   created() {
-    this.fetchMasterPlan();
+    // this.fetchMasterPlan();
   },
 
   methods: {
