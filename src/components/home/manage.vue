@@ -66,10 +66,9 @@ export default {
 
     deskFieldOoptions() {
       return {
-        deskCode: { readonly: false },
-        employeeId: { readonly: true },
-        firstName: { readonly: true },
-        lastName: { readonly: true },
+        employeeId: { hidden: true },
+        firstName: { hidden: true },
+        lastName: { hidden: true },
       };
     },
   },
