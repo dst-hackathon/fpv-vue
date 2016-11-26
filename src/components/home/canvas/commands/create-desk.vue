@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { CREATE_DESK } from 'store/types';
+import { CREATE_DESK } from 'store/floor-management/types';
 import DeskShape from 'components/fabric/desk.fabric';
 
 export default {
@@ -60,9 +60,10 @@ export default {
         return;
       }
 
-      // this.$store.dispatch(CREATE_DESK, {
-      //   desk: deskOverlay.toEntity()
-      // });
+      this.$store.dispatch(CREATE_DESK, {
+        floorId: 1,
+        desk: deskOverlay.toEntity()
+      });
 
       this.deskOverlay.remove();
       this.deskOverlay = null;

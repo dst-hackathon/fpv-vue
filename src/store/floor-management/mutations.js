@@ -8,6 +8,10 @@ export default {
 
   [types.DESELECT_DESK]: function(state) {
     state.selected.deskId = null;
-  }
+  },
+
+  [types.CREATE_DESK]: function(state, { floorId,desk }) {
+    state.desks.push(desk);
+  },
 
 };

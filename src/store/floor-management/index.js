@@ -9,7 +9,8 @@ export default {
       buildingId: 1,
       floorId: 1,
       deskId: null
-    }
+    },
+    desks: [],
   },
 
   actions,
