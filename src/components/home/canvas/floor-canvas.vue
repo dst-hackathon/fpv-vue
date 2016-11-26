@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import _ from 'lodash';
 import Canvas from 'components/fabric/canvas.fabric';
 import Desk from './desk';
@@ -23,21 +24,26 @@ export default {
 
   data() {
     return {
-      height: null
+      height: null,
+      image: null,
+      imageContentType: null,
     };
   },
 
   computed: {
-    image() {
-      return _.get(this, 'floor.image');
-    },
-
-    imageContentType() {
-      return _.get(this, 'floor.imageContentType');
-    },
-
     desks() {
       return _.get(this, 'floor.desks');
+    }
+  },
+
+  watch: {
+    floor(floor) {
+      // TODO: create api layer?
+      axios.get(`/api/floors/${floor.id}/image`)
+        .then(({ data }) => {
+          this.image = data.image;
+          this.imageContentType = data.imageContentType;
+        });
     }
   },
 
