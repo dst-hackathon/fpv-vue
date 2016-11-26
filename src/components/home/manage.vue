@@ -12,14 +12,16 @@
           <span @click="toggleCommand('create-desk')">
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
+          <remove-desk :desk="selectedDesk" :floor="floor"/>
+          <refresh/>
         </div>
       </nav>
     </div>
 
-    <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
+    <floor-canvas v-show="selectedFloor" :floor="selectedFloor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :options="deskFieldOoptions" />
+      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
     <desk-modal :active="showModal">
     </desk-modal>
@@ -28,12 +30,14 @@
 
 <script>
 import _ from 'lodash';
+import { mapGetters } from 'vuex';
 import CreateDesk from './canvas/commands/create-desk';
+import RemoveDesk from './canvas/commands/remove-desk';
+import Refresh from './canvas/commands/refresh';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import DeskModal from './desk-modal.vue';
-import desksMock from '../../../static/json/desks-mock.json';
 var data = {
   floor: null,
   canvas: null,
@@ -44,6 +48,8 @@ export default {
   components: {
     FloorCanvas,
     CreateDesk,
+    RemoveDesk,
+    Refresh,
     DetailPanel,
     DeskDetailPanel,
     DeskModal,
@@ -62,35 +68,26 @@ export default {
       };
     },
 
-    selectedDesk() {
-      const selectedId = this.$store.state.floorManagement.selected.deskId;
-
-      return _.find(desksMock, { id: selectedId });
+    deskPanelOptions() {
+      return { hidden: !this.selectedDesk };
     },
 
-    deskFieldOoptions() {
+    deskFieldOptions() {
       return {
-        deskCode: { readonly: false },
-        employeeId: { readonly: true },
-        firstName: { readonly: true },
-        lastName: { readonly: true },
+        employeeId: { hidden: true },
+        firstName: { hidden: true },
+        lastName: { hidden: true },
       };
     },
 
     showModal(){
       return this.$store.state.floorManagement.modal.showModal;
     }
-  },
 
-  created() {
-    // transform desks mock into a floor object
-    const desk = desksMock[0];
-
-    this.floor = {
-      ...desk.floor,
-
-      desks: desksMock
-    };
+    ...mapGetters([
+      'selectedFloor',
+      'selectedDesk'
+    ])
   },
 
   methods: {

@@ -12,3 +12,4 @@ export const GET_CURRENT_ACCOUNT = 'GET_CURRENT_ACCOUNT';
 
 export const GET_DESKS = 'GET_DESKS';
 export const UPDATE_DESKS = 'UPDATE_DESKS';
+export const DELETE_DESKS = 'DELETE_DESKS';

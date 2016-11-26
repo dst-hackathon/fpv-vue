@@ -32,7 +32,7 @@ export default {
       const building = plan && plan.buildings[0];
       const floorId = state.selected.floorId;
 
-      return plan && _.find(building.floors, { id: floorId });
+      return building && _.find(building.floors, { id: floorId });
     },
 
     selectedDesk: function (state, getters) {
