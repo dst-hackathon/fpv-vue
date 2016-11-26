@@ -1,66 +1,77 @@
 <template>
   <div>
-    <div>
+    <p v-if="!computeFieldHidden('deskCode')" class="control">
       <label>Desk Code</label>
-      <span class="field-input">
-        <input name="deskCode" :value="desk && desk.code" :readonly="!computeEditingMode('deskCode')"
+      <span>
+        <input class="input" name="deskCode" :value="deskCode" :readonly="computeInputReadonly('deskCode')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
-    </div>
-    <div>
+    </p>
+    <p v-if="!computeFieldHidden('employeeId')" class="control">
       <label>Employee ID</label>
-      <span class="field-input">
-        <input name="employeeId" :value="fieldValues.employeeId" :readonly="!computeEditingMode('employeeId')"
+      <span>
+        <input class="input" name="employeeId" :value="employeeId" :readonly="computeInputReadonly('employeeId')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
-    </div>
-    <div>
+    </p>
+    <p v-if="!computeFieldHidden('firstName')" class="control">
       <label>First Name</label>
-      <span class="field-input">
-        <input name="firstName" :value="fieldValues.firstName" :readonly="!computeEditingMode('firstName')"
+      <span>
+        <input class="input" name="firstName" :value="firstName" :readonly="computeInputReadonly('firstName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
-    </div>
-    <div>
+    </p>
+    <p v-if="!computeFieldHidden('lastName')" class="control">
       <label>Last Name</label>
-      <span class="field-input">
-        <input name="lastName" :value="fieldValues.lastName" :readonly="!computeEditingMode('lastName')"
+      <span>
+        <input class="input" name="lastName" :value="lastName" :readonly="computeInputReadonly('lastName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
-    </div>
-    <div v-if="editable">
-      <button>submit</button>
-      <button>cancel</button>
-    </div>
+    </p>
+    <p v-if="!readonly" class="control">
+      <button class="button is-primary" v-on:click="onSubmit">submit</button>
+      <button class="button" v-on:click="onCancel">cancel</button>
+    </p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'desk-detail-panel',
-  props: [ 'desk' ],
+  props: [ 'desk', 'options' ],
   data() {
     return {
-      editable: false,
-      fieldDetails: {
-        deskCode: { editing: false, value: '' },
-        employeeId: { editing: false, value: '' },
-        firstName: { editing: false, value: '' },
-        lastName: { editing: false, value: '' },
-      },
-      fieldValues: {
-        deskCode: '',
-        employeeId: '',
-        firstName: '',
-        lastName: '',
+      fieldStates: {
+        deskCode: { editing: false},
+        employeeId: { editing: false },
+        firstName: { editing: false },
+        lastName: { editing: false },
       },
     };
   },
+  computed: {
+    deskCode() {
+      return this.desk ? this.desk.code : '';
+    },
+    employeeId() {
+      return '1234'; // FIXME
+    },
+    firstName() {
+      return 'Hello'; // FIXME
+    },
+    lastName() {
+      return 'World'; // FIXME
+    },
+  },
   methods: {
+    onSubmit: function (event) {
+      this.saveDeskInfo();
+    },
+    onCancel: function (event) {},
     onClickInput: function (event) {
       var fieldName = this.getFieldName(event.target);
       this.setEditingMode(fieldName, true);
@@ -69,17 +80,27 @@ export default {
       var fieldName = this.getFieldName(event.target);
       this.setEditingMode(fieldName, false);
     },
-    setEditingMode: function (fieldName, value) {
-      this.getField(fieldName).editing = value;
+    saveDeskInfo: function () {
+      this.$store.dispatch();
     },
-    getField: function (fieldName) {
-      return this.fieldDetails[fieldName];
+    setEditingMode: function (fieldName, value) {
+      this.getFieldState(fieldName).editing = value;
+    },
+    getFieldState: function (fieldName) {
+      return this.fieldStates[fieldName];
+    },
+    getOption: function (fieldName) {
+      return this.options[fieldName];
     },
     getFieldName: function (target) {
-      return target.name || target.getAttribute('data-name');
+      return target.name;
     },
-    computeEditingMode: function (fieldName) {
-      return this.editable || this.getField(fieldName).editing;
+    computeFieldHidden: function (fieldName) {
+      return (this.options[fieldName] || {}).hidden || false;
+    },
+    computeInputReadonly: function (fieldName) {
+      var readonlyMode = (this.options[fieldName] || {}).readonly || false;
+      return readonlyMode || !this.getFieldState(fieldName).editing;
     },
   },
 };
@@ -95,5 +116,6 @@ export default {
   input[readonly] {
     background: none;
     border: none;
+    box-shadow: none;
   }
 </style>
