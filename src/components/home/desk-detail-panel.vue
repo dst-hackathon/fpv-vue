@@ -46,12 +46,6 @@ export default {
   data() {
     return {
       readonly: false,
-      options: {
-        deskCode: { readonly: false },
-        employeeId: { readonly: false },
-        firstName: { readonly: false },
-        lastName: { readonly: false },
-      },
       fieldStates: {
         deskCode: { editing: false},
         employeeId: { editing: false },
