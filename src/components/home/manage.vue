@@ -82,12 +82,12 @@ export default {
 
     showModal(){
       return this.$store.state.floorManagement.modal.showModal;
-    }
+    },
 
     ...mapGetters([
       'selectedFloor',
       'selectedDesk'
-    ])
+    ]),
   },
 
   methods: {
