@@ -5,16 +5,20 @@ var qs = require('qs');
 export default {
 
   [types.GET_PLANS]: function({ commit }) {
-    axios.get('/api/plans')
+    return axios.get('/api/plans')
       .then(({ data: plans }) => {
         commit(types.UPDATE_PLANS, { plans });
+
+        return plans;
       });
   },
 
   [types.GET_BUILDINGS]: function({ commit }, planId) {
-    axios.get(`/api/buildings?planId=${planId}`)
+    return axios.get(`/api/buildings?planId=${planId}`)
       .then(({ data: buildings }) => {
         commit(types.UPDATE_BUILDINGS, { buildings, planId });
+
+        return buildings;
       });
   },
 
@@ -45,6 +49,20 @@ export default {
     return axios.get('/api/account?d='+ Date.now()
     ).then ( ({data: user}) => {
       commit(types.GET_CURRENT_ACCOUNT, { 'user': user });
+    });
+  },
+
+  [types.GET_MASTER_PLAN]: async function({ dispatch, commit, state }) {
+    // ensure plans are retrieved
+    await dispatch(types.GET_PLANS);
+
+    const { data: masterPlan } = await axios.get('/api/plans/master');
+    const buildings = await dispatch(types.GET_BUILDINGS, masterPlan.id);
+
+    dispatch(types.GET_FLOORS, buildings[0].id);
+
+    commit(types.UPDATE_MASTER_PLAN, {
+      plan: masterPlan
     });
   },
 
