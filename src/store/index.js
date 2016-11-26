@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 import actions from './actions';
 import mutations from './mutations';
 import floorManagement from './floor-management';
+import desksMock from '../../static/json/desks-mock.json';
+import _ from 'lodash';
 
 Vue.use(Vuex);
 
@@ -14,7 +16,17 @@ export default new Vuex.Store({
   },
 
   state: {
-    plans: [],
+    plans: [{
+      id: 1,
+      buildings: [{
+        id: 1,
+        floors: [{
+          ...desksMock[0].floor,
+
+          desks: _.map(desksMock, desk => _.omit(desk, 'image'))
+        }]
+      }]
+    }],
     login: {},
   },
 
