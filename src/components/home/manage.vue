@@ -66,9 +66,11 @@ export default {
 
     deskFieldOoptions() {
       return {
-        employeeId: { hidden: true },
-        firstName: { hidden: true },
-        lastName: { hidden: true },
+        fields: {
+          employeeId: { hidden: true },
+          firstName: { hidden: true },
+          lastName: { hidden: true },
+        }
       };
     },
   },
