@@ -9,3 +9,5 @@ export const UPDATE_FLOORS = 'UPDATE_FLOORS';
 
 export const LOGIN = 'LOGIN';
 export const GET_CURRENT_ACCOUNT = 'GET_CURRENT_ACCOUNT';
+
+export const DELETE_DESK = 'DELETE_DESK';

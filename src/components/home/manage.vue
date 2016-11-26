@@ -12,6 +12,7 @@
           <span @click="toggleCommand('create-desk')">
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
+          <remove-desk :desk="selectedDesk" :floor="floor"/>
         </div>
       </nav>
     </div>
@@ -27,6 +28,7 @@
 <script>
 import _ from 'lodash';
 import CreateDesk from './canvas/commands/create-desk';
+import RemoveDesk from './canvas/commands/remove-desk';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
@@ -36,6 +38,7 @@ export default {
   components: {
     FloorCanvas,
     CreateDesk,
+    RemoveDesk,
     DetailPanel,
     DeskDetailPanel,
   },

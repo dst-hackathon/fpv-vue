@@ -40,4 +40,11 @@ export default {
       commit(types.GET_CURRENT_ACCOUNT, { 'user': user });
     });
   },
+
+  [types.DELETE_DESK]: function({ commit }, { deskId }) {
+    return axios.delete('/api/desks/' + deskId
+    ).then ( () => {
+      commit(type.DELETE_DESK);
+    });
+  },
 };
