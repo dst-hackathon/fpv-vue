@@ -29,5 +29,6 @@ export default {
 <style lang="css" scoped>
   .control {
     padding-right: 10px;
+    padding-bottom: 10px;
   }
 </style>

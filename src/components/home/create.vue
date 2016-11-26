@@ -10,12 +10,16 @@
         <div class="level-right">
           <dropdown :options="buildingOptions" label="Building" />
           <dropdown :options="floorOptions" label="Floor"/>
+          <div>
+            <label class="label">Effective Date</label>
+            <datepicker placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true, wrap: true }"></datepicker>
+          </div>
         </div>
       </nav>
     </div>
-    <floor-canvas :readOnly=true :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
+    <floor-canvas :readOnly=true :floor="floor" @ready="canvas = $event.canvas" :top="140" :right="200"/>
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :options="deskFieldOptions" />
+      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
@@ -26,6 +30,7 @@ import desksMock from '../../../static/json/desks-mock.json';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import Dropdown from './dropdown';
+import Datepicker from 'vue-bulma-datepicker';
 
 export default {
 
@@ -39,7 +44,8 @@ export default {
     FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
-    Dropdown
+    Dropdown,
+    Datepicker
   },
 
   computed: {
@@ -55,6 +61,10 @@ export default {
       const selectedId = this.$store.state.floorManagement.selected.deskId;
 
       return _.find(desksMock, { id: selectedId });
+    },
+
+    deskPanelOptions() {
+      return { hidden: !this.selectedDesk };
     },
 
     deskFieldOptions() {
