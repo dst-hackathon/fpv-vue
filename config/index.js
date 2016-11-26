@@ -23,7 +23,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://172.31.249.63:8080',
+        target: 'http://dst.me-soft.net',
         changeOrigin: true,
       }
     },
