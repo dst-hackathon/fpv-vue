@@ -23,7 +23,7 @@ export default {
         console.log("Removing desk code " + desk.code + ", id " + desk.id);
         
         var _this = this;
-        _this.$store.dispatch(types.DELETE_DESKS, {'deskId':desk.id})
+        _this.$store.dispatch(types.DELETE_DESKS, {'desk':desk})
         .then(function (response) {
           console.log("Removed desk code " + desk.code + ", id " + desk.id);
           return;
