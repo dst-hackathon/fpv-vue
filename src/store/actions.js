@@ -68,9 +68,10 @@ export default {
 
   [types.DELETE_DESKS]: function({ commit }, { desk }) {
     console.log("Connecting DB to delete desk id " + desk.id);
-    return axios.delete('/api/desks/' + desk.id
-    ).then ( () => {
-      commit(types.DELETE_DESKS, { 'desk':desk });
-    });
+    commit(types.DELETE_DESKS, { 'desk':desk });
+    // return axios.delete('/api/desks/' + desk.id
+    // ).then ( () => {
+    //   commit(types.DELETE_DESKS, { 'desk':desk });
+    // });
   },
 };
