@@ -52,8 +52,19 @@ export default {
         _this.$router.push('home');
       })
       .catch(function (error) {
+        if(error.response && error.response.status===500)
+        {
+          data.loginStatus = "Unable to connect to the server :(";
+        }
+        else if(error.response && error.response.status===401)
+        {
+          data.loginStatus = "Did you enter wrong username or password ?";
+        }
+        else
+        {
+           data.loginStatus = "Failed: " + error.message;
+        }
         console.log('login: failed');
-        data.loginStatus = "Did you enter wrong username or password ?";
         console.log(error);
       });
     },

@@ -1,18 +1,27 @@
 <template>
-  <div id="app">
+<div id="app">
+  <nav-bar />
+
+  <section class="route-outlet">
     <router-view></router-view>
-  </div>
+  </section>
+</div>
 </template>
 
 <script>
+import NavBar from 'components/nav-bar';
 
 export default {
   name: 'app',
   components: {
-
+    NavBar
   },
 };
 </script>
 
-<style>
+<style scoped>
+
+.route-outlet {
+  padding-top: 50px;
+}
 </style>
