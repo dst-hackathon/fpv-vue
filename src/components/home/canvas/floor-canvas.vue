@@ -4,7 +4,7 @@
     </canvas>
 
     <div class="desks">
-      <desk v-for="desk in desks" :desk="desk" @invalidated="invalidate()" @created="deskCreated($event)" ref="desks" />
+      <desk v-for="desk in desks" :desk="desk" :modificationLocked="readOnly" @invalidated="invalidate()" @created="deskCreated($event)" ref="desks" />
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
     Desk
   },
 
-  props: ['floor', 'top'],
+  props: ['floor', 'top', 'readOnly'],
 
   data() {
     return {

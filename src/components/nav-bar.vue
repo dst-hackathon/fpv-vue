@@ -3,6 +3,7 @@
     <div class="container is-fluid">
       <div class="nav-left">
         <a class="nav-item is-brand" href="#">
+          <img src="../assets/logo_v2.png"/>
           <h3 class="title is-3">Floor Plan Visualizer</h3>
         </a>
       </div>

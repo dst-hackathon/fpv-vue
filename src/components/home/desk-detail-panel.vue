@@ -3,7 +3,7 @@
     <div>
       <label>Desk Code</label>
       <span class="control">
-        <input class="input" name="deskCode" :value="desk && desk.code" :readonly="!computeEditingMode('deskCode')"
+        <input class="input" name="deskCode" :value="deskCode" :readonly="computeInputReadonly('deskCode')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -11,7 +11,7 @@
     <div>
       <label>Employee ID</label>
       <span class="control">
-        <input class="input" name="employeeId" :value="fieldValues.employeeId" :readonly="!computeEditingMode('employeeId')"
+        <input class="input" name="employeeId" :value="employeeId" :readonly="computeInputReadonly('employeeId')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -19,7 +19,7 @@
     <div>
       <label>First Name</label>
       <span class="control">
-        <input class="input" name="firstName" :value="fieldValues.firstName" :readonly="!computeEditingMode('firstName')"
+        <input class="input" name="firstName" :value="firstName" :readonly="computeInputReadonly('firstName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -27,7 +27,7 @@
     <div>
       <label>Last Name</label>
       <span class="control">
-        <input class="input" name="lastName" :value="fieldValues.lastName" :readonly="!computeEditingMode('lastName')"
+        <input class="input" name="lastName" :value="lastName" :readonly="computeInputReadonly('lastName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -42,23 +42,31 @@
 <script>
 export default {
   name: 'desk-detail-panel',
-  props: [ 'desk' ],
+  props: [ 'desk', 'options' ],
   data() {
     return {
-      readonly: true,
-      fieldDetails: {
-        deskCode: { editing: false, value: '' },
-        employeeId: { editing: false, value: '' },
-        firstName: { editing: false, value: '' },
-        lastName: { editing: false, value: '' },
-      },
-      fieldValues: {
-        deskCode: '',
-        employeeId: '',
-        firstName: '',
-        lastName: '',
+      readonly: false,
+      fieldStates: {
+        deskCode: { editing: false},
+        employeeId: { editing: false },
+        firstName: { editing: false },
+        lastName: { editing: false },
       },
     };
+  },
+  computed: {
+    deskCode() {
+      return this.desk ? this.desk.code : '';
+    },
+    employeeId() {
+      return '1234'; // FIXME
+    },
+    firstName() {
+      return 'Hello'; // FIXME
+    },
+    lastName() {
+      return 'World'; // FIXME
+    },
   },
   methods: {
     onClickInput: function (event) {
@@ -70,16 +78,22 @@ export default {
       this.setEditingMode(fieldName, false);
     },
     setEditingMode: function (fieldName, value) {
-      this.getField(fieldName).editing = value;
+      this.getFieldState(fieldName).editing = value;
     },
-    getField: function (fieldName) {
-      return this.fieldDetails[fieldName];
+    getFieldState: function (fieldName) {
+      return this.fieldStates[fieldName];
+    },
+    getOption: function (fieldName) {
+      return this.options[fieldName];
     },
     getFieldName: function (target) {
       return target.name;
     },
-    computeEditingMode: function (fieldName) {
-      return !this.readonly && this.getField(fieldName).editing;
+    getReadonlyMode: function (fieldName) {
+      return (this.options[fieldName] || {}).readonly || false;
+    },
+    computeInputReadonly: function (fieldName) {
+      return this.readonly || this.getReadonlyMode(fieldName) || !this.getFieldState(fieldName).editing;
     },
   },
 };
