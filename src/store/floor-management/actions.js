@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import axios from 'axios';
-=======
->>>>>>> d3824b9bf76618410a4e9538e357a0fb8f3ef8fe
 import * as types from './types';
 import commitThrough from 'store/commit-through';
 

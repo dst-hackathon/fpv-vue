@@ -8,7 +8,7 @@ export default {
       planId: 1,
       buildingId: 1,
       floorId: 1,
-      deskId: null
+      deskId: null,
       desks: [],
     }
   },
