@@ -13,6 +13,7 @@
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
           <remove-desk :desk="selectedDesk"/>
+          <refresh/>
         </div>
       </nav>
     </div>
@@ -20,7 +21,7 @@
     <floor-canvas v-show="selectedFloor" :floor="selectedFloor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :options="deskFieldOoptions" />
+      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
@@ -30,6 +31,7 @@ import _ from 'lodash';
 import { mapGetters } from 'vuex';
 import CreateDesk from './canvas/commands/create-desk';
 import RemoveDesk from './canvas/commands/remove-desk';
+import Refresh from './canvas/commands/refresh';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
@@ -39,6 +41,7 @@ export default {
     FloorCanvas,
     CreateDesk,
     RemoveDesk,
+    Refresh,
     DetailPanel,
     DeskDetailPanel,
   },
@@ -61,7 +64,11 @@ export default {
       };
     },
 
-    deskFieldOoptions() {
+    deskPanelOptions() {
+      return { hidden: !this.selectedDesk };
+    },
+
+    deskFieldOptions() {
       return {
         employeeId: { hidden: true },
         firstName: { hidden: true },
