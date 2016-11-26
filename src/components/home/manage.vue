@@ -16,9 +16,9 @@
       </nav>
     </div>
 
-    <div >
-      <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" />
-    </div>
+    <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" />
+
+
   </div>
 </template>
 

@@ -31,6 +31,4 @@ export default {
   [types.GET_CURRENT_ACCOUNT]: function(state, { user }) {
     state.login.user = user;
   },
-
-
 };
