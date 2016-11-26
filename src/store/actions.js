@@ -48,10 +48,10 @@ export default {
     });
   },
 
-  [types.DELETE_DESK]: function({ commit }, { deskId }) {
+  [types.DELETE_DESKS]: function({ commit }, { deskId }) {
     return axios.delete('/api/desks/' + deskId
     ).then ( () => {
-      commit(type.DELETE_DESK);
+      commit(types.DELETE_DESKS);
     });
   },
 };

@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import * as types from 'store/types';
+
 export default {
   props: ['desk'],
   methods: {
@@ -20,16 +22,16 @@ export default {
       if(confirm("Do you want to remove desk: " + desk.code + "?")) {
         console.log("Removing desk code " + desk.code + ", id " + desk.id);
         
-        // var _this = this;
-        // _this.$store.dispatch(types.DELETE_DESK, desk.id)
-        // .then(function (response) {
-        //   console.log("success removed desk id " + desk.id);
-        //   data.loginStatus = "";
-        //   return _this.$store.dispatch(types.GET_CURRENT_ACCOUNT, {});
-        // })
-        // .fail(function (error) {
-        //   console.log("can not remove desk code " + desk.code + ", id " + desk.id);
-        // });
+        var _this = this;
+        _this.$store.dispatch(types.DELETE_DESKS, {'deskId':desk.id})
+        .then(function (response) {
+          console.log("Removed desk code " + desk.code + ", id " + desk.id);
+          return;
+        })
+        .catch(function (error) {
+          console.log("Fail:: Could not remove desk code " + desk.code + ", id " + desk.id);
+          console.log(error);
+        });
       }
     },
   }

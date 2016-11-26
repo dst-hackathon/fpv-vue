@@ -41,7 +41,7 @@ export default {
     state.login.user = user;
   },
 
-  [types.DELETE_DESK]: function(state, { desk }) {
+  [types.DELETE_DESKS]: function(state, { desk }) {
     
   },
 };
