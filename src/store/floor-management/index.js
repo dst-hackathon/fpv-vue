@@ -7,7 +7,7 @@ export default {
       // use 1 just to populate mock data
       planId: 1,
       buildingId: 1,
-      floorId: 1,
+      floorId: null ,
       deskId: null,
       desks: [],
     },

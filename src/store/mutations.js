@@ -24,10 +24,16 @@ export default {
       building.floors = floors;
     }
   },
+  
+  [types.SELECT_FLOOR]: function(state, { floorId, buildingId }) {
+	  state.floorManagement.selected.floorId = floorId;
+  },
 
   [types.UPDATE_DESKS]:function(state, { desks, floorId }) {
-    const floor = _.find(state.plans[0].buildings[0].floors, {'id': floorId});
-
+	const buildings = _.flatMap(state.plans, _.property('buildings'));
+    const floors = _.flatMap(buildings, _.property('floors'));
+    const floor = _.find(floors, { id: floorId });
+    
     if (floor) {
       floor.desks = desks;
     }

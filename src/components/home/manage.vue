@@ -4,7 +4,7 @@
       <nav class="level">
         <!-- Left Side -->
         <div class="level-left">
-
+          <SelectFloor v-on:showLoadingScreen="showLoadingScreen"></SelectFloor>
         </div>
 
         <!-- Right Side -->
@@ -34,6 +34,7 @@ import { mapGetters } from 'vuex';
 import CreateDesk from './canvas/commands/create-desk';
 import RemoveDesk from './canvas/commands/remove-desk';
 import Refresh from './canvas/commands/refresh';
+import SelectFloor from './canvas/commands/select-floor';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
@@ -53,6 +54,7 @@ export default {
     DetailPanel,
     DeskDetailPanel,
     DeskModal,
+    SelectFloor,
   },
 
   data() {
@@ -102,13 +104,24 @@ export default {
     showDeskCodeModal(callback){
       this.showModal = true;
     },
+    showLoadingScreen() {
+      alert( 'loading' );
+    },
+  },
 
-  }
 };
 </script>
 
 <style lang="css" scoped>
   .toolbar {
     padding: 10px;
+  }
+  
+  .loadingScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 99999999;
   }
 </style>

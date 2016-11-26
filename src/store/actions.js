@@ -28,6 +28,10 @@ export default {
         commit(types.UPDATE_FLOORS, { floors, buildingId });
       });
   },
+  
+  [types.SET_FLOOR]: function({ commit }, {buildingId, floorId}) {
+	commit(types.SELECT_FLOOR, { floorId, buildingId });
+  },
 
   [types.GET_DESKS]: function({ commit }, floorId) {
     axios.get(`/api/desks?floorId=${floorId}`)
