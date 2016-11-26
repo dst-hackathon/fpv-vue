@@ -146,7 +146,7 @@ export default {
       return this.getActualFieldOption(fieldName).hidden;
     },
     computeInputReadonly: function (fieldName) {
-      // The flat readonly of the panel has highest priority
+      // The flag readonly of the panel has highest priority
       // Every field is in readonly mode regardless of the readonly option of itself
       if (this.panelReadonly) {
         return true;
