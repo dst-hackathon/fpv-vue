@@ -8,7 +8,7 @@ import App from './app';
 Vue.use(VueAxios, axios);
 
 /* eslint-disable no-new */
-new Vue({
+window.app = new Vue({
   el: '#app',
   template: '<App/>',
   components: { App },

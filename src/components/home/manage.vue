@@ -19,12 +19,13 @@
     <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
     <detail-panel :width="detailWidth">
-      <desk-detail-panel />
+      <desk-detail-panel :desk="selectedDesk" />
     </detail-panel>
   </div>
 </template>
 
 <script>
+import _ from 'lodash';
 import CreateDesk from './canvas/commands/create-desk';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
@@ -55,6 +56,12 @@ export default {
           'margin-right': `${this.detailWidth}px`
         }
       };
+    },
+
+    selectedDesk() {
+      const selectedId = this.$store.state.floorManagement.selected.deskId;
+
+      return _.find(desksMock, { id: selectedId });
     }
   },
 

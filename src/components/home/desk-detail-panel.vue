@@ -3,7 +3,7 @@
     <div>
       <label>Desk Code</label>
       <span class="field-input">
-        <input name="deskCode" :value="fieldValues.deskCode" :readonly="!computeEditingMode('deskCode')"
+        <input name="deskCode" :value="desk && desk.code" :readonly="!computeEditingMode('deskCode')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -42,6 +42,7 @@
 <script>
 export default {
   name: 'desk-detail-panel',
+  props: [ 'desk' ],
   data() {
     return {
       editable: false,
