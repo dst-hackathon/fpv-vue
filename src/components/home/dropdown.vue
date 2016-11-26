@@ -1,5 +1,6 @@
 <template lang="html">
   <div>
+    <label class="label">{{label}}</label>
     <p class="control">
       <span class="select">
         <select>
@@ -13,6 +14,10 @@
 <script>
 export default {
   props: {
+    label: {
+      type: String,
+      default: "Label"
+    },
     options: {
       type: Array,
       default: []
@@ -20,3 +25,9 @@ export default {
   }
 };
 </script>
+
+<style lang="css" scoped>
+  .control {
+    padding-right: 10px;
+  }
+</style>

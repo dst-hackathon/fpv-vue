@@ -8,8 +8,8 @@
 
         <!-- Right Side -->
         <div class="level-right">
-          <dropdown :options="buildingOptions"/>
-          <dropdown :options="floorOptions"/>
+          <dropdown :options="buildingOptions" label="Building" />
+          <dropdown :options="floorOptions" label="Floor"/>
         </div>
       </nav>
     </div>
