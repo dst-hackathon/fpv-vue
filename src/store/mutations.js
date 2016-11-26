@@ -42,21 +42,23 @@ export default {
   },
 
   [types.DELETE_DESKS]: function(state, { desk }) {
+    var planId = desk.floor.building.plan.id;
     var buildingId = desk.floor.building.id;
     var floorId = desk.floor.id;
     var deskId = desk.id;
 
-    console.log("buildingId " + buildingId
-      + " floorId " + floorId
-      + " deskId " + deskId
-    );
+    const plan = _.find(state.plans, { id: planId });
+    const building = _.find(plan.buildings, { id: buildingId });
+    const floor = _.find(building.floors, { id: floorId });
 
-    const buildings = _.flatMap(state.plans, _.property('buildings'));
-    const building = _.find(buildings, { id: buildingId });
-
-    const floors = _.flatMap(building, _.property('floors'));
-    const floor = _.find(floors, { id: floorId });
-
-    _.remove(floor.desks, desk);
+    // Remove selected desk on the floor. The function _.remove() is not work.
+    var remainDesks = [];
+    var deskOnFloor = floor.desks;
+    for (var i = 0; i < deskOnFloor.length; i++) {
+      if (deskOnFloor[i] !== desk) {
+        remainDesks.push(deskOnFloor[i]);
+      }
+    }
+    floor.desks = remainDesks;
   },
 };
