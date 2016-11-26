@@ -8,12 +8,10 @@
 </template>
 
 <script>
-import { CREATE_DESK } from 'store/floor-management/types';
+import { CREATE_DESK, SHOW_MODAL } from 'store/floor-management/types';
 import DeskShape from 'components/fabric/desk.fabric';
-
 export default {
   props: ['title', 'active', 'canvas'],
-
   watch: {
     active(active) {
       if (active) {
@@ -28,7 +26,8 @@ export default {
     this.canvasEvents = {
       'mouse:down': (args) => this.canvasMousedown(args),
       'mouse:up': (args) => this.canvasMouseup(args),
-      'mouse:move': (args) => this.canvasMousemove(args)
+      'mouse:move': (args) => this.canvasMousemove(args),
+      'object:added': (args) => this.canvasObjectAdded(args),
     };
   },
 
@@ -59,14 +58,23 @@ export default {
       if (!deskOverlay) {
         return;
       }
-
-      this.$store.dispatch(CREATE_DESK, {
-        floorId: 1,
-        desk: deskOverlay.toEntity()
-      });
-
+      var desk = deskOverlay.toEntity();
       this.deskOverlay.remove();
       this.deskOverlay = null;
+      
+      //Ask for Desk Code
+      this.$store.dispatch(SHOW_MODAL).then( (a) => {
+        this.$store.dispatch(CREATE_DESK, {
+          floorId: 1,
+          deskCode: this.$store.state.floorManagement.modal.deskCode,
+          desk: desk,
+        });
+      });
+
+    },
+
+    canvasObjectAdded(e) {
+      console.log(e);
     },
 
     canvasMousemove({ e }) {

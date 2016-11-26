@@ -21,6 +21,8 @@
     <detail-panel :width="detailWidth">
       <desk-detail-panel :desk="selectedDesk" :options="deskFieldOoptions" />
     </detail-panel>
+    <desk-modal :active="showModal">
+    </desk-modal>
   </div>
 </template>
 
@@ -30,23 +32,25 @@ import CreateDesk from './canvas/commands/create-desk';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
+import DeskModal from './desk-modal.vue';
 import desksMock from '../../../static/json/desks-mock.json';
-
+var data = {
+  floor: null,
+  canvas: null,
+  activeCommand: '',
+  detailWidth: 300,
+};
 export default {
   components: {
     FloorCanvas,
     CreateDesk,
     DetailPanel,
     DeskDetailPanel,
+    DeskModal,
   },
 
   data() {
-    return {
-      floor: null,
-      canvas: null,
-      activeCommand: '',
-      detailWidth: 300
-    };
+    return data;
   },
 
   computed: {
@@ -72,6 +76,10 @@ export default {
         lastName: { readonly: true },
       };
     },
+
+    showModal(){
+      return this.$store.state.floorManagement.modal.showModal;
+    }
   },
 
   created() {
@@ -92,7 +100,12 @@ export default {
       } else {
         this.activeCommand = command;
       }
-    }
+    },
+
+    showDeskCodeModal(callback){
+      this.showModal = true;
+    },
+
   }
 };
 </script>

@@ -7,14 +7,22 @@ export default {
   ...commitThrough([
     types.SELECT_DESK,
     types.DESELECT_DESK,
+    types.SET_CURRENT_DESKCODE,
+    types.SHOW_MODAL,
   ]),
 
-  [types.CREATE_DESK]: function({ commit }, { floorId, desk }) {
+  [types.CREATE_DESK]: function({ commit }, { floorId, deskCode, desk }) {
     delete desk.id;
-    debugger;
+    desk.code = deskCode;
+    desk.floor = {};
+    desk.floor.id = floorId;
     axios.post(`api/desks?floorId=${floorId}`, desk )
       .then(({ data: desk }) => {
         commit(types.CREATE_DESK, { floorId, desk });
-      });
+    });
+
+    commit(types.CREATE_DESK, { floorId, desk });
   },
+
+
 };

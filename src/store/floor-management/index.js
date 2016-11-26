@@ -10,7 +10,13 @@ export default {
       floorId: 1,
       deskId: null,
       desks: [],
-    }
+    },
+
+    modal: {
+      deskCode: "",
+      showModal: false,
+    },
+
   },
 
   actions,
