@@ -2,32 +2,32 @@
   <div>
     <div>
       <label>Desk Code</label>
-      <span class="field-input">
-        <input name="deskCode" :value="desk && desk.code" :readonly="!computeEditingMode('deskCode')"
+      <span class="control">
+        <input class="input" name="deskCode" :value="desk && desk.code" :readonly="!computeEditingMode('deskCode')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
     </div>
     <div>
       <label>Employee ID</label>
-      <span class="field-input">
-        <input name="employeeId" :value="fieldValues.employeeId" :readonly="!computeEditingMode('employeeId')"
+      <span class="control">
+        <input class="input" name="employeeId" :value="fieldValues.employeeId" :readonly="!computeEditingMode('employeeId')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
     </div>
     <div>
       <label>First Name</label>
-      <span class="field-input">
-        <input name="firstName" :value="fieldValues.firstName" :readonly="!computeEditingMode('firstName')"
+      <span class="control">
+        <input class="input" name="firstName" :value="fieldValues.firstName" :readonly="!computeEditingMode('firstName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
     </div>
     <div>
       <label>Last Name</label>
-      <span class="field-input">
-        <input name="lastName" :value="fieldValues.lastName" :readonly="!computeEditingMode('lastName')"
+      <span class="control">
+        <input class="input" name="lastName" :value="fieldValues.lastName" :readonly="!computeEditingMode('lastName')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
