@@ -19,7 +19,7 @@
     <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :options="deskFieldOoptions" />
+      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
@@ -64,13 +64,15 @@ export default {
       return _.find(desksMock, { id: selectedId });
     },
 
-    deskFieldOoptions() {
+    deskPanelOptions() {
+      return { hidden: !this.selectedDesk };
+    },
+
+    deskFieldOptions() {
       return {
-        fields: {
-          employeeId: { hidden: true },
-          firstName: { hidden: true },
-          lastName: { hidden: true },
-        }
+        employeeId: { hidden: true },
+        firstName: { hidden: true },
+        lastName: { hidden: true },
       };
     },
   },

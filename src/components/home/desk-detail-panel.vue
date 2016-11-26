@@ -45,7 +45,7 @@ import * as types from 'store/types';
 
 export default {
   name: 'desk-detail-panel',
-  props: [ 'desk', 'employee', 'options' ],
+  props: [ 'desk', 'employee', 'fieldOptions', 'panelOptions', 'options' ],
   data() {
     return {
       readonly: false,
@@ -71,16 +71,29 @@ export default {
       return ''; // FIXME
     },
     panelHidden() {
-      return this.getActualPanelOption().hidden;
+      return this.actualPanelOptions.hidden;
     },
     panelReadonly() {
-      if (this.getActualPanelOption().readonly) {
+      if (this.actualPanelOptions.readonly) {
         return true;
       }
 
       return !_.some(this.actualOptions, function (option) {
         return option.hidden !== true && option.readonly !== true;
       });
+    },
+    actualPanelOptions() {
+      var defaultOptions = { hidden: false, readonly: false };
+      return _.merge(defaultOptions, this.panelOptions);
+    },
+    actualFieldOptions() {
+      var defaultOptions = {
+        deskCode: { hidden: false, readonly: false },
+        employeeId: { hidden: false, readonly: false },
+        firstName: { hidden: false, readonly: false },
+        lastName: { hidden: false, readonly: false },
+      };
+      return _.merge(defaultOptions, this.fieldOptions);
     },
     actualOptions() {
       var defaultOptions = {
@@ -123,11 +136,8 @@ export default {
     getFieldMode: function (fieldName) {
       return this.fields[fieldName].mode;
     },
-    getActualPanelOption: function (fieldName) {
-      return this.actualOptions.panel;
-    },
     getActualFieldOption: function (fieldName) {
-      return this.actualOptions.fields[fieldName];
+      return this.actualFieldOptions[fieldName];
     },
     getFieldName: function (target) {
       return target.name;
