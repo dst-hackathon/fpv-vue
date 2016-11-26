@@ -12,7 +12,7 @@
           <span @click="toggleCommand('create-desk')">
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
-          <remove-desk :desk="selectedDesk" :floor="floor"/>
+          <remove-desk :desk="selectedDesk"/>
         </div>
       </nav>
     </div>
