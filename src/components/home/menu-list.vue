@@ -21,7 +21,7 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
   .margin-bottom-5 {
     margin-bottom: 5px;
   }

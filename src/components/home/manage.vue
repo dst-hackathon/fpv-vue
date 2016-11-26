@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div :style="style.main">
     <div class="toolbar">
       <nav class="level">
         <!-- Left Side -->
@@ -16,29 +16,46 @@
       </nav>
     </div>
 
-    <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" />
+    <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
-
+    <detail-panel :width="detailWidth">
+      <desk-detail-panel />
+    </detail-panel>
   </div>
 </template>
 
 <script>
 import CreateDesk from './canvas/commands/create-desk';
 import FloorCanvas from './canvas/floor-canvas';
+import DetailPanel from './detail-panel';
+import DeskDetailPanel from './desk-detail-panel';
 import desksMock from '../../../static/json/desks-mock.json';
 
 export default {
   components: {
     FloorCanvas,
-    CreateDesk
+    CreateDesk,
+    DetailPanel,
+    DeskDetailPanel,
   },
 
   data() {
     return {
       floor: null,
       canvas: null,
-      activeCommand: ''
+      activeCommand: '',
+      detailWidth: 300
     };
+  },
+
+  computed: {
+    style() {
+      return {
+        main: {
+          'margin-right': `${this.detailWidth}px`
+        }
+      };
+    }
   },
 
   created() {
