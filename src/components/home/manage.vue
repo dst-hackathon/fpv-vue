@@ -12,11 +12,12 @@
           <span @click="toggleCommand('create-desk')">
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
+          <remove-desk :desk="selectedDesk" :floor="floor"/>
         </div>
       </nav>
     </div>
 
-    <floor-canvas v-show="floor" :floor="floor" @ready="canvas = $event.canvas" :top="110" :right="200" />
+    <floor-canvas v-show="selectedFloor" :floor="selectedFloor" @ready="canvas = $event.canvas" :top="110" :right="200" />
 
     <detail-panel :width="detailWidth">
       <desk-detail-panel :desk="selectedDesk" :options="deskFieldOoptions" />
@@ -26,16 +27,18 @@
 
 <script>
 import _ from 'lodash';
+import { mapGetters } from 'vuex';
 import CreateDesk from './canvas/commands/create-desk';
+import RemoveDesk from './canvas/commands/remove-desk';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
-import desksMock from '../../../static/json/desks-mock.json';
 
 export default {
   components: {
     FloorCanvas,
     CreateDesk,
+    RemoveDesk,
     DetailPanel,
     DeskDetailPanel,
   },
@@ -58,12 +61,6 @@ export default {
       };
     },
 
-    selectedDesk() {
-      const selectedId = this.$store.state.floorManagement.selected.deskId;
-
-      return _.find(desksMock, { id: selectedId });
-    },
-
     deskFieldOoptions() {
       return {
         fields: {
@@ -73,17 +70,11 @@ export default {
         }
       };
     },
-  },
 
-  created() {
-    // transform desks mock into a floor object
-    const desk = desksMock[0];
-
-    this.floor = {
-      ...desk.floor,
-
-      desks: desksMock
-    };
+    ...mapGetters([
+      'selectedFloor',
+      'selectedDesk'
+    ])
   },
 
   methods: {

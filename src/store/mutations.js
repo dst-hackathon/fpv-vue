@@ -40,4 +40,23 @@ export default {
   [types.GET_CURRENT_ACCOUNT]: function(state, { user }) {
     state.login.user = user;
   },
+
+  [types.DELETE_DESKS]: function(state, { desk }) {
+    var buildingId = desk.floor.building.id;
+    var floorId = desk.floor.id;
+    var deskId = desk.id;
+
+    console.log("buildingId " + buildingId
+      + " floorId " + floorId
+      + " deskId " + deskId
+    );
+
+    const buildings = _.flatMap(state.plans, _.property('buildings'));
+    const building = _.find(buildings, { id: buildingId });
+
+    const floors = _.flatMap(building, _.property('floors'));
+    const floor = _.find(floors, { id: floorId });
+
+    _.remove(floor.desks, desk);
+  },
 };
