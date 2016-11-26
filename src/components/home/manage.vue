@@ -13,6 +13,7 @@
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
           <remove-desk :desk="selectedDesk" :floor="floor"/>
+          <refresh/>
         </div>
       </nav>
     </div>
@@ -30,6 +31,7 @@ import _ from 'lodash';
 import { mapGetters } from 'vuex';
 import CreateDesk from './canvas/commands/create-desk';
 import RemoveDesk from './canvas/commands/remove-desk';
+import Refresh from './canvas/commands/refresh';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
@@ -39,6 +41,7 @@ export default {
     FloorCanvas,
     CreateDesk,
     RemoveDesk,
+    Refresh,
     DetailPanel,
     DeskDetailPanel,
   },
