@@ -19,7 +19,7 @@
     </div>
     <floor-canvas :readOnly=true :floor="floor" @ready="canvas = $event.canvas" :top="140" :right="200"/>
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :options="deskFieldOptions" />
+      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
@@ -61,6 +61,10 @@ export default {
       const selectedId = this.$store.state.floorManagement.selected.deskId;
 
       return _.find(desksMock, { id: selectedId });
+    },
+
+    deskPanelOptions() {
+      return { hidden: !this.selectedDesk };
     },
 
     deskFieldOptions() {
