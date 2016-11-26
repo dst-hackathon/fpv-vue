@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 import actions from './actions';
 import mutations from './mutations';
 import floorManagement from './floor-management';
 import desksMock from '../../static/json/desks-mock.json';
-import _ from 'lodash';
 
 Vue.use(Vuex);
 
@@ -28,8 +28,19 @@ export default new Vuex.Store({
       }]
     }],
     login: {},
+
+    masterPlanId: null,
   },
 
   actions,
-  mutations
+  mutations,
+
+  getters: {
+    masterPlan(state) {
+      const plans = state.plans;
+      const masterPlanId = state.masterPlanId;
+
+      return _.find(plans, { id: masterPlanId});
+    }
+  }
 });

@@ -41,6 +41,10 @@ export default {
     state.login.user = user;
   },
 
+  [types.UPDATE_MASTER_PLAN]: function(state, { plan }) {
+    state.masterPlanId = plan.id;
+  },
+  
   [types.DELETE_DESKS]: function(state, { desk }) {
     var buildingId = desk.floor.building.id;
     var floorId = desk.floor.id;
