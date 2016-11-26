@@ -2,11 +2,23 @@
 
 > A Vue.js project
 
+## Quick Start
+``` bash
+npm install
+npm start
+
+Then start coding !
+
 ## Build Setup
 
 ``` bash
 # install dependencies
 npm install
+
+# start coding in dev mode
+# this is a shorthand for 'npm run dev'
+npm start
+
 
 # serve with hot reload at localhost:8080
 npm run dev
