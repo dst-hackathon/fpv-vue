@@ -67,10 +67,23 @@ export default {
     lockSize() {
       this.deskShape.lockScalingX = true;
       this.deskShape.lockScalingY = true;
+      this.deskShape.setControlsVisibility({
+         mt: false,
+         mb: false,
+         ml: false,
+         mr: false,
+         bl: false,
+         br: false,
+         tl: false,
+         tr: false,
+       });
     },
 
     lockRotation() {
       this.deskShape.lockRotation = true;
+      this.deskShape.setControlsVisibility({
+         mtr: false,
+      });
     }
   },
 
