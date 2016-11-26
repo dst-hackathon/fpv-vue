@@ -25,7 +25,7 @@ export default {
     return {
       menuSelected: 'view',
       menuList: [{
-        name: 'ViewPage Master Plan',
+        name: 'View Master Plan',
         value: 'view',
         component: require('./view')
       }, {
