@@ -5,7 +5,9 @@
 
   <!-- Page Content -->
   <div class="page-content">
-    <component :is="componentSelected" />
+    <keep-alive>
+      <component :is="componentSelected" />
+    </keep-alive>
   </div>
 
 </div>
