@@ -79,6 +79,14 @@ export default {
         return;
       }
 
+      if(deskOverlay.width < 10 || deskOverlay.height < 10)
+      {
+        //desk too small, probably user click canvas but not want to add a desk
+        this.deskOverlay.remove();
+        this.deskOverlay = null;
+        return;
+      }
+
       this.pendingDesk = {
         ...this.deskOverlay.toEntity(),
 
