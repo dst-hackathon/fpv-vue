@@ -7,7 +7,6 @@ export default {
   ...commitThrough([
     types.SELECT_DESK,
     types.DESELECT_DESK,
-    types.SET_CURRENT_DESKCODE,
     types.SHOW_MODAL,
   ]),
 
@@ -20,9 +19,11 @@ export default {
       .then(({ data: desk }) => {
         commit(types.CREATE_DESK, { floorId, desk });
     });
-
-    commit(types.CREATE_DESK, { floorId, desk });
   },
 
+  
+  [types.SET_CURRENT_DESKCODE]: function({commit}, {deskCode}) {
+    commit(types.SET_CURRENT_DESKCODE, { deskCode });
+  },
 
 };

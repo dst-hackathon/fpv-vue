@@ -13,6 +13,7 @@ export default {
     },
 
     modal: {
+      desk: "",
       deskCode: "",
       showModal: false,
     },

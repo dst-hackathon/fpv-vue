@@ -11,22 +11,19 @@ export default {
   },
 
   [types.CREATE_DESK]: function(state, { floorId,desk }) {
-    //TODO need to call another action to refresh all desk
+    state.selected.desks.push(desk);
   },
 
   [types.SET_CURRENT_DESKCODE]: function(state, { deskCode }) {
+    console.log("SET_CURRENT_DESKCODE: deskCode = "+ deskCode);
     state.modal.deskCode = deskCode;
     state.modal.showModal = false;
-    
-    this.$store.dispatch(CREATE_DESK, {
-      floorId: 1,
-      deskCode: this.$store.state.floorManagement.modal.deskCode,
-      desk: desk,
-    });
   },
 
   
-  [types.SHOW_MODAL]: function(state) {
+  [types.SHOW_MODAL]: function(state, {desk}) {
+    console.log("SHOW_MODAL: desk"+ desk);
+    state.modal.desk = desk;
     state.modal.showModal = true;
   },
 };

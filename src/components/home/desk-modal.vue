@@ -21,22 +21,40 @@
 </template>
 
 <script>
-import { SET_CURRENT_DESKCODE } from 'store/floor-management/types';
-
-var data = {
-    deskCode: "",
-};
+import { SET_CURRENT_DESKCODE,CREATE_DESK } from 'store/floor-management/types';
+import { GET_DESKS } from 'store/types';
+import * as types from 'store/floor-management/types';
 
 export default {
-  props: ['active'],
-  data(){
-      return data;
+  props: ['active','callback'],
+  data() {
+      return {
+          deskCode: "",
+      } ;
   },
   methods: {
       ok() {
           console.log("Ok");
-          this.$store.dispatch(SET_CURRENT_DESKCODE, this.deskCode);
-      }
+          console.log("desk-modal: deskCode="+this.deskCode);
+          var _this = this;
+          this.$store.dispatch(SET_CURRENT_DESKCODE, { 'deskCode': _this.deskCode } ).then(
+              _this.createDesk()
+          );
+      },
+      createDesk() {
+          var _this = this;
+          this.$store.dispatch(CREATE_DESK, { 
+              'deskCode': _this.$store.state.floorManagement.modal.deskCode,
+              'desk': _this.$store.state.floorManagement.modal.desk,
+              'floorId': _this.$store.state.floorManagement.selected.floorId,
+            } ).then(
+                _this.refreshDesks()
+            );
+        },
+        refreshDesks() {
+            var _this = this;
+            this.$store.dispatch(GET_DESKS, _this.$store.state.floorManagement.selected.floorId);
+        },
   }
 };
 </script>

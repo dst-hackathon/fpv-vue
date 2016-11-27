@@ -63,13 +63,7 @@ export default {
       this.deskOverlay = null;
       
       //Ask for Desk Code
-      this.$store.dispatch(SHOW_MODAL).then( (a) => {
-        this.$store.dispatch(CREATE_DESK, {
-          floorId: 1,
-          deskCode: this.$store.state.floorManagement.modal.deskCode,
-          desk: desk,
-        });
-      });
+      this.$store.dispatch(SHOW_MODAL,{desk:desk});
 
     },
 
