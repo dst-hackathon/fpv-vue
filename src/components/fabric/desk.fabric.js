@@ -16,18 +16,6 @@ export default fabric.util.createClass(fabric.Rect, {
       ...options
     });
 
-    this.on('selected', () => {
-      store.dispatch(SELECT_DESK, {
-        desk: this.toEntity()
-      });
-    });
-
-    this.on('deselected', () => {
-      store.dispatch(DESELECT_DESK, {
-        desk: this.toEntity()
-      });
-    });
-
     // this.on('modified', () => {
     //   store.dispatch(UPDATE_DESK, {
     //     desk: this.toEntity()

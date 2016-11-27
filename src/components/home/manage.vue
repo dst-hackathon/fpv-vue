@@ -4,7 +4,7 @@
       <nav class="level">
         <!-- Left Side -->
         <div class="level-left">
-          <SelectFloor v-on:showLoadingScreen="showLoadingScreen"></SelectFloor>
+          <floor-plan-selector class="level-left" @selected="selectedFloor = $event.floor" />
         </div>
 
         <!-- Right Side -->
@@ -13,16 +13,20 @@
             <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
           </span>
           <remove-desk :desk="selectedDesk"/>
-          <refresh/>
         </div>
       </nav>
     </div>
 
-    <floor-canvas v-show="selectedFloor" :floor="selectedFloor" @ready="canvas = $event.canvas" :top="110" :right="200" />
+    <floor-canvas
+      :floor="selectedFloor"
+      @ready="canvas = $event.canvas"
+      @deskSelected="selectedDesk = $event.desk"
+      @deskDeselected="selectedDesk = null" />
 
     <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
+      <desk-detail-panel :desk="selectedDesk" v-show="!!selectedDesk" :fieldOptions="deskFieldOptions" />
     </detail-panel>
+
     <desk-modal :active="showModal">
     </desk-modal>
   </div>
@@ -30,35 +34,35 @@
 
 <script>
 import _ from 'lodash';
-import { mapGetters } from 'vuex';
+
 import CreateDesk from './canvas/commands/create-desk';
 import RemoveDesk from './canvas/commands/remove-desk';
-import Refresh from './canvas/commands/refresh';
-import SelectFloor from './canvas/commands/select-floor';
+
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import DeskModal from './desk-modal.vue';
-var data = {
-  floor: null,
-  canvas: null,
-  activeCommand: '',
-  detailWidth: 300,
-};
+import FloorPlanSelector from './floor-plan-selector';
+
 export default {
   components: {
-    FloorCanvas,
     CreateDesk,
     RemoveDesk,
-    Refresh,
+    FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
     DeskModal,
-    SelectFloor,
+    FloorPlanSelector,
   },
 
   data() {
-    return data;
+    return {
+      canvas: null,
+      activeCommand: '',
+      detailWidth: 300,
+      selectedFloor: null,
+      selectedDesk: null,
+    };
   },
 
   computed: {
@@ -68,10 +72,6 @@ export default {
           'margin-right': `${this.detailWidth}px`
         }
       };
-    },
-
-    deskPanelOptions() {
-      return { hidden: !this.selectedDesk };
     },
 
     deskFieldOptions() {
@@ -85,11 +85,6 @@ export default {
     showModal(){
       return this.$store.state.floorManagement.modal.showModal;
     },
-
-    ...mapGetters([
-      'selectedFloor',
-      'selectedDesk'
-    ]),
   },
 
   methods: {
@@ -104,11 +99,11 @@ export default {
     showDeskCodeModal(callback){
       this.showModal = true;
     },
+
     showLoadingScreen() {
       alert( 'loading' );
     },
-  },
-
+  }
 };
 </script>
 
@@ -116,7 +111,7 @@ export default {
   .toolbar {
     padding: 10px;
   }
-  
+
   .loadingScreen {
     position: fixed;
     width: 100%;

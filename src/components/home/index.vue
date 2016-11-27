@@ -27,7 +27,7 @@ export default {
       menuList: [{
         name: 'View Master Plan',
         value: 'view',
-        component: require('./view')
+        component: require('./view-master-plan')
       }, {
         name: 'Create/Edit Future Plan',
         value: 'create',

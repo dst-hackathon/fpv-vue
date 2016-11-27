@@ -124,11 +124,11 @@ export default {
       this.setEditingMode(fieldName, false);
     },
     saveDeskInfo: function () {
-      var updatedDesks = _.assignIn(this.desk, {
+      var updatedDesk = _.assignIn({}, this.desk, {
         code: this.deskCode
       });
 
-      this.$store.dispatch(types.UPDATE_DESKS, updatedDesk);
+      this.$store.dispatch(types.UPDATE_DESK, { desk: updatedDesk });
     },
     setEditingMode: function (fieldName, value) {
       this.getFieldMode(fieldName).editing = value;

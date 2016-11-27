@@ -104,6 +104,18 @@ export default {
     //   this.$emit('created', { shape: group });
     // });
 
+    this.deskShape.on('selected', () => {
+      this.$emit('selected', {
+        desk: this.desk,
+      });
+    });
+
+    this.deskShape.on('deselected', () => {
+      this.$emit('deselected', {
+        desk: this.desk,
+      });
+    });
+
     this.$emit('created', { shape: this.deskShape });
 
     if(this.modificationLocked) {

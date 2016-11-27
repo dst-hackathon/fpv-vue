@@ -8,8 +8,7 @@
 
         <!-- Right Side -->
         <div class="level-right">
-          <dropdown :options="buildingOptions" label="Building" />
-          <dropdown :options="floorOptions" label="Floor"/>
+          <FloorPlanSelector class="level-right" @selected="selectedFloor = $event.floor" />
           <div>
             <label class="label">Effective Date</label>
             <datepicker placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true, wrap: true }"></datepicker>
@@ -17,7 +16,9 @@
         </div>
       </nav>
     </div>
-    <floor-canvas :readOnly=true :floor="floor" @ready="canvas = $event.canvas" :top="140" :right="200"/>
+
+    <floor-canvas :readOnly="true" :floor="selectedFloor" @deskSelected="selectedDesk = $event.desk" @deskDeselected="selectedDesk = null"/>
+
     <detail-panel :width="detailWidth">
       <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
     </detail-panel>
@@ -26,26 +27,29 @@
 
 <script>
 import FloorCanvas from './canvas/floor-canvas';
-import desksMock from '../../../static/json/desks-mock.json';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import Dropdown from './dropdown';
 import Datepicker from 'vue-bulma-datepicker';
+import FloorPlanSelector from './floor-plan-selector';
 
 export default {
 
   data() {
     return {
-      floor: null,
+      selectedFloor: null,
+      selectedDesk: null,
       detailWidth: 300
     };
   },
+
   components: {
     FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
     Dropdown,
-    Datepicker
+    Datepicker,
+    FloorPlanSelector,
   },
 
   computed: {
@@ -55,12 +59,6 @@ export default {
           'margin-right': `${this.detailWidth}px`
         }
       };
-    },
-
-    selectedDesk() {
-      const selectedId = this.$store.state.floorManagement.selected.deskId;
-
-      return _.find(desksMock, { id: selectedId });
     },
 
     deskPanelOptions() {
@@ -88,17 +86,6 @@ export default {
         {text: "RSU Tower"}
       ];
     }
-  },
-
-  created() {
-    // transform desks mock into a floor object
-    const desk = desksMock[0];
-
-    this.floor = {
-      ...desk.floor,
-
-      desks: desksMock
-    };
   },
 };
 </script>

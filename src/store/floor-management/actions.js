@@ -5,8 +5,6 @@ import commitThrough from 'store/commit-through';
 export default {
 
   ...commitThrough([
-    types.SELECT_DESK,
-    types.DESELECT_DESK,
     types.SET_CURRENT_DESKCODE,
     types.SHOW_MODAL,
   ]),

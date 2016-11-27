@@ -19,32 +19,13 @@
 </template>
 
 <script>
-import {
-  mapGetters
-} from 'vuex';
 import * as types from 'store/types';
 import FloorCanvas from './canvas/floor-canvas';
 
 export default {
   components: {
-    FloorCanvas
+    FloorCanvas,
   },
-
-  computed: {
-    ...mapGetters([
-      'masterPlan'
-    ])
-  },
-
-  created() {
-    // this.fetchMasterPlan();
-  },
-
-  methods: {
-    fetchMasterPlan() {
-      this.$store.dispatch(types.GET_MASTER_PLAN);
-    }
-  }
 };
 </script>
 

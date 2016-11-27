@@ -4,7 +4,15 @@
     </canvas>
 
     <div class="desks">
-      <desk v-for="desk in desks" :desk="desk" :modificationLocked="readOnly" @invalidated="invalidate()" @created="deskCreated($event)" ref="desks" :key="desk.id"/>
+      <desk v-for="desk in (floor && floor.desks)"
+        ref="desks"
+        :desk="desk"
+        :key="desk.id"
+        :modificationLocked="readOnly"
+        @invalidated="invalidate()"
+        @created="deskCreated($event)"
+        @selected="relayEvent('deskSelected', $event)"
+        @deselected="relayEvent('deskDeselected', $event)" />
     </div>
   </div>
 </template>
@@ -20,31 +28,12 @@ export default {
     Desk
   },
 
-  props: ['floor', 'top', 'readOnly'],
+  props: ['readOnly', 'floor'],
 
   data() {
     return {
       height: null,
-      image: null,
-      imageContentType: null,
     };
-  },
-
-  computed: {
-    desks() {
-      return _.get(this, 'floor.desks');
-    }
-  },
-
-  watch: {
-    floor(floor) {
-      // TODO: create api layer?
-      axios.get(`/api/floors/${floor.id}/image`)
-        .then(({ data }) => {
-          this.image = data.image;
-          this.imageContentType = data.imageContentType;
-        });
-    }
   },
 
   mounted() {
@@ -52,7 +41,7 @@ export default {
       uniScaleTransform: true
     });
 
-    this.$watch('image', this.updateImage, {
+    this.$watch('floor', this.updateImage, {
       immediate: true
     });
 
@@ -60,16 +49,18 @@ export default {
       canvas: this.canvas
     });
 
-    this.height = `${this.$refs.wrapper.clientHeight - this.top}px`;
+    this.reposition();
   },
 
   methods: {
-    updateImage(image) {
-      if (!this.image) {
+    async updateImage(floor) {
+      const floorId = floor && floor.id;
+      if (!floorId) {
         return;
       }
 
-      const imageUrl = `data:${this.imageContentType};base64,${this.image}`;
+      // const { image, imageContentType } = await this.getImageUrl({ floorId });
+      const imageUrl = await this.getImageUrl({ floorId });
 
       this.canvas.setBackgroundImage(imageUrl, (img) => {
         if (img) {
@@ -92,6 +83,23 @@ export default {
       this.$nextTick(() => {
         this.canvas.add(shape);
       });
+    },
+
+    reposition() {
+      const wrapper = this.$refs.wrapper;
+      const boundingRect = wrapper.getBoundingClientRect();
+
+      this.height = `${boundingRect.height - boundingRect.top}px`;
+    },
+
+    getImageUrl({ floorId }) {
+      // TODO: create api layer?
+      return axios.get(`/api/floors/${floorId}/image`)
+        .then(({ data: { image, imageContentType }}) => `data:${imageContentType};base64,${image}`);
+    },
+
+    relayEvent(eventName, e) {
+      this.$emit(eventName, e);
     }
   }
 };
