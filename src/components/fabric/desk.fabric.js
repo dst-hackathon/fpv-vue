@@ -72,7 +72,8 @@ export default fabric.util.createClass(fabric.Rect, {
     const absolutePosition = this.getAbsolutePosition();
 
     return {
-      id: this.id,
+      ...this.entity,
+
       x: absolutePosition.left,
       y: absolutePosition.top,
 

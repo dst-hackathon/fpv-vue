@@ -15,6 +15,17 @@ export default {
     state.plans = plans;
   },
 
+  [types.CREATE_DESK]: function(state, { desk }) {
+    const floor = _
+      .chain(state.plans)
+      .flatMap('buildings')
+      .flatMap('floors')
+      .find({ id: desk.floor.id })
+      .value();
+
+    floor.desks.push(desk);
+  },
+
   [types.UPDATE_DESK]: function(state, { desk }) {
     const storedDesk = _
       .chain(state.plans)

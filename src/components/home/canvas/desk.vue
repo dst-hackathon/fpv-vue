@@ -89,7 +89,7 @@ export default {
 
   created() {
     this.deskShape = new DeskShape({
-      id: this.desk.id,
+      entity: this.desk,
 
       ...this.dimensions,
       ...this.position

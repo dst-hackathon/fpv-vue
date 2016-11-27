@@ -1,17 +1,38 @@
 <template lang="html">
-  <button class="button" :class="{ 'is-primary': active }">
-    <span class="icon">
-      <i class="fa fa-plus"></i>
-    </span>
-    <span>Add Desk</span>
-  </button>
+  <div class="">
+    <button class="button" :class="{ 'is-primary': active }" @click="$emit('click')">
+      <span class="icon">
+        <i class="fa fa-plus"></i>
+      </span>
+      <span>Add Desk</span>
+    </button>
+
+    <desk-modal
+      :desk="pendingDesk"
+      @ok="addPendingDesk"
+      @close="clearPendingDesk" />
+
+  </div>
 </template>
 
 <script>
-import { CREATE_DESK, SHOW_MODAL } from 'store/floor-management/types';
+import _ from 'lodash';
+import { CREATE_DESK } from 'store/types';
 import DeskShape from 'components/fabric/desk.fabric';
+import DeskModal from './desk-modal';
+
 export default {
-  props: ['title', 'active', 'canvas'],
+  components: {
+    DeskModal,
+  },
+
+  props: ['title', 'active', 'canvas', 'floor'],
+  data() {
+    return {
+      pendingDesk: null,
+    };
+  },
+
   watch: {
     active(active) {
       if (active) {
@@ -27,7 +48,6 @@ export default {
       'mouse:down': (args) => this.canvasMousedown(args),
       'mouse:up': (args) => this.canvasMouseup(args),
       'mouse:move': (args) => this.canvasMousemove(args),
-      'object:added': (args) => this.canvasObjectAdded(args),
     };
   },
 
@@ -58,23 +78,13 @@ export default {
       if (!deskOverlay) {
         return;
       }
-      var desk = deskOverlay.toEntity();
-      this.deskOverlay.remove();
-      this.deskOverlay = null;
-      
-      //Ask for Desk Code
-      this.$store.dispatch(SHOW_MODAL).then( (a) => {
-        this.$store.dispatch(CREATE_DESK, {
-          floorId: 1,
-          deskCode: this.$store.state.floorManagement.modal.deskCode,
-          desk: desk,
-        });
-      });
 
-    },
+      this.pendingDesk = {
+        ...this.deskOverlay.toEntity(),
 
-    canvasObjectAdded(e) {
-      console.log(e);
+        code: '',
+        floor: _.pick(this.floor, 'id')
+      };
     },
 
     canvasMousemove({ e }) {
@@ -95,6 +105,18 @@ export default {
 
       this.deskOverlay.setCoords();
       this.canvas.renderAll();
+    },
+
+    addPendingDesk() {
+      this.$store.dispatch(CREATE_DESK, {
+        desk: this.pendingDesk
+      });
+    },
+
+    clearPendingDesk() {
+      this.deskOverlay.remove();
+      this.deskOverlay = null;
+      this.pendingDesk = null;
     }
   }
 };

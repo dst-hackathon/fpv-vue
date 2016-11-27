@@ -9,9 +9,7 @@
 
         <!-- Right Side -->
         <div class="level-right">
-          <span @click="toggleCommand('create-desk')">
-            <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'"/>
-          </span>
+          <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'" @click="toggleCommand('create-desk')" :floor="selectedFloor" />
           <remove-desk :desk="selectedDesk"/>
         </div>
       </nav>
@@ -23,12 +21,9 @@
       @deskSelected="selectedDesk = $event.desk"
       @deskDeselected="selectedDesk = null" />
 
-    <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" v-show="!!selectedDesk" :fieldOptions="deskFieldOptions" />
+    <detail-panel :width="detailWidth" v-show="selectedDesk">
+      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" />
     </detail-panel>
-
-    <desk-modal :active="showModal">
-    </desk-modal>
   </div>
 </template>
 
@@ -41,7 +36,6 @@ import RemoveDesk from './canvas/commands/remove-desk';
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
-import DeskModal from './desk-modal.vue';
 import FloorPlanSelector from './floor-plan-selector';
 
 export default {
@@ -51,7 +45,6 @@ export default {
     FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
-    DeskModal,
     FloorPlanSelector,
   },
 
@@ -59,7 +52,6 @@ export default {
     return {
       canvas: null,
       activeCommand: '',
-      detailWidth: 300,
       selectedFloor: null,
       selectedDesk: null,
     };
@@ -82,8 +74,12 @@ export default {
       };
     },
 
-    showModal(){
-      return this.$store.state.floorManagement.modal.showModal;
+    detailWidth() {
+      if (this.selectedDesk) {
+        return 300;
+      } else {
+        return 0;
+      }
     },
   },
 
@@ -94,10 +90,6 @@ export default {
       } else {
         this.activeCommand = command;
       }
-    },
-
-    showDeskCodeModal(callback){
-      this.showModal = true;
     },
 
     showLoadingScreen() {

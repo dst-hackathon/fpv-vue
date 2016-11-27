@@ -6,10 +6,16 @@ import * as types from './types';
 export default {
 
   [types.FETCH_ALL]: async function({ commit }) {
-    let { data: plans } = await axios.get('/api/plans');
-    let { data: buildings } = await axios.get('/api/buildings');
-    let { data: floors } = await axios.get('/api/floors');
-    let { data: desks } = await axios.get('/api/desks');
+    const http = axios.create({
+      params: {
+        size: '10000'
+      }
+    });
+
+    let { data: plans } = await http.get(`/api/plans`);
+    let { data: buildings } = await http.get(`/api/buildings`);
+    let { data: floors } = await http.get(`/api/floors`);
+    let { data: desks } = await http.get(`/api/desks`);
 
     // construct nested plans and flatten parent for child resource
     desks = desks.map(desk => {
@@ -65,16 +71,21 @@ export default {
     });
   },
 
+  [types.CREATE_DESK]: function({ commit }, { desk }) {
+    axios.post('api/desks', desk)
+      .then(({ data: desk }) => {
+        commit(types.CREATE_DESK, { desk });
+    });
+  },
+
   [types.UPDATE_DESK]: function({ commit }, { desk }) {
     commit(types.UPDATE_DESK, { desk });
   },
 
   [types.DELETE_DESK]: function({ commit }, { desk }) {
-    console.log("Connecting DB to delete desk id " + desk.id);
-    commit(types.DELETE_DESK, { 'desk':desk });
-    // return axios.delete('/api/desks/' + desk.id
-    // ).then ( () => {
-    //   commit(types.DELETE_DESK, { 'desk':desk });
-    // });
+    return axios.delete(`/api/desks/${desk.id}`)
+      .then (() => {
+        commit(types.DELETE_DESK, { desk });
+      });
   },
 };
