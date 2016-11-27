@@ -130,6 +130,9 @@ export default {
 
       this.$store.dispatch(types.UPDATE_DESK, { desk: updatedDesk });
     },
+    discardChange: function() {
+      this.$emit('discardChange');
+    },
     setEditingMode: function (fieldName, value) {
       this.getFieldMode(fieldName).editing = value;
     },
