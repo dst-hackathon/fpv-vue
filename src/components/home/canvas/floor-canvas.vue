@@ -9,6 +9,7 @@
         :desk="desk"
         :key="desk.id"
         :modificationLocked="readOnly"
+        :showEmployee="showEmployee"
         @invalidated="invalidate()"
         @created="deskCreated($event)"
         @selected="relayEvent('deskSelected', $event)"
@@ -28,7 +29,7 @@ export default {
     Desk
   },
 
-  props: ['readOnly', 'floor'],
+  props: ['readOnly', 'floor', 'showEmployee'],
 
   data() {
     return {
@@ -112,5 +113,6 @@ export default {
     height: 100vh;
     max-height: 100%;
     overflow: auto;
+    position: relative;
   }
 </style>

@@ -3,12 +3,14 @@ import qs from 'qs';
 import _ from 'lodash';
 import * as types from './types';
 
+const PAGE_SIZE = '10000';
+
 export default {
 
   [types.FETCH_ALL]: async function({ commit }) {
     const http = axios.create({
       params: {
-        size: '10000'
+        size: PAGE_SIZE
       }
     });
 
@@ -53,6 +55,20 @@ export default {
     });
 
     commit(types.UPDATE_PLANS, { plans });
+  },
+
+  'FETCH_DESK_ASSIGNMENTS': function({ commit }, { floorId }) {
+    axios.get(`/api/desk-assignments`, {
+      params: {
+        floorId,
+        size: PAGE_SIZE
+      }
+    }).then(({ data: assignments }) => {
+      commit('UPDATE_DESK_ASSIGNMENTS', {
+        floorId,
+        assignments
+      });
+    });
   },
 
   [types.LOGIN]: function({ commit }, { username, password }) {

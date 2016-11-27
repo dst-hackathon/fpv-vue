@@ -17,10 +17,15 @@
       </nav>
     </div>
 
-    <floor-canvas :readOnly="true" :floor="selectedFloor" @deskSelected="selectedDesk = $event.desk" @deskDeselected="selectedDesk = null"/>
+    <floor-canvas
+      :readOnly="true"
+      :floor="selectedFloor"
+      :showEmployee="true"
+      @deskSelected="selectedDesk = $event.desk"
+      @deskDeselected="selectedDesk = null"/>
 
-    <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
+    <detail-panel :width="detailWidth" v-show="selectedDesk">
+      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
@@ -29,7 +34,6 @@
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
-import Dropdown from './dropdown';
 import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
 
@@ -39,7 +43,6 @@ export default {
     return {
       selectedFloor: null,
       selectedDesk: null,
-      detailWidth: 300
     };
   },
 
@@ -47,7 +50,6 @@ export default {
     FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
-    Dropdown,
     Datepicker,
     FloorPlanSelector,
   },
@@ -61,8 +63,12 @@ export default {
       };
     },
 
-    deskPanelOptions() {
-      return { hidden: !this.selectedDesk };
+    detailWidth() {
+      if (this.selectedDesk) {
+        return 300;
+      } else {
+        return 0;
+      }
     },
 
     deskFieldOptions() {
@@ -73,20 +79,19 @@ export default {
         lastName: { readonly: true },
       };
     },
-
-    floorOptions() {
-      return [
-        {text: "17th floor"},
-        {text: "18th floor"}
-      ];
-    },
-
-    buildingOptions() {
-      return [
-        {text: "RSU Tower"}
-      ];
-    }
   },
+
+  watch: {
+    ['selectedFloor.id'](floorId) {
+      if (!floorId) {
+        return;
+      }
+
+      this.$store.dispatch('FETCH_DESK_ASSIGNMENTS', {
+        floorId
+      });
+    }
+  }
 };
 </script>
 

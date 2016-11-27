@@ -1,5 +1,8 @@
 <template lang="html">
-  <div>
+  <div class="desk" ref="desk">
+    <div class="name" v-if="showEmployee && employee">
+      {{ employee.code }}
+    </div>
   </div>
 </template>
 
@@ -14,7 +17,11 @@ export default {
     },
     desk: {
       default: {}
-    }
+    },
+    showEmployee: {
+      type: Boolean
+    },
+    employee: Object
   },
 
   computed: {
@@ -39,7 +46,11 @@ export default {
         left: this.desk.x,
         top: this.desk.y
       };
-    }
+    },
+
+    employee() {
+      return this.desk.employee;
+    },
   },
 
   watch: {
@@ -55,7 +66,18 @@ export default {
       this.deskShape.setAbsolutePosition(position);
 
       this.$emit('invalidated');
-    }
+    },
+
+    desk: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {
+          this.deskShape.entity = this.desk;
+
+          this.updateEmployeeTag();
+        });
+      }
+    },
   },
 
   methods: {
@@ -84,6 +106,29 @@ export default {
       this.deskShape.setControlsVisibility({
          mtr: false,
       });
+    },
+
+    updateEmployeeTag() {
+      if (!this.showEmployee || !this.employee) {
+        return;
+      }
+
+      const deskEl = this.$refs.desk;
+
+      // can't calculate from el as sometimes it will be in the memory
+      // when we are on the different route.
+      const elWidth = this.employee.code.length * 8;
+      const elHeight = 25;
+
+      const { left: shapeLeft, top: shapeTop } = this.deskShape.getAbsolutePosition();
+      const shapeWidth = this.deskShape.getWidth();
+      const shapeHeight = this.deskShape.getHeight();
+
+      const left = shapeLeft + (shapeWidth / 2) - (elWidth / 2);
+      const top = shapeTop + (shapeHeight / 2) - (elHeight / 2);
+
+      deskEl.style.left = `${left}px`;
+      deskEl.style.top = `${top}px`;
     }
   },
 
@@ -116,6 +161,12 @@ export default {
       });
     });
 
+    if (this.showEmployee) {
+      this.deskShape.on('moving', () => {
+        this.updateEmployeeTag();
+      });
+    }
+
     this.$emit('created', { shape: this.deskShape });
 
     if(this.modificationLocked) {
@@ -123,11 +174,31 @@ export default {
       this.lockSize();
       this.lockRotation();
     }
-
   },
 
   destroyed() {
     this.deskShape.remove();
-  }
+  },
+
+  mounted() {
+    console.log('mounted');
+    this.$nextTick(() => {
+      this.updateEmployeeTag();
+    });
+  },
 };
 </script>
+<style>
+  .desk {
+    position: absolute;
+  }
+
+  .name {
+    background: black;
+    color: white;
+    padding: 5px;
+
+    font-size: 10px;
+    transform: perspective(1px) scale(0.9);
+  }
+</style>
