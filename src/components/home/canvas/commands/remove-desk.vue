@@ -21,9 +21,9 @@ export default {
 
       if(confirm("Do you want to remove desk: " + desk.code + "?")) {
         console.log("Removing desk code " + desk.code + ", id " + desk.id);
-        
+
         var _this = this;
-        _this.$store.dispatch(types.DELETE_DESKS, {'desk':desk})
+        _this.$store.dispatch(types.DELETE_DESK, {'desk':desk})
         .then(function (response) {
           console.log("Removed desk code " + desk.code + ", id " + desk.id);
           return;

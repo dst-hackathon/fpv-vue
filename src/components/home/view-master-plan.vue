@@ -4,22 +4,21 @@
       <nav class="level">
         <!-- Left Side -->
         <div class="level-left">
-          <floor-plan-selector class="level-left" @selected="selectedFloor = $event.floor" />
         </div>
 
         <!-- Right Side -->
         <div class="level-right">
-          <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'" @click="toggleCommand('create-desk')" :floor="selectedFloor" />
-          <remove-desk :desk="selectedDesk"/>
+          <FloorPlanSelector class="level-right" @selected="selectedFloor = $event.floor" />
         </div>
       </nav>
     </div>
 
     <floor-canvas
+      :readOnly="true"
       :floor="selectedFloor"
-      @ready="canvas = $event.canvas"
+      :showEmployee="true"
       @deskSelected="selectedDesk = $event.desk"
-      @deskDeselected="selectedDesk = null" />
+      @deskDeselected="selectedDesk = null"/>
 
     <detail-panel :width="detailWidth" v-show="selectedDesk">
       <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" />
@@ -28,33 +27,27 @@
 </template>
 
 <script>
-import _ from 'lodash';
-
-import CreateDesk from './canvas/commands/create-desk';
-import RemoveDesk from './canvas/commands/remove-desk';
-
 import FloorCanvas from './canvas/floor-canvas';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
+import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
 
 export default {
-  components: {
-    CreateDesk,
-    RemoveDesk,
-    FloorCanvas,
-    DetailPanel,
-    DeskDetailPanel,
-    FloorPlanSelector,
-  },
 
   data() {
     return {
-      canvas: null,
-      activeCommand: '',
       selectedFloor: null,
       selectedDesk: null,
     };
+  },
+
+  components: {
+    FloorCanvas,
+    DetailPanel,
+    DeskDetailPanel,
+    Datepicker,
+    FloorPlanSelector,
   },
 
   computed: {
@@ -66,14 +59,6 @@ export default {
       };
     },
 
-    deskFieldOptions() {
-      return {
-        employeeId: { hidden: true },
-        firstName: { hidden: true },
-        lastName: { hidden: true },
-      };
-    },
-
     detailWidth() {
       if (this.selectedDesk) {
         return 300;
@@ -81,20 +66,27 @@ export default {
         return 0;
       }
     },
+
+    deskFieldOptions() {
+      return {
+        deskCode: { readonly: true },
+        employeeId: { readonly: false },
+        firstName: { readonly: true },
+        lastName: { readonly: true },
+      };
+    },
   },
 
-  methods: {
-    toggleCommand(command) {
-      if (this.activeCommand === command) {
-        this.activeCommand = null;
-      } else {
-        this.activeCommand = command;
+  watch: {
+    ['selectedFloor.id'](floorId) {
+      if (!floorId) {
+        return;
       }
-    },
 
-    showLoadingScreen() {
-      alert( 'loading' );
-    },
+      this.$store.dispatch('FETCH_DESK_ASSIGNMENTS', {
+        floorId
+      });
+    }
   }
 };
 </script>
@@ -102,13 +94,5 @@ export default {
 <style lang="css" scoped>
   .toolbar {
     padding: 10px;
-  }
-
-  .loadingScreen {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    z-index: 99999999;
   }
 </style>

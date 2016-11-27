@@ -31,17 +31,17 @@ export default {
   watch: {
     selectedFloor(val) {
       var _this = this;
-      
+
       this.showLoadingScreen();
       this.$store.dispatch(SET_FLOOR, {
         buildingId: 1,
         floorId: val,
       });
-      
+
       this.$store.dispatch(GET_DESKS, val);
     }
   },
-  
+
   methods: {
     showLoadingScreen() {
       this.$emit('showLoadingScreen');

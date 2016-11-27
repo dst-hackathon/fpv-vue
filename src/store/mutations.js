@@ -1,43 +1,8 @@
+import Vue from 'vue';
 import _ from 'lodash';
 import * as types from './types';
 
 export default {
-
-  [types.UPDATE_PLANS]: function(state, { plans }) {
-    state.plans = plans;
-  },
-
-  [types.UPDATE_BUILDINGS]: function(state, { buildings, planId}) {
-    let plans = state.plans;
-    let plan = _.find(plans, {'id': planId});
-    if (plan) {
-      plan.buildings = buildings;
-    }
-  },
-
-  [types.UPDATE_FLOORS]: function(state, { floors, buildingId }) {
-    //const buildings = _.flatMap(state.plans, _.property('buildings'));
-    //const building = _.find(buildings, { id: buildingId });
-    const building = state.plans[0].buildings[0];
-
-    if (building) {
-      building.floors = floors;
-    }
-  },
-  
-  [types.SELECT_FLOOR]: function(state, { floorId, buildingId }) {
-	  state.floorManagement.selected.floorId = floorId;
-  },
-
-  [types.UPDATE_DESKS]:function(state, { desks, floorId }) {
-	const buildings = _.flatMap(state.plans, _.property('buildings'));
-    const floors = _.flatMap(buildings, _.property('floors'));
-    const floor = _.find(floors, { id: floorId });
-    
-    if (floor) {
-      floor.desks = desks;
-    }
-  },
 
   [types.LOGIN]: function(state) {
     state.login.status = 'authenticated';
@@ -47,28 +12,56 @@ export default {
     state.login.user = user;
   },
 
-  [types.UPDATE_MASTER_PLAN]: function(state, { plan }) {
-    state.masterPlanId = plan.id;
+  [types.UPDATE_PLANS]: function(state, { plans }) {
+    state.plans = plans;
   },
-  
-  [types.DELETE_DESKS]: function(state, { desk }) {
-    var planId = desk.floor.building.plan.id;
-    var buildingId = desk.floor.building.id;
-    var floorId = desk.floor.id;
-    var deskId = desk.id;
 
-    const plan = _.find(state.plans, { id: planId });
-    const building = _.find(plan.buildings, { id: buildingId });
-    const floor = _.find(building.floors, { id: floorId });
+  'UPDATE_DESK_ASSIGNMENTS': function(state, { floorId, assignments }) {
+    const floor = _
+      .chain(state.plans)
+      .flatMap('buildings')
+      .flatMap('floors')
+      .find({ id: floorId })
+      .value();
 
-    // Remove selected desk on the floor. The function _.remove() is not work.
-    var remainDesks = [];
-    var deskOnFloor = floor.desks;
-    for (var i = 0; i < deskOnFloor.length; i++) {
-      if (deskOnFloor[i] !== desk) {
-        remainDesks.push(deskOnFloor[i]);
-      }
-    }
-    floor.desks = remainDesks;
+    floor.desks.forEach((desk) => {
+      const assignment = _.find(assignments, [ 'desk.id', desk.id ]);
+
+      Vue.set(desk, 'employee', assignment && assignment.employee);
+    });
+  },
+
+  [types.CREATE_DESK]: function(state, { desk }) {
+    const floor = _
+      .chain(state.plans)
+      .flatMap('buildings')
+      .flatMap('floors')
+      .find({ id: desk.floor.id })
+      .value();
+
+    floor.desks.push(desk);
+  },
+
+  [types.UPDATE_DESK]: function(state, { desk }) {
+    const storedDesk = _
+      .chain(state.plans)
+      .flatMap('buildings')
+      .flatMap('floors')
+      .flatMap('desks')
+      .find({ id: desk.id })
+      .value();
+
+    _.assignIn(storedDesk, desk);
+  },
+
+  [types.DELETE_DESK]: function(state, { desk }) {
+    const floor = _
+      .chain(state.plans)
+      .flatMap('buildings')
+      .flatMap('floors')
+      .find({ id: desk.floor.id })
+      .value();
+
+    floor.desks = _.reject(floor.desks, { id: desk.id });
   },
 };

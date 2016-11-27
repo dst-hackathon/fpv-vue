@@ -5,7 +5,9 @@
 
   <!-- Page Content -->
   <div class="page-content">
-    <component :is="componentSelected" />
+    <keep-alive>
+      <component :is="componentSelected" />
+    </keep-alive>
   </div>
 
 </div>
@@ -27,7 +29,7 @@ export default {
       menuList: [{
         name: 'View Master Plan',
         value: 'view',
-        component: require('./view')
+        component: require('./view-master-plan')
       }, {
         name: 'Create/Edit Future Plan',
         value: 'create',

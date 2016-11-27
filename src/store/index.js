@@ -4,7 +4,6 @@ import _ from 'lodash';
 import actions from './actions';
 import mutations from './mutations';
 import floorManagement from './floor-management';
-import desksMock from '../../static/json/desks-mock.json';
 
 Vue.use(Vuex);
 
@@ -12,35 +11,35 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
 
   modules: {
-    floorManagement
+    floorManagement,
   },
 
   state: {
     plans: [{
-      id: 1,
       buildings: [{
-        id: 1,
         floors: [{
-          ...desksMock[0].floor,
-
-          desks: _.map(desksMock, desk => _.omit(desk, 'image'))
+          // desk
         }]
       }]
     }],
-    login: {},
 
-    masterPlanId: null,
+    login: {},
+  },
+
+  getters: {
+    buildings: function(state) {
+      return _.flatMap(state.plans, 'buildings');
+    },
+
+    floors: function(state, getters) {
+      return _.flatMap(getters.buildings, 'floors');
+    },
+
+    desks: function(state, getters) {
+      return _.flatMap(getters.floors, 'desks');
+    }
   },
 
   actions,
   mutations,
-
-  getters: {
-    masterPlan(state) {
-      const plans = state.plans;
-      const masterPlanId = state.masterPlanId;
-
-      return _.find(plans, { id: masterPlanId});
-    }
-  }
 });

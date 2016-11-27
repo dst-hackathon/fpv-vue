@@ -1,43 +1,74 @@
 import axios from 'axios';
+import qs from 'qs';
+import _ from 'lodash';
 import * as types from './types';
-var qs = require('qs');
+
+const PAGE_SIZE = '10000';
 
 export default {
 
-  [types.GET_PLANS]: function({ commit }) {
-    return axios.get('/api/plans')
-      .then(({ data: plans }) => {
-        commit(types.UPDATE_PLANS, { plans });
+  [types.FETCH_ALL]: async function({ commit }) {
+    const http = axios.create({
+      params: {
+        size: PAGE_SIZE
+      }
+    });
 
-        return plans;
-      });
+    let { data: plans } = await http.get(`/api/plans`);
+    let { data: buildings } = await http.get(`/api/buildings`);
+    let { data: floors } = await http.get(`/api/floors`);
+    let { data: desks } = await http.get(`/api/desks`);
+
+    // construct nested plans and flatten parent for child resource
+    desks = desks.map(desk => {
+      return {
+        ...desk,
+
+        floor: _.pick(desk.floor, 'id')
+      };
+    });
+
+    floors = floors.map(floor => {
+      return {
+        ...floor,
+
+        desks: _.filter(desks, [ 'floor.id', floor.id ]),
+        building: _.pick(floor.building, 'id')
+      };
+    });
+
+    buildings = buildings.map(building => {
+      return {
+        ...building,
+
+        floors: _.filter(floors, [ 'building.id', building.id ]),
+        plan: _.pick(building.plan, 'id')
+      };
+    });
+
+    plans = plans.map(plan => {
+      return {
+        ...plan,
+
+        buildings: _.filter(buildings, [ 'plan.id', plan.id ])
+      };
+    });
+
+    commit(types.UPDATE_PLANS, { plans });
   },
 
-  [types.GET_BUILDINGS]: function({ commit }, planId) {
-    return axios.get(`/api/buildings?planId=${planId}`)
-      .then(({ data: buildings }) => {
-        commit(types.UPDATE_BUILDINGS, { buildings, planId });
-
-        return buildings;
+  'FETCH_DESK_ASSIGNMENTS': function({ commit }, { floorId }) {
+    axios.get(`/api/desk-assignments`, {
+      params: {
+        floorId,
+        size: PAGE_SIZE
+      }
+    }).then(({ data: assignments }) => {
+      commit('UPDATE_DESK_ASSIGNMENTS', {
+        floorId,
+        assignments
       });
-  },
-
-  [types.GET_FLOORS]: function({ commit }, buildingId) {
-    axios.get(`/api/floors?buildingId=${buildingId}`)
-      .then(({ data: floors }) => {
-        commit(types.UPDATE_FLOORS, { floors, buildingId });
-      });
-  },
-  
-  [types.SET_FLOOR]: function({ commit }, {buildingId, floorId}) {
-	commit(types.SELECT_FLOOR, { floorId, buildingId });
-  },
-
-  [types.GET_DESKS]: function({ commit }, floorId) {
-    axios.get(`/api/desks?floorId=${floorId}`)
-      .then(({ data: desks }) => {
-        commit(types.UPDATE_DESKS, { desks, floorId });
-      });
+    });
   },
 
   [types.LOGIN]: function({ commit }, { username, password }) {
@@ -56,26 +87,24 @@ export default {
     });
   },
 
-  [types.GET_MASTER_PLAN]: async function({ dispatch, commit, state }) {
-    // ensure plans are retrieved
-    await dispatch(types.GET_PLANS);
-
-    const { data: masterPlan } = await axios.get('/api/plans/master');
-    const buildings = await dispatch(types.GET_BUILDINGS, masterPlan.id);
-
-    dispatch(types.GET_FLOORS, buildings[0].id);
-
-    commit(types.UPDATE_MASTER_PLAN, {
-      plan: masterPlan
-    });
+  [types.CREATE_DESK]: function({ commit }, { desk }) {
+    axios.post('/api/desks', desk)
+      .then(({ data: desk }) => {
+        commit(types.CREATE_DESK, { desk });
+      });
   },
 
-  [types.DELETE_DESKS]: function({ commit }, { desk }) {
-    console.log("Connecting DB to delete desk id " + desk.id);
-    commit(types.DELETE_DESKS, { 'desk':desk });
-    // return axios.delete('/api/desks/' + desk.id
-    // ).then ( () => {
-    //   commit(types.DELETE_DESKS, { 'desk':desk });
-    // });
+  [types.UPDATE_DESK]: function({ commit }, { desk }) {
+    axios.put('/api/desks', desk)
+      .then(({ data: desk }) => {
+        commit(types.UPDATE_DESK, { desk });
+      });
+  },
+
+  [types.DELETE_DESK]: function({ commit }, { desk }) {
+    return axios.delete(`/api/desks/${desk.id}`)
+      .then (() => {
+        commit(types.DELETE_DESK, { desk });
+      });
   },
 };

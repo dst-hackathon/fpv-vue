@@ -16,23 +16,11 @@ export default fabric.util.createClass(fabric.Rect, {
       ...options
     });
 
-    this.on('selected', () => {
-      store.dispatch(SELECT_DESK, {
+    this.on('modified', () => {
+      store.dispatch(UPDATE_DESK, {
         desk: this.toEntity()
       });
     });
-
-    this.on('deselected', () => {
-      store.dispatch(DESELECT_DESK, {
-        desk: this.toEntity()
-      });
-    });
-
-    // this.on('modified', () => {
-    //   store.dispatch(UPDATE_DESK, {
-    //     desk: this.toEntity()
-    //   });
-    // });
   },
 
   setAbsolutePosition(position) {
@@ -84,7 +72,8 @@ export default fabric.util.createClass(fabric.Rect, {
     const absolutePosition = this.getAbsolutePosition();
 
     return {
-      id: this.id,
+      ...this.entity,
+
       x: absolutePosition.left,
       y: absolutePosition.top,
 

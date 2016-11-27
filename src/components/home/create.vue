@@ -8,8 +8,7 @@
 
         <!-- Right Side -->
         <div class="level-right">
-          <dropdown :options="buildingOptions" label="Building" />
-          <dropdown :options="floorOptions" label="Floor"/>
+          <FloorPlanSelector class="level-right" @selected="selectedFloor = $event.floor" />
           <div>
             <label class="label">Effective Date</label>
             <datepicker placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true, wrap: true }"></datepicker>
@@ -17,35 +16,42 @@
         </div>
       </nav>
     </div>
-    <floor-canvas :readOnly=true :floor="floor" @ready="canvas = $event.canvas" :top="140" :right="200"/>
-    <detail-panel :width="detailWidth">
-      <desk-detail-panel :desk="selectedDesk" :panelOptions="deskPanelOptions" :fieldOptions="deskFieldOptions" />
+
+    <floor-canvas
+      :readOnly="true"
+      :floor="selectedFloor"
+      :showEmployee="true"
+      @deskSelected="selectedDesk = $event.desk"
+      @deskDeselected="selectedDesk = null"/>
+
+    <detail-panel :width="detailWidth" v-show="selectedDesk">
+      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" />
     </detail-panel>
   </div>
 </template>
 
 <script>
 import FloorCanvas from './canvas/floor-canvas';
-import desksMock from '../../../static/json/desks-mock.json';
 import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
-import Dropdown from './dropdown';
 import Datepicker from 'vue-bulma-datepicker';
+import FloorPlanSelector from './floor-plan-selector';
 
 export default {
 
   data() {
     return {
-      floor: null,
-      detailWidth: 300
+      selectedFloor: null,
+      selectedDesk: null,
     };
   },
+
   components: {
     FloorCanvas,
     DetailPanel,
     DeskDetailPanel,
-    Dropdown,
-    Datepicker
+    Datepicker,
+    FloorPlanSelector,
   },
 
   computed: {
@@ -57,14 +63,12 @@ export default {
       };
     },
 
-    selectedDesk() {
-      const selectedId = this.$store.state.floorManagement.selected.deskId;
-
-      return _.find(desksMock, { id: selectedId });
-    },
-
-    deskPanelOptions() {
-      return { hidden: !this.selectedDesk };
+    detailWidth() {
+      if (this.selectedDesk) {
+        return 300;
+      } else {
+        return 0;
+      }
     },
 
     deskFieldOptions() {
@@ -75,31 +79,19 @@ export default {
         lastName: { readonly: true },
       };
     },
+  },
 
-    floorOptions() {
-      return [
-        {text: "17th floor"},
-        {text: "18th floor"}
-      ];
-    },
+  watch: {
+    ['selectedFloor.id'](floorId) {
+      if (!floorId) {
+        return;
+      }
 
-    buildingOptions() {
-      return [
-        {text: "RSU Tower"}
-      ];
+      this.$store.dispatch('FETCH_DESK_ASSIGNMENTS', {
+        floorId
+      });
     }
-  },
-
-  created() {
-    // transform desks mock into a floor object
-    const desk = desksMock[0];
-
-    this.floor = {
-      ...desk.floor,
-
-      desks: desksMock
-    };
-  },
+  }
 };
 </script>
 
