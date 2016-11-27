@@ -16,11 +16,11 @@ export default fabric.util.createClass(fabric.Rect, {
       ...options
     });
 
-    // this.on('modified', () => {
-    //   store.dispatch(UPDATE_DESK, {
-    //     desk: this.toEntity()
-    //   });
-    // });
+    this.on('modified', () => {
+      store.dispatch(UPDATE_DESK, {
+        desk: this.toEntity()
+      });
+    });
   },
 
   setAbsolutePosition(position) {

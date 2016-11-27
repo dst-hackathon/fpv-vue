@@ -72,14 +72,17 @@ export default {
   },
 
   [types.CREATE_DESK]: function({ commit }, { desk }) {
-    axios.post('api/desks', desk)
+    axios.post('/api/desks', desk)
       .then(({ data: desk }) => {
         commit(types.CREATE_DESK, { desk });
-    });
+      });
   },
 
   [types.UPDATE_DESK]: function({ commit }, { desk }) {
-    commit(types.UPDATE_DESK, { desk });
+    axios.put('/api/desks', desk)
+      .then(({ data: desk }) => {
+        commit(types.UPDATE_DESK, { desk });
+      });
   },
 
   [types.DELETE_DESK]: function({ commit }, { desk }) {
