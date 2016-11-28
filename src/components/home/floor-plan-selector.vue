@@ -8,7 +8,7 @@
     valueProp="id"
     textProp="name"
     width="120px"
-    @input="emitSelected() && reset('buildingId')" />
+    @input="reset('buildingId') || emitSelected()" />
 
   <dropdown
     v-model.number="buildingId"
@@ -18,7 +18,7 @@
     valueProp="id"
     textProp="name"
     width="150px"
-    @input="emitSelected() && reset('floorId')" />
+    @input="reset('floorId') || emitSelected()" />
 
   <dropdown
     v-model.number="floorId"
@@ -78,6 +78,7 @@ export default {
 
   methods: {
     reset(prop) {
+      console.log('reset', prop);
       this[prop] = null;
     },
 

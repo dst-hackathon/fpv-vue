@@ -61,7 +61,7 @@ import DetailPanel from './detail-panel';
 import DeskAssignmentPanel from './desk-assignment-panel';
 import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
-import { FETCH_DESK_ASSIGNMENTS } from 'store/types';
+import { FETCH_DESK_ASSIGNMENTS, FETCH_CHANGESETS, FETCH_CHANGESET_ITEMS } from 'store/types';
 
 export default {
 
@@ -108,33 +108,33 @@ export default {
   },
 
   watch: {
-    selectedFloor(floor) {
-      if (!floor) {
+    'selectedFloor.id'(floorId) {
+      if (!floorId) {
         return;
       }
 
       this.$store.dispatch(FETCH_DESK_ASSIGNMENTS, {
-        floorId: floor.id
+        floorId
       });
     },
 
-    selectedPlan(plan) {
-      if (!plan) {
+    'selectedPlan.id'(planId) {
+      if (!planId) {
         return;
       }
 
-      this.$store.dispatch('FETCH_CHANGESETS', {
-        planId: plan.id,
+      this.$store.dispatch(FETCH_CHANGESETS, {
+        planId
       });
     },
 
-    changeset(changeset) {
-      if (!changeset) {
+    'changeset.id'(changesetId) {
+      if (!changesetId) {
         return;
       }
 
-      this.$store.dispatch('FETCH_CHANGESET_ITEMS', {
-        changesetId: changeset.id
+      this.$store.dispatch(FETCH_CHANGESET_ITEMS, {
+        changesetId
       });
     }
   },
