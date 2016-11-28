@@ -8,7 +8,7 @@
     valueProp="id"
     textProp="name"
     width="120px"
-    @input="reset('buildingId')" />
+    @input="emitSelected() && reset('buildingId')" />
 
   <dropdown
     v-model.number="buildingId"
@@ -18,7 +18,7 @@
     valueProp="id"
     textProp="name"
     width="150px"
-    @input="reset('floorId')" />
+    @input="emitSelected() && reset('floorId')" />
 
   <dropdown
     v-model.number="floorId"
@@ -28,7 +28,7 @@
     valueProp="id"
     textProp="name"
     width="80px"
-    @input="completeSelection" />
+    @input="emitSelected()" />
 
 </div>
 </template>
@@ -81,8 +81,10 @@ export default {
       this[prop] = null;
     },
 
-    completeSelection() {
+    emitSelected() {
       this.$emit('selected', {
+        plan: _.find(this.plans, { id: this.planId }),
+        building: _.find(this.buildings, { id: this.buildingId }),
         floor: _.find(this.floors, { id: this.floorId })
       });
     }

@@ -1,23 +1,23 @@
-import axios from 'axios';
+import defaultAxios from 'axios';
 import qs from 'qs';
 import _ from 'lodash';
+import moment from 'moment';
 import * as types from './types';
 
 const PAGE_SIZE = '10000';
+const axios = defaultAxios.create({
+  params: {
+    size: PAGE_SIZE
+  }
+});
 
 export default {
 
   [types.FETCH_ALL]: async function({ commit }) {
-    const http = axios.create({
-      params: {
-        size: PAGE_SIZE
-      }
-    });
-
-    let { data: plans } = await http.get(`/api/plans`);
-    let { data: buildings } = await http.get(`/api/buildings`);
-    let { data: floors } = await http.get(`/api/floors`);
-    let { data: desks } = await http.get(`/api/desks`);
+    let { data: plans } = await axios.get(`/api/plans`);
+    let { data: buildings } = await axios.get(`/api/buildings`);
+    let { data: floors } = await axios.get(`/api/floors`);
+    let { data: desks } = await axios.get(`/api/desks`);
 
     // construct nested plans and flatten parent for child resource
     desks = desks.map(desk => {
@@ -57,17 +57,34 @@ export default {
     commit(types.UPDATE_PLANS, { plans });
   },
 
-  'FETCH_DESK_ASSIGNMENTS': function({ commit }, { floorId }) {
-    axios.get(`/api/desk-assignments`, {
+  [types.FETCH_DESK_ASSIGNMENTS]: function({ commit }, { floorId }) {
+    axios.get('/api/desk-assignments', {
       params: {
-        floorId,
-        size: PAGE_SIZE
+        floorId
       }
     }).then(({ data: assignments }) => {
-      commit('UPDATE_DESK_ASSIGNMENTS', {
+      commit(types.UPDATE_DESK_ASSIGNMENTS, {
         floorId,
         assignments
       });
+    });
+  },
+
+  [types.FETCH_CHANGESETS]: async function({ commit }, { planId }) {
+    const { data: changesets } = await axios.get(`/api/changesets?planId=${planId}`);
+
+    commit('UPDATE_PLAN_CHANGESET', {
+      planId,
+      changesets
+    });
+  },
+
+  'FETCH_CHANGESET_ITEMS': async function({ commit }, { changesetId }) {
+    const { data: items } = await axios.get(`/api/changeset-items?changesetId=${changesetId}`);
+
+    commit('UPDATE_CHANGESET_ITEMS', {
+      changesetId,
+      items
     });
   },
 

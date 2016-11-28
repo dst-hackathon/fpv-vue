@@ -4,11 +4,11 @@
       <nav class="level">
         <!-- Left Side -->
         <div class="level-left">
+          <FloorPlanSelector class="level-right" @selected="selectedFloor = $event.floor" />
         </div>
 
         <!-- Right Side -->
         <div class="level-right">
-          <FloorPlanSelector class="level-right" @selected="selectedFloor = $event.floor" />
         </div>
       </nav>
     </div>
@@ -32,6 +32,7 @@ import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
+import { FETCH_DESK_ASSIGNMENTS } from 'store/types';
 
 export default {
 
@@ -83,7 +84,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('FETCH_DESK_ASSIGNMENTS', {
+      this.$store.dispatch(FETCH_DESK_ASSIGNMENTS, {
         floorId
       });
     }

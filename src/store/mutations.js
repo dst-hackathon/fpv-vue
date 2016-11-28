@@ -16,7 +16,7 @@ export default {
     state.plans = plans;
   },
 
-  'UPDATE_DESK_ASSIGNMENTS': function(state, { floorId, assignments }) {
+  [types.UPDATE_DESK_ASSIGNMENTS]: function(state, { floorId, assignments }) {
     const floor = _
       .chain(state.plans)
       .flatMap('buildings')
@@ -29,6 +29,22 @@ export default {
 
       Vue.set(desk, 'employee', assignment && assignment.employee);
     });
+  },
+
+  'UPDATE_PLAN_CHANGESET': function(state, { planId, changesets }) {
+    const plan = _.find(state.plans, { id: planId });
+
+    Vue.set(plan, 'changesets', changesets);
+  },
+
+  'UPDATE_CHANGESET_ITEMS': function(state, { changesetId, items }) {
+    const changeset = _
+      .chain(state.plans)
+      .flatMap('changesets')
+      .find({ id: changesetId })
+      .value();
+
+    Vue.set(changeset, 'items', items);
   },
 
   [types.CREATE_DESK]: function(state, { desk }) {
