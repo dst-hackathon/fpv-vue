@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="desk" ref="desk">
     <div class="name" v-if="showEmployee && employee">
-      {{ employee.code }}
+      {{ employee.firstname }}
     </div>
   </div>
 </template>

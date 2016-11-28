@@ -4,7 +4,7 @@
     </canvas>
 
     <div class="desks">
-      <desk v-for="desk in (floor && floor.desks)"
+      <desk v-for="desk in effectiveDesks"
         ref="desks"
         :desk="desk"
         :key="desk.id"
@@ -22,6 +22,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import Canvas from 'components/fabric/canvas.fabric';
+import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import Desk from './desk';
 
 export default {
@@ -29,12 +30,21 @@ export default {
     Desk
   },
 
-  props: ['readOnly', 'floor', 'showEmployee'],
+  props: ['readOnly', 'floor', 'showEmployee', 'changeset'],
 
   data() {
     return {
       height: null,
     };
+  },
+
+  computed: {
+    effectiveDesks() {
+      const currentDesks = this.floor && this.floor.desks;
+      const futureDesks = resolveFutureDesks(currentDesks, this.changeset);
+
+      return futureDesks;
+    }
   },
 
   mounted() {

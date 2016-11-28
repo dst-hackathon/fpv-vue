@@ -22,29 +22,33 @@
       :readOnly="true"
       :floor="selectedFloor"
       :showEmployee="true"
+      :changeset="changeset"
       @deskSelected="selectedDesk = $event.desk"
       @deskDeselected="selectedDesk = null"/>
 
-    <detail-panel :width="300">
+    <detail-panel :width="detailWidth">
       <!-- <desk-assignment-panel /> -->
-      <h3 class="title is-4">Activities</h3>
-
-      <div v-for="activity in activities">
-        <div class="media">
-          <div class="media-left">
-            <figure class="image is-48x48">
-              <img :src="employeeImage(activity.employee)">
-            </figure>
-          </div>
-          <div class="media-content">
-            <p class="title is-5">{{ activity.employee.firstname }} {{ activity.employee.lastname }}</p>
-            <p class="subtitle is-6">{{ activity.employee.code }}</p>
-          </div>
-        </div>
-
-        <p>From: {{ activity.fromDesk && activity.fromDesk.code }}</p>
-        <p>To: {{ activity.toDesk && activity.toDesk.code }}</p>
+      <div>
+        <h3 class="title is-4">Activity</h3>
         <hr>
+
+        <div v-for="activity in activities">
+          <div class="media">
+            <div class="media-left">
+              <figure class="">
+                <img class="employee-image" :src="employeeImage(activity.employee)">
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-5">{{ activity.employee.firstname }} {{ activity.employee.lastname }}</p>
+              <p class="subtitle is-6">{{ activity.employee.code }}</p>
+            </div>
+          </div>
+
+          <p>From: {{ activity.fromDesk && activity.fromDesk.code }}</p>
+          <p>To: {{ activity.toDesk && activity.toDesk.code }}</p>
+          <hr>
+        </div>
       </div>
     </detail-panel>
   </div>
@@ -66,7 +70,8 @@ export default {
       selectedPlan: null,
       selectedFloor: null,
       selectedDesk: null,
-      effectiveDate: ''
+      effectiveDate: '',
+      detailWidth: 300
     };
   },
 
@@ -98,38 +103,38 @@ export default {
     },
 
     activities() {
-      return this.changeset && this.changeset.items || [];
+      return this.changeset && this.changeset.changesetItems || [];
     }
   },
 
   watch: {
-    ['selectedFloor.id'](floorId) {
-      if (!floorId) {
+    selectedFloor(floor) {
+      if (!floor) {
         return;
       }
 
       this.$store.dispatch(FETCH_DESK_ASSIGNMENTS, {
-        floorId
+        floorId: floor.id
       });
     },
 
-    ['selectedPlan.id'](planId) {
-      if (!planId) {
+    selectedPlan(plan) {
+      if (!plan) {
         return;
       }
 
       this.$store.dispatch('FETCH_CHANGESETS', {
-        planId,
+        planId: plan.id,
       });
     },
 
-    ['changeset.id'](changesetId) {
-      if (!changesetId) {
+    changeset(changeset) {
+      if (!changeset) {
         return;
       }
 
       this.$store.dispatch('FETCH_CHANGESET_ITEMS', {
-        changesetId
+        changesetId: changeset.id
       });
     }
   },
@@ -152,5 +157,11 @@ export default {
 <style lang="css" scoped>
   .toolbar {
     padding: 10px;
+  }
+
+  .employee-image {
+    height: 48px;
+    width: 48px;
+    object-fit: cover;
   }
 </style>

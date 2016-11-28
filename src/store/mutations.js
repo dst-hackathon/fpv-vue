@@ -31,20 +31,20 @@ export default {
     });
   },
 
-  'UPDATE_PLAN_CHANGESET': function(state, { planId, changesets }) {
+  [types.UPDATE_PLAN_CHANGESET]: function(state, { planId, changesets }) {
     const plan = _.find(state.plans, { id: planId });
 
     Vue.set(plan, 'changesets', changesets);
   },
 
-  'UPDATE_CHANGESET_ITEMS': function(state, { changesetId, items }) {
+  [types.UPDATE_CHANGESET_ITEMS]: function(state, { changesetId, changesetItems }) {
     const changeset = _
       .chain(state.plans)
       .flatMap('changesets')
       .find({ id: changesetId })
       .value();
 
-    Vue.set(changeset, 'items', items);
+    Vue.set(changeset, 'changesetItems', changesetItems);
   },
 
   [types.CREATE_DESK]: function(state, { desk }) {

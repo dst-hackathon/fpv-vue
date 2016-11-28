@@ -56,7 +56,7 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage'],
-    files: ['./index.js'],
+    files: [`${projectRoot}/static/lib/fabric/fabric.js`, './index.js'],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },

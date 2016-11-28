@@ -73,18 +73,18 @@ export default {
   [types.FETCH_CHANGESETS]: async function({ commit }, { planId }) {
     const { data: changesets } = await axios.get(`/api/changesets?planId=${planId}`);
 
-    commit('UPDATE_PLAN_CHANGESET', {
+    commit(types.UPDATE_PLAN_CHANGESET, {
       planId,
       changesets
     });
   },
 
-  'FETCH_CHANGESET_ITEMS': async function({ commit }, { changesetId }) {
-    const { data: items } = await axios.get(`/api/changeset-items?changesetId=${changesetId}`);
+  [types.FETCH_CHANGESET_ITEMS]: async function({ commit }, { changesetId }) {
+    const { data: changesetItems } = await axios.get(`/api/changeset-items?changesetId=${changesetId}`);
 
-    commit('UPDATE_CHANGESET_ITEMS', {
+    commit(types.UPDATE_CHANGESET_ITEMS, {
       changesetId,
-      items
+      changesetItems
     });
   },
 
