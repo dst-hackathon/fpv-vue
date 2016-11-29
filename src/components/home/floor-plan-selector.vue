@@ -78,7 +78,6 @@ export default {
 
   methods: {
     reset(prop) {
-      console.log('reset', prop);
       this[prop] = null;
     },
 

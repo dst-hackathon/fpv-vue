@@ -61,7 +61,7 @@ import DetailPanel from './detail-panel';
 import DeskAssignmentPanel from './desk-assignment-panel';
 import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
-import { FETCH_DESK_ASSIGNMENTS, FETCH_CHANGESETS, FETCH_CHANGESET_ITEMS } from 'store/types';
+import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET } from 'store/types';
 
 export default {
 
@@ -93,7 +93,9 @@ export default {
     },
 
     changeset() {
-      if (!this.selectedPlan) return null;
+      if (!this.selectedPlan || !this.effectiveDate) {
+        return null;
+      }
 
       const changesets = this.selectedPlan.changesets;
 
@@ -117,26 +119,22 @@ export default {
         floorId
       });
     },
+  },
 
-    'selectedPlan.id'(planId) {
-      if (!planId) {
-        return;
+  created() {
+    this.$watch(
+      () => _.pick(this, 'selectedPlan', 'effectiveDate'),
+      (newValue, oldValue) => {
+        if (!this.selectedPlan || !this.effectiveDate || _.isEqual(newValue, oldValue)) {
+          return null;
+        }
+
+        this.$store.dispatch('FETCH_PLAN_CHANGESET', {
+          planId: this.selectedPlan.id,
+          effectiveDate: this.effectiveDate
+        });
       }
-
-      this.$store.dispatch(FETCH_CHANGESETS, {
-        planId
-      });
-    },
-
-    'changeset.id'(changesetId) {
-      if (!changesetId) {
-        return;
-      }
-
-      this.$store.dispatch(FETCH_CHANGESET_ITEMS, {
-        changesetId
-      });
-    }
+    );
   },
 
   methods: {

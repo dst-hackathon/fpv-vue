@@ -31,10 +31,12 @@ export default {
     });
   },
 
-  [types.UPDATE_PLAN_CHANGESET]: function(state, { planId, changesets }) {
+  [types.UPDATE_PLAN_CHANGESETS]: function(state, { planId, changesets }) {
     const plan = _.find(state.plans, { id: planId });
 
     Vue.set(plan, 'changesets', changesets);
+
+    return changesets;
   },
 
   [types.UPDATE_CHANGESET_ITEMS]: function(state, { changesetId, changesetItems }) {
@@ -45,6 +47,8 @@ export default {
       .value();
 
     Vue.set(changeset, 'changesetItems', changesetItems);
+
+    return changesetItems;
   },
 
   [types.CREATE_DESK]: function(state, { desk }) {

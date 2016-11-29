@@ -70,13 +70,16 @@ export default {
     });
   },
 
-  [types.FETCH_CHANGESETS]: async function({ commit }, { planId }) {
+  [types.FETCH_PLAN_CHANGESETS]: async function({ commit }, { planId }) {
     const { data: changesets } = await axios.get(`/api/changesets?planId=${planId}`);
 
-    commit(types.UPDATE_PLAN_CHANGESET, {
+    commit(types.UPDATE_PLAN_CHANGESETS, {
       planId,
       changesets
     });
+
+    // FIXME: return from state?
+    return changesets;
   },
 
   [types.FETCH_CHANGESET_ITEMS]: async function({ commit }, { changesetId }) {
@@ -86,6 +89,23 @@ export default {
       changesetId,
       changesetItems
     });
+
+    // FIXME: return from state?
+    return changesetItems;
+  },
+
+  [types.FETCH_PLAN_CHANGESET]: async function({ commit, state, dispatch }, { planId, effectiveDate }) {
+    const changesets = await dispatch(types.FETCH_PLAN_CHANGESETS, { planId });
+    const changeset = _.find(changesets, changeset => {
+      return moment(changeset.effectiveDate).isSame(effectiveDate);
+    });
+
+    if (changeset) {
+      await dispatch(types.FETCH_CHANGESET_ITEMS, { changesetId: changeset.id });
+
+      // FIXME: return from state?
+      return changeset;
+    }
   },
 
   [types.LOGIN]: function({ commit }, { username, password }) {
