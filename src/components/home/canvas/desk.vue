@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="desk" ref="desk">
     <div class="name" v-if="showEmployee && employee">
-      {{ employee.firstname }}
+      {{ employeeTag }}
     </div>
   </div>
 </template>
@@ -51,6 +51,10 @@ export default {
     employee() {
       return this.desk.employee;
     },
+
+    employeeTag() {
+      return this.employee.firstname || '';
+    }
   },
 
   watch: {
@@ -117,7 +121,7 @@ export default {
 
       // can't calculate from el as sometimes it will be in the memory
       // when we are on the different route.
-      const elWidth = this.employee.code.length * 8;
+      const elWidth = this.employeeTag.length * 9;
       const elHeight = 25;
 
       const { left: shapeLeft, top: shapeTop } = this.deskShape.getAbsolutePosition();
