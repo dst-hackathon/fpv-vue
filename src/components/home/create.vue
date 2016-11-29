@@ -28,8 +28,9 @@
       @deskDeselected="selectedDesk = null" />
 
     <detail-panel :width="detailWidth">
-      <!-- <desk-assignment-panel /> -->
-      <plan-activity :activities="activities" />
+      <desk-assignment-panel :desk="selectedDesk" v-show="selectedDesk" :style="{ 'margin-bottom': '20px' }" />
+
+      <plan-activity :activities="activities" v-show="activities.length" />
     </detail-panel>
   </div>
 </template>
@@ -129,8 +130,7 @@
 
 </script>
 
-<style lang="css"
-  scoped>
+<style lang="css" scoped>
   .toolbar {
     padding: 10px;
   }
