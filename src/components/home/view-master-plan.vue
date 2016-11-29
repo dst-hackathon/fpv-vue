@@ -21,7 +21,7 @@
       @deskDeselected="selectedDesk = null"/>
 
     <detail-panel :width="detailWidth" v-show="selectedDesk">
-      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" @discardChange="selectedDesk = null" />
+      <desk-assignment-panel :desk="selectedDesk" v-show="selectedDesk" />
     </detail-panel>
   </div>
 </template>
@@ -32,6 +32,7 @@ import DetailPanel from './detail-panel';
 import DeskDetailPanel from './desk-detail-panel';
 import Datepicker from 'vue-bulma-datepicker';
 import FloorPlanSelector from './floor-plan-selector';
+import DeskAssignmentPanel from './desk-assignment-panel';
 import { FETCH_DESK_ASSIGNMENTS } from 'store/types';
 
 export default {
@@ -49,6 +50,7 @@ export default {
     DeskDetailPanel,
     Datepicker,
     FloorPlanSelector,
+    DeskAssignmentPanel,
   },
 
   computed: {

@@ -5,7 +5,8 @@ import { UPDATE_DESK } from 'store/types';
 
 const defaultOptions = {
   fill: 'green',
-  opacity: 0.2
+  opacity: 0.2,
+  selectionBackgroundColor: 'rgba(0,0,255,0.5)'
 };
 
 export default fabric.util.createClass(fabric.Rect, {

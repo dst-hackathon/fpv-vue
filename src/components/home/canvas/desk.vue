@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="desk" :style="deskStyle">
+  <div class="desk" :style="deskStyle" @click="onClick">
     <div class="name" v-if="showOwner && owner">
       {{ ownerTag }}
     </div>
@@ -113,6 +113,12 @@ export default {
 
       this.deskStyle.left = `${left}px`;
       this.deskStyle.top = `${top}px`;
+    },
+
+    onClick() {
+      const canvas = this.deskShape.canvas;
+
+      canvas.setActiveObject(this.deskShape);
     }
   },
 
@@ -159,6 +165,7 @@ export default {
 <style>
   .desk {
     position: absolute;
+    cursor: pointer;
   }
 
   .name {

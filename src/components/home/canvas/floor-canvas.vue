@@ -48,16 +48,22 @@ export default {
   },
 
   watch: {
-    effectiveDesks() {
-      this.canvas.deactivateAll().renderAll();
+    effectiveDesks(effectiveDesks) {
+      const activeObject = this.canvas.getActiveObject() || {};
+      const activeEntityId = activeObject.entity && activeObject.entity.id;
+      const selectedDesk = _.find(effectiveDesks, { id: activeEntityId });
 
-      this.$emit('deskDeselected');
+      if (selectedDesk) {
+        this.$emit('deskSelected', { desk: selectedDesk });
+      }
     }
   },
 
   mounted() {
     this.canvas = new Canvas(this.$refs.canvas, {
-      uniScaleTransform: true
+      uniScaleTransform: true,
+      selection: false,
+      hoverCursor: this.readOnly ? 'pointer' : 'move'
     });
 
     this.$watch('floor', this.updateImage, {

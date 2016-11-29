@@ -53,12 +53,10 @@ export default {
 
   methods: {
     activate() {
-      this.canvas.selection = false;
       this.canvas.on(this.canvasEvents);
     },
 
     deactivate() {
-      this.canvas.selection = true;
       this.canvas.off(this.canvasEvents);
     },
 
