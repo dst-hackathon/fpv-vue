@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="title is-4">Activity</h3>
+    <h3 class="title is-4">Plan Activity</h3>
     <hr>
 
     <div v-for="activity in activities">

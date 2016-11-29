@@ -134,6 +134,14 @@ export default {
       ...this.position,
     });
 
+    if (this.showOwner) {
+      this.updateOwnerTag();
+
+      this.deskShape.on('moving', () => {
+        this.updateOwnerTag();
+      });
+    }
+
     this.deskShape.on('selected', () => {
       this.$emit('selected', {
         desk: this.desk,
@@ -146,14 +154,6 @@ export default {
       });
     });
 
-    if (this.showOwner) {
-      this.updateOwnerTag();
-
-      this.deskShape.on('moving', () => {
-        this.updateOwnerTag();
-      });
-    }
-
     this.$emit('created', { shape: this.deskShape });
   },
 
@@ -162,6 +162,7 @@ export default {
   },
 };
 </script>
+
 <style>
   .desk {
     position: absolute;
