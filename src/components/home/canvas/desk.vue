@@ -1,7 +1,7 @@
 <template lang="html">
-  <div class="desk" ref="desk">
-    <div class="name" v-if="showEmployee && employee">
-      {{ employeeTag }}
+  <div class="desk" :style="deskStyle">
+    <div class="name" v-if="showOwner && owner">
+      {{ ownerTag }}
     </div>
   </div>
 </template>
@@ -18,10 +18,18 @@ export default {
     desk: {
       default: {}
     },
-    showEmployee: {
+    showOwner: {
       type: Boolean
-    },
-    employee: Object
+    }
+  },
+
+  data() {
+    return {
+      deskStyle: {
+        top: 0,
+        left: 0
+      }
+    };
   },
 
   computed: {
@@ -48,12 +56,12 @@ export default {
       };
     },
 
-    employee() {
+    owner() {
       return this.desk.employee;
     },
 
-    employeeTag() {
-      return this.employee.firstname || '';
+    ownerTag() {
+      return this.owner.firstname || '';
     }
   },
 
@@ -72,56 +80,28 @@ export default {
       this.$emit('invalidated');
     },
 
+    // TODO: revise this
     desk: {
       deep: true,
       handler() {
         this.$nextTick(() => {
           this.deskShape.entity = this.desk;
 
-          this.updateEmployeeTag();
+          this.updateOwnerTag();
         });
       }
     },
   },
 
   methods: {
-    lockPosition() {
-      this.deskShape.lockMovementX = true;
-      this.deskShape.lockMovementY = true;
-    },
-
-    lockSize() {
-      this.deskShape.lockScalingX = true;
-      this.deskShape.lockScalingY = true;
-      this.deskShape.setControlsVisibility({
-         mt: false,
-         mb: false,
-         ml: false,
-         mr: false,
-         bl: false,
-         br: false,
-         tl: false,
-         tr: false,
-       });
-    },
-
-    lockRotation() {
-      this.deskShape.lockRotation = true;
-      this.deskShape.setControlsVisibility({
-         mtr: false,
-      });
-    },
-
-    updateEmployeeTag() {
-      if (!this.showEmployee || !this.employee) {
+    updateOwnerTag() {
+      if (!this.showOwner || !this.owner) {
         return;
       }
 
-      const deskEl = this.$refs.desk;
-
       // can't calculate from el as sometimes it will be in the memory
       // when we are on the different route.
-      const elWidth = this.employeeTag.length * 9;
+      const elWidth = this.ownerTag.length * 9;
       const elHeight = 25;
 
       const { left: shapeLeft, top: shapeTop } = this.deskShape.getAbsolutePosition();
@@ -131,8 +111,8 @@ export default {
       const left = shapeLeft + (shapeWidth / 2) - (elWidth / 2);
       const top = shapeTop + (shapeHeight / 2) - (elHeight / 2);
 
-      deskEl.style.left = `${left}px`;
-      deskEl.style.top = `${top}px`;
+      this.deskStyle.left = `${left}px`;
+      this.deskStyle.top = `${top}px`;
     }
   },
 
@@ -140,18 +120,13 @@ export default {
     this.deskShape = new DeskShape({
       entity: this.desk,
 
-      ...this.dimensions,
-      ...this.position
-    });
+      hasControls: !this.modificationLocked,
+      lockMovementX: this.modificationLocked,
+      lockMovementY: this.modificationLocked,
 
-    // var person = new fabric.Image.fromURL('/static/img/location.png', (img) => {
-    //   img.setLeft(this.position.left + this.dimensions.width/2 - 25);
-    //   img.setTop(this.position.top - this.dimensions.height/2);
-    //   img.setWidth(50);
-    //   img.setHeight(50);
-    //   var group = new fabric.Group([this.deskShape, img]);
-    //   this.$emit('created', { shape: group });
-    // });
+      ...this.dimensions,
+      ...this.position,
+    });
 
     this.deskShape.on('selected', () => {
       this.$emit('selected', {
@@ -165,29 +140,19 @@ export default {
       });
     });
 
-    if (this.showEmployee) {
+    if (this.showOwner) {
+      this.updateOwnerTag();
+
       this.deskShape.on('moving', () => {
-        this.updateEmployeeTag();
+        this.updateOwnerTag();
       });
     }
 
     this.$emit('created', { shape: this.deskShape });
-
-    if(this.modificationLocked) {
-      this.lockPosition();
-      this.lockSize();
-      this.lockRotation();
-    }
   },
 
   destroyed() {
     this.deskShape.remove();
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.updateEmployeeTag();
-    });
   },
 };
 </script>

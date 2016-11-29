@@ -9,7 +9,7 @@
         :desk="desk"
         :key="desk.id"
         :modificationLocked="readOnly"
-        :showEmployee="showEmployee"
+        :showOwner="showOwner"
         @invalidated="invalidate()"
         @created="deskCreated($event)"
         @selected="relayEvent('deskSelected', $event)"
@@ -30,7 +30,7 @@ export default {
     Desk
   },
 
-  props: ['readOnly', 'floor', 'showEmployee', 'changeset'],
+  props: ['readOnly', 'floor', 'showOwner', 'changeset'],
 
   data() {
     return {

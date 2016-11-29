@@ -16,7 +16,7 @@
     <floor-canvas
       :readOnly="true"
       :floor="selectedFloor"
-      :showEmployee="true"
+      :showOwner="true"
       @deskSelected="selectedDesk = $event.desk"
       @deskDeselected="selectedDesk = null"/>
 
