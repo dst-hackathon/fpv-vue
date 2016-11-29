@@ -47,6 +47,14 @@ export default {
     }
   },
 
+  watch: {
+    effectiveDesks() {
+      this.canvas.deactivateAll().renderAll();
+
+      this.$emit('deskDeselected');
+    }
+  },
+
   mounted() {
     this.canvas = new Canvas(this.$refs.canvas, {
       uniScaleTransform: true
@@ -118,8 +126,6 @@ export default {
 
 <style lang="scss" scoped>
   .canvas-wrapper {
-    // need to manually set the top margin
-    // height: calc(100vh - 110px);
     height: 100vh;
     max-height: 100%;
     overflow: auto;

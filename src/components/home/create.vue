@@ -27,7 +27,7 @@
       @deskSelected="selectedDesk = $event.desk"
       @deskDeselected="selectedDesk = null" />
 
-    <detail-panel :width="detailWidth">
+    <detail-panel :width="detailWidth" v-show="showInfo">
       <desk-assignment-panel :desk="selectedDesk" v-show="selectedDesk" :style="{ 'margin-bottom': '20px' }" />
 
       <plan-activity :activities="activities" v-show="activities.length" />
@@ -70,7 +70,7 @@
       style() {
         return {
           main: {
-            'margin-right': `${this.detailWidth}px`
+            'margin-right': this.showInfo ? `${this.detailWidth}px` : 0
           }
         };
       },
@@ -89,11 +89,23 @@
 
       activities() {
         return this.changeset && this.changeset.changesetItems || [];
+      },
+
+      showOwnerInfo() {
+        return this.selectedDesk;
+      },
+
+      showActivityInfo() {
+        return this.activities.length;
+      },
+
+      showInfo() {
+        return this.showOwnerInfo || this.showActivityInfo;
       }
     },
 
     watch: {
-      'selectedFloor.id' (floorId) {
+      'selectedFloor.id'(floorId) {
         if (!floorId) {
           return;
         }
