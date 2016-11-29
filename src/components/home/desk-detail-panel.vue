@@ -8,6 +8,13 @@
             v-on:blur="onBlurInput">
       </span>
     </p>
+    <div v-if="!computeFieldHidden('employeeImage') && employeeImage" >
+      <div class="media-center">
+        <figure class="image is-square">
+          <img class="circle" :src="employeeImage">
+        </figure>
+      </div>
+    </div>
     <p v-if="!computeFieldHidden('employeeId')" class="control">
       <label>Employee ID</label>
       <span>
@@ -36,6 +43,7 @@
       <button class="button is-primary" v-on:click="onSubmit">submit</button>
       <button class="button" v-on:click="onCancel">cancel</button>
     </p>
+
   </div>
 </template>
 
@@ -54,6 +62,7 @@ export default {
         employeeId: { mode: { editing: false } },
         firstName: { mode: { editing: false } },
         lastName: { mode: { editing: false } },
+        employeeImage: {mode: {editing: false}},
       },
     };
   },
@@ -62,13 +71,17 @@ export default {
       return this.desk ? this.desk.code : '';
     },
     employeeId() {
-      return ''; // FIXME
+      return (this.desk && this.desk.employee) ? this.desk.employee.code : '';
     },
     firstName() {
-      return ''; // FIXME
+      return (this.desk && this.desk.employee) ? this.desk.employee.firstname : '';
     },
     lastName() {
-      return ''; // FIXME
+      return (this.desk && this.desk.employee) ? this.desk.employee.lastname : '';
+    },
+    employeeImage(){
+      //data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA...
+      return (this.desk && this.desk.employee && this.desk.employee.image && this.desk.employee.imageContentType) ? 'data:'+this.desk.employee.imageContentType+';base64,'+this.desk.employee.image : '';
     },
     panelHidden() {
       return this.actualPanelOptions.hidden;
@@ -92,6 +105,7 @@ export default {
         employeeId: { hidden: false, readonly: false },
         firstName: { hidden: false, readonly: false },
         lastName: { hidden: false, readonly: false },
+        employeeImage: { hidden: false, readonly: false },
       };
       return _.merge(defaultOptions, this.fieldOptions);
     },
@@ -103,6 +117,7 @@ export default {
           employeeId: { hidden: false, readonly: false },
           firstName: { hidden: false, readonly: false },
           lastName: { hidden: false, readonly: false },
+          employeeImage: { hidden: false, readonly: false },
         }
       };
       return _.merge(defaultOptions, this.options);
@@ -172,5 +187,9 @@ export default {
     background: none;
     border: none;
     box-shadow: none;
+  }
+  img.circle {
+    padding: 5%;
+    border-radius: 50%;
   }
 </style>

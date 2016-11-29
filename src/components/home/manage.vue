@@ -73,6 +73,7 @@ export default {
         employeeId: { hidden: true },
         firstName: { hidden: true },
         lastName: { hidden: true },
+        employeeImage: { hidden: true },
       };
     },
 

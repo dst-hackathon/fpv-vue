@@ -21,7 +21,7 @@
       @deskDeselected="selectedDesk = null"/>
 
     <detail-panel :width="detailWidth" v-show="selectedDesk">
-      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" />
+      <desk-detail-panel :desk="selectedDesk" :fieldOptions="deskFieldOptions" @discardChange="selectedDesk = null" />
     </detail-panel>
   </div>
 </template>
@@ -74,6 +74,7 @@ export default {
         employeeId: { readonly: false },
         firstName: { readonly: true },
         lastName: { readonly: true },
+        employeeImage: { readonly: true },
       };
     },
   },
