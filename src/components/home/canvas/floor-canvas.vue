@@ -85,9 +85,9 @@ export default {
       }
 
       // const { image, imageContentType } = await this.getImageUrl({ floorId });
-      const imageUrl = await this.getImageUrl({ floorId });
+      //const imageUrl = await this.getImageUrl({ floorId });
 
-      this.canvas.setBackgroundImage(imageUrl, (img) => {
+      this.canvas.setBackgroundImage(`/api/floors/${floorId}/image`, (img) => {
         if (img) {
           this.canvas.setDimensions({
             width: img.width,

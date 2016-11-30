@@ -3,7 +3,7 @@
     <p v-if="!computeFieldHidden('deskCode')" class="control">
       <label>Desk Code</label>
       <span>
-        <input class="input" name="deskCode" :value="deskCode" :readonly="computeInputReadonly('deskCode')"
+        <input class="input" name="deskCode" :value="localDeskCode" :readonly="computeInputReadonly('deskCode')"
             v-on:click="onClickInput"
             v-on:blur="onBlurInput">
       </span>
@@ -39,6 +39,9 @@
             v-on:blur="onBlurInput">
       </span>
     </p>
+    <p v-if="dataModified" class="control">
+      <span> {{status}} </span>
+    </p>
     <p v-if="!panelReadonly" class="control">
       <button class="button is-primary" v-on:click="onSubmit">submit</button>
       <button class="button" v-on:click="onCancel">cancel</button>
@@ -64,6 +67,9 @@ export default {
         lastName: { mode: { editing: false } },
         employeeImage: {mode: {editing: false}},
       },
+      localDeskCode: "",
+      dataModified: false,
+      status: "",
     };
   },
   computed: {
@@ -136,13 +142,19 @@ export default {
     },
     onBlurInput: function (event) {
       var fieldName = this.getFieldName(event.target);
+      if(fieldName=="deskCode")
+      {
+        this.dataModified = true;
+        this['localDeskCode'] = event.target.value;
+        this.status = "data is modified, please click submit to save the change";
+      } 
       this.setEditingMode(fieldName, false);
     },
     saveDeskInfo: function () {
       var updatedDesk = _.assignIn({}, this.desk, {
-        code: this.deskCode
+        code: this.localDeskCode
       });
-
+      this.status = "updating desk...";
       this.$store.dispatch(types.UPDATE_DESK, { desk: updatedDesk });
     },
     discardChange: function() {
@@ -173,6 +185,16 @@ export default {
       return this.getActualFieldOption(fieldName).readonly || !this.getFieldMode(fieldName).editing;
     },
   },
+  watch: {
+    desk: function(){
+      if(this.desk)
+      {
+        this.dataModified = false;
+        this.localDeskCode = this.desk.code;
+        this.status = "";
+      }
+    }
+  }
 };
 </script>
 
