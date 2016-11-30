@@ -5,14 +5,14 @@
     <figure class="image-wrapper">
       <img class="owner-image" :src="ownerImage">
 
-      <div v-if="isEditingOwner">
-        <p class="owner-query title is-4" placeholder="Enter name ..." contenteditable="true"></p>
+      <div v-if="isEditing">
+        <p class="owner-query title is-4" placeholder="Enter name ..." contenteditable="true" @input="searchOwners"></p>
         <footer class="card-footer owner-action">
-          <span class="card-footer-item" v-show="selectedOwner">
+          <span class="card-footer-item" v-if="selectingOwner">
             <a>Save</a>
           </span>
-          <span class="card-footer-item">
-            <a class="remove">Cancel</a>
+          <span class="card-footer-item" @click="reset">
+            <a class="is-danger">Cancel</a>
           </span>
         </footer>
       </div>
@@ -27,8 +27,8 @@
           <span class="card-footer-item" @click="editOwner">
             <a>{{ owner ? 'Change' : 'Assign Owner' }}</a>
           </span>
-          <span class="card-footer-item" v-show="owner" @click="removeOwner">
-            <a class="remove">Remove</a>
+          <span class="card-footer-item" v-if="owner" @click="removeOwner">
+            <a class="is-danger">Remove</a>
           </span>
         </footer>
       </div>
@@ -38,19 +38,27 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   export default {
     props: ['desk', 'editable'],
 
     data() {
       return {
-        isEditingOwner: false,
-        selectedOwner: null,
+        isEditing: false,
+        editingOwner: null,
+        selectingOwner: null,
+        resultingOwners: []
       };
     },
 
     computed: {
       owner() {
-        return this.desk.employee;
+        if (this.isEditing) {
+          return this.selectingOwner;
+        } else {
+          return this.desk && this.desk.employee;
+        }
       },
 
       ownerImage() {
@@ -58,15 +66,13 @@
           return 'http://placehold.it/256x341';
         }
 
-        const { image, imageContentType } = this.owner;
-
-        return `data:${imageContentType};base64,${image}`;
+        return `/api/employees/${this.owner.id}/image`;
       }
     },
 
     watch: {
       desk() {
-        this.isEditingOwner = false;
+        this.reset();
       }
     },
 
@@ -78,11 +84,28 @@
       },
 
       editOwner() {
-        this.isEditingOwner = true;
+        this.isEditing = true;
+        this.editingOwner = this.owner;
 
         this.$nextTick().then(() => {
           this.$el.querySelector('.owner-query').focus();
         });
+      },
+
+      reset() {
+        this.isEditing = false;
+        this.editingOwner = null;
+        this.selectingOwner = null;
+      },
+
+      searchOwners({ target }) {
+        this.resultingOwners = [];
+
+        const query = target.innerHTML || '';
+        if (query.length >= 3) {
+          axios.get(`/api/employees/search?name=${query}`)
+            .then(({ data: owners }) => this.resultingOwners = owners);
+        }
       }
     }
   };
@@ -110,7 +133,7 @@
     margin-top: 3px;
   }
 
-  .owner-action .remove:not(:hover) {
+  .owner-action .is-danger:not(:hover) {
     color: $red;
   }
 

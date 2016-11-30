@@ -29,9 +29,7 @@
 
     methods: {
       employeeImage(employee) {
-        const { image, imageContentType } = employee;
-
-        return `data:${imageContentType};base64,${image}`;
+        return `/api/employees/${employee.id}/image`;
       }
     }
   };

@@ -84,9 +84,6 @@ export default {
         return;
       }
 
-      // const { image, imageContentType } = await this.getImageUrl({ floorId });
-      //const imageUrl = await this.getImageUrl({ floorId });
-
       this.canvas.setBackgroundImage(`/api/floors/${floorId}/image`, (img) => {
         if (img) {
           this.canvas.setDimensions({
@@ -115,12 +112,6 @@ export default {
       const boundingRect = wrapper.getBoundingClientRect();
 
       this.height = `${boundingRect.height - boundingRect.top}px`;
-    },
-
-    getImageUrl({ floorId }) {
-      // TODO: create api layer?
-      return axios.get(`/api/floors/${floorId}/image`)
-        .then(({ data: { image, imageContentType }}) => `data:${imageContentType};base64,${image}`);
     },
 
     relayEvent(eventName, e) {

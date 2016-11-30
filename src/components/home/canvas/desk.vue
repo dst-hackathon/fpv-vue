@@ -61,7 +61,7 @@ export default {
     },
 
     ownerTag() {
-      return this.owner.firstname || '';
+      return this.owner && this.owner.firstname || '';
     }
   },
 
