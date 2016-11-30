@@ -144,4 +144,15 @@ export default {
         commit(types.DELETE_DESK, { desk });
       });
   },
+
+  'REMOVE_DESK_OWNER': function({ commit }, { changeset, desk }) {
+    commit('CREATE_CHANGESET_ITEM', {
+      changesetId: changeset.id,
+      changesetItem: {
+        employee: desk.employee,
+        fromDesk: desk,
+        toDesk: null
+      }
+    });
+  }
 };

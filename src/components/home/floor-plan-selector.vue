@@ -8,7 +8,7 @@
     valueProp="id"
     textProp="name"
     width="120px"
-    @input="reset('buildingId') || emitSelected()" />
+    @input="reset('buildingId')" />
 
   <dropdown
     v-model.number="buildingId"
@@ -18,7 +18,7 @@
     valueProp="id"
     textProp="name"
     width="150px"
-    @input="reset('floorId') || emitSelected()" />
+    @input="reset('floorId')" />
 
   <dropdown
     v-model.number="floorId"
@@ -27,8 +27,7 @@
     className="floor"
     valueProp="id"
     textProp="name"
-    width="80px"
-    @input="emitSelected()" />
+    width="80px" />
 
 </div>
 </template>
@@ -74,6 +73,24 @@ export default {
 
       return _.filter(floors, [ 'building.id', this.buildingId ]);
     },
+
+    plan() {
+      return _.find(this.plans, { id: this.planId });
+    },
+
+    building() {
+      return _.find(this.buildings, { id: this.buildingId });
+    },
+
+    floor() {
+      return _.find(this.floors, { id: this.floorId });
+    }
+  },
+
+  watch: {
+    plan: 'emitSelected',
+    building: 'emitSelected',
+    floor: 'emitSelected'
   },
 
   methods: {
@@ -83,9 +100,9 @@ export default {
 
     emitSelected() {
       this.$emit('selected', {
-        plan: _.find(this.plans, { id: this.planId }),
-        building: _.find(this.buildings, { id: this.buildingId }),
-        floor: _.find(this.floors, { id: this.floorId })
+        plan: this.plan,
+        building: this.building,
+        floor: this.floor
       });
     }
   },

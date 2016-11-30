@@ -28,9 +28,10 @@
       @deskDeselected="selectedDesk = null" />
 
     <detail-panel :width="detailWidth" v-show="showInfo">
-      <desk-assignment-panel :desk="selectedDesk" v-show="selectedDesk" :style="{ 'margin-bottom': '20px' }" />
+      <desk-assignment-panel :desk="selectedDesk" v-show="showOwnerInfo" :style="{ 'margin-bottom': '20px' }" :editable="changeset"
+        @removeOwner="removeDeskOwner" />
 
-      <plan-activity :activities="activities" v-show="activities.length" />
+      <plan-activity :activities="activities" v-show="!showOwnerInfo && showActivityInfo" />
     </detail-panel>
   </div>
 </template>
@@ -118,7 +119,10 @@
 
     created() {
       this.$watch(
-        () => _.pick(this, 'selectedPlan', 'effectiveDate'),
+        () => ({
+          planId: this.selectedPlan && this.selectedPlan.id,
+          effectiveDate: this.effectiveDate
+        }),
         (newValue, oldValue) => {
           if (!this.selectedPlan || !this.effectiveDate || _.isEqual(newValue, oldValue)) {
             return null;
@@ -136,6 +140,13 @@
       onFloorPlanSelected({ plan, floor }) {
         this.selectedPlan = plan;
         this.selectedFloor = floor;
+      },
+
+      removeDeskOwner({ desk }) {
+        this.$store.dispatch('REMOVE_DESK_OWNER', {
+          changeset: this.changeset,
+          desk
+         });
       }
     },
   };

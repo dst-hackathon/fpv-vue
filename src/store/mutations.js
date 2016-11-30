@@ -35,8 +35,6 @@ export default {
     const plan = _.find(state.plans, { id: planId });
 
     Vue.set(plan, 'changesets', changesets);
-
-    return changesets;
   },
 
   [types.UPDATE_CHANGESET_ITEMS]: function(state, { changesetId, changesetItems }) {
@@ -47,8 +45,6 @@ export default {
       .value();
 
     Vue.set(changeset, 'changesetItems', changesetItems);
-
-    return changesetItems;
   },
 
   [types.CREATE_DESK]: function(state, { desk }) {
@@ -84,4 +80,16 @@ export default {
 
     floor.desks = _.reject(floor.desks, { id: desk.id });
   },
+
+  'CREATE_CHANGESET_ITEM': function(state, { changesetId, changesetItem }) {
+    const changeset = _
+      .chain(state.plans)
+      .flatMap('changesets')
+      .find({ id: changesetId })
+      .value();
+
+    const { changesetItems } = changeset;
+
+    changesetItems.push(changesetItem);
+  }
 };
