@@ -145,7 +145,7 @@ export default {
       });
   },
 
-  'REMOVE_DESK_OWNER': async function({ commit }, { changeset, fromDesk }) {
+  [types.REMOVE_DESK_OWNER]: async function({ commit }, { changeset, fromDesk }) {
     const { data: changesetItem } = await axios.post('/api/changeset-items', {
       changeset: changeset,
       employee: fromDesk.employee,
@@ -153,13 +153,13 @@ export default {
       toDesk: null
     });
 
-    commit('CREATE_CHANGESET_ITEM', { changesetItem });
+    commit(types.CREATE_CHANGESET_ITEM, { changesetItem });
   },
 
-  'ASSIGN_DESK_OWNER': async function({ commit, dispatch }, { changeset, owner, fromDesk, toDesk }) {
+  [types.ASSIGN_DESK_OWNER]: async function({ commit, dispatch }, { changeset, owner, fromDesk, toDesk }) {
 
     if (toDesk && toDesk.employee) {
-      await dispatch('REMOVE_DESK_OWNER', {
+      await dispatch(types.REMOVE_DESK_OWNER, {
         changeset,
         fromDesk: toDesk
       });
@@ -172,6 +172,6 @@ export default {
       toDesk: toDesk
     });
 
-    commit('CREATE_CHANGESET_ITEM', { changesetItem });
+    commit(types.CREATE_CHANGESET_ITEM, { changesetItem });
   }
 };

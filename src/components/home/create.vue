@@ -45,7 +45,7 @@
   import Datepicker from 'vue-bulma-datepicker';
   import FloorPlanSelector from './floor-plan-selector';
   import PlanActivity from './plan-activity';
-  import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET } from 'store/types';
+  import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
   import axios from 'axios';
 
   export default {
@@ -145,7 +145,7 @@
       },
 
       removeDeskOwner({ desk }) {
-        this.$store.dispatch('REMOVE_DESK_OWNER', {
+        this.$store.dispatch(REMOVE_DESK_OWNER, {
           changeset: this.changeset,
           fromDesk: desk,
          });
@@ -155,7 +155,7 @@
         const recentOwnerActivity = _.findLast(this.activities, [ 'employee.id', owner.id ]);
         const ownerCurrentDesk = recentOwnerActivity ? recentOwnerActivity.toDesk : await this.getCurrentDesk({ owner });
 
-        this.$store.dispatch('ASSIGN_DESK_OWNER', {
+        this.$store.dispatch(ASSIGN_DESK_OWNER, {
           changeset: this.changeset,
 
           owner,
