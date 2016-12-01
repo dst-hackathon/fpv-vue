@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import api from 'api';
 
   export default {
     props: ['desk', 'editable'],
@@ -98,9 +98,7 @@
 
       query: async function(query) {
         if (query.length >= 2) {
-          const { data: owners } = await axios.get(`/api/employees/search?name=${query}`);
-
-          this.resultingOwners = owners || [];
+          this.resultingOwners = await api.employees.search({ query }) || [];
         } else {
           this.resultingOwners = [];
         }

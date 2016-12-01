@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import _ from 'lodash';
 import Canvas from 'components/fabric/canvas.fabric';
 import resolveFutureDesks from 'components/helpers/resolve-future-desks';
