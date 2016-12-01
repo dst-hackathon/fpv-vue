@@ -105,6 +105,22 @@ export default {
 
       // FIXME: return from state?
       return changeset;
+    } else {
+      const newChangeset = {
+        effectiveDate: effectiveDate,
+        status: 'IN_PROGRESS',
+        plan: {
+          id: planId
+        },
+        changesetItems: [],
+
+        get isNew() { return !this.id; }
+      };
+
+      commit(types.UPDATE_PLAN_CHANGESETS, {
+        planId,
+        changesets: changesets.concat(newChangeset)
+      });
     }
   },
 
@@ -145,15 +161,30 @@ export default {
       });
   },
 
-  [types.REMOVE_DESK_OWNER]: async function({ commit }, { changeset, fromDesk }) {
-    const { data: changesetItem } = await axios.post('/api/changeset-items', {
-      changeset: changeset,
-      employee: fromDesk.employee,
-      fromDesk: fromDesk,
-      toDesk: null
-    });
+  [types.CREATE_CHANGESET_ITEM]: async function({ commit }, { changesetItem }) {
+    const { changeset } = changesetItem;
 
-    commit(types.CREATE_CHANGESET_ITEM, { changesetItem });
+    if (changeset.isNew) {
+      const { data: { id }} = await axios.post('/api/changesets', changeset);
+      changeset.id = id;
+    }
+
+    const { data: createdChangesetItem } = await axios.post('/api/changeset-items', changesetItem);
+
+    commit(types.CREATE_CHANGESET_ITEM, {
+      changesetItem: createdChangesetItem
+    });
+  },
+
+  [types.REMOVE_DESK_OWNER]: async function({ commit, dispatch }, { changeset, fromDesk }) {
+    dispatch(types.CREATE_CHANGESET_ITEM, {
+      changesetItem: {
+        changeset,
+        employee: fromDesk.employee,
+        fromDesk: fromDesk,
+        toDesk: null
+      }
+    });
   },
 
   [types.ASSIGN_DESK_OWNER]: async function({ commit, dispatch }, { changeset, owner, fromDesk, toDesk }) {
@@ -165,13 +196,13 @@ export default {
       });
     }
 
-    const { data: changesetItem } = await axios.post('/api/changeset-items', {
-      changeset: changeset,
-      employee: owner,
-      fromDesk: fromDesk,
-      toDesk: toDesk
+    dispatch(types.CREATE_CHANGESET_ITEM, {
+      changesetItem: {
+        changeset,
+        employee: owner,
+        fromDesk: fromDesk,
+        toDesk: toDesk
+      }
     });
-
-    commit(types.CREATE_CHANGESET_ITEM, { changesetItem });
   }
 };
