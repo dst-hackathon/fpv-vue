@@ -28,7 +28,7 @@
       @deskDeselected="selectedDesk = null" />
 
     <detail-panel :width="detailWidth" v-show="showInfo">
-      <desk-assignment-panel :desk="selectedDesk" v-show="showOwnerInfo" :style="{ 'margin-bottom': '20px' }" :editable="changeset"
+      <desk-assignment-panel :desk="selectedDesk" v-show="showOwnerInfo" :style="{ 'margin-bottom': '20px' }" :editable="effectiveDateIsFuture"
         @removeOwner="removeDeskOwner"
         @updateOwner="updateDeskOwner" />
 
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import moment from 'moment';
   import FloorCanvas from './canvas/floor-canvas';
   import DetailPanel from './detail-panel';
@@ -107,6 +106,12 @@
 
       showInfo() {
         return this.showOwnerInfo || this.showActivityInfo;
+      },
+
+      effectiveDateIsFuture() {
+        const now = moment();
+
+        return moment(this.effectiveDate).isAfter(now);
       }
     },
 

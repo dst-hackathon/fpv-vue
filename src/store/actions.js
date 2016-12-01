@@ -1,8 +1,9 @@
 import defaultAxios from 'axios';
-import qs from 'qs';
 import _ from 'lodash';
 import moment from 'moment';
+import uuid from 'uuid/v1';
 import * as types from './types';
+import api from 'api';
 
 const PAGE_SIZE = '10000';
 const axios = defaultAxios.create({
@@ -14,10 +15,10 @@ const axios = defaultAxios.create({
 export default {
 
   [types.FETCH_ALL]: async function({ commit }) {
-    let { data: plans } = await axios.get(`/api/plans`);
-    let { data: buildings } = await axios.get(`/api/buildings`);
-    let { data: floors } = await axios.get(`/api/floors`);
-    let { data: desks } = await axios.get(`/api/desks`);
+    let plans = await api.plans.findAll();
+    let buildings = await api.buildings.findAll();
+    let floors = await api.floors.findAll();
+    let desks = await api.desks.findAll();
 
     // construct nested plans and flatten parent for child resource
     desks = desks.map(desk => {
@@ -57,21 +58,17 @@ export default {
     commit(types.UPDATE_PLANS, { plans });
   },
 
-  [types.FETCH_DESK_ASSIGNMENTS]: function({ commit }, { floorId }) {
-    axios.get('/api/desk-assignments', {
-      params: {
-        floorId
-      }
-    }).then(({ data: assignments }) => {
-      commit(types.UPDATE_DESK_ASSIGNMENTS, {
-        floorId,
-        assignments
-      });
+  [types.FETCH_DESK_ASSIGNMENTS]: async function({ commit }, { floorId }) {
+    const assignments = await api.deskAssignments.find({ floorId });
+
+    commit(types.UPDATE_DESK_ASSIGNMENTS, {
+      floorId,
+      assignments
     });
   },
 
   [types.FETCH_PLAN_CHANGESETS]: async function({ commit }, { planId }) {
-    const { data: changesets } = await axios.get(`/api/changesets?planId=${planId}`);
+    const changesets = await api.changesets.find({ planId });
 
     commit(types.UPDATE_PLAN_CHANGESETS, {
       planId,
@@ -83,7 +80,7 @@ export default {
   },
 
   [types.FETCH_CHANGESET_ITEMS]: async function({ commit }, { changesetId }) {
-    const { data: changesetItems } = await axios.get(`/api/changeset-items?changesetId=${changesetId}`);
+    const changesetItems = await api.changesetItems.find({ changesetId });
 
     commit(types.UPDATE_CHANGESET_ITEMS, {
       changesetId,
@@ -105,7 +102,8 @@ export default {
 
       // FIXME: return from state?
       return changeset;
-    } else {
+    }
+    else {
       const newChangeset = {
         effectiveDate: effectiveDate,
         status: 'IN_PROGRESS',
@@ -113,8 +111,8 @@ export default {
           id: planId
         },
         changesetItems: [],
-
-        get isNew() { return !this.id; }
+        id: uuid(),
+        isNew: true,
       };
 
       commit(types.UPDATE_PLAN_CHANGESETS, {
@@ -124,55 +122,59 @@ export default {
     }
   },
 
-  [types.LOGIN]: function({ commit }, { username, password }) {
-    return axios.post('/api/authentication?d='+ Date.now(), qs.stringify({
-      'j_username': username,
-      'j_password': password,
-    })).then( () => {
-      commit(types.LOGIN);
+  [types.LOGIN]: async function({ commit }, { username, password }) {
+    await api.sessions.authenticate({ username, password });
+
+    commit(types.LOGIN);
+  },
+
+  [types.GET_CURRENT_ACCOUNT]: async function({ commit }) {
+    commit(types.GET_CURRENT_ACCOUNT, {
+      user: await api.accounts.getCurrent()
     });
   },
 
-  [types.GET_CURRENT_ACCOUNT]: function({ commit }) {
-    return axios.get('/api/account?d='+ Date.now()
-    ).then ( ({data: user}) => {
-      commit(types.GET_CURRENT_ACCOUNT, { 'user': user });
+  [types.CREATE_DESK]: async function({ commit }, { desk }) {
+    commit(types.CREATE_DESK, {
+      desk: await api.desks.create({ desk })
     });
   },
 
-  [types.CREATE_DESK]: function({ commit }, { desk }) {
-    axios.post('/api/desks', desk)
-      .then(({ data: desk }) => {
-        commit(types.CREATE_DESK, { desk });
-      });
+  [types.UPDATE_DESK]: async function({ commit }, { desk }) {
+    commit(types.UPDATE_DESK, {
+      desk: await api.desks.update({ desk })
+    });
   },
 
-  [types.UPDATE_DESK]: function({ commit }, { desk }) {
-    axios.put('/api/desks', desk)
-      .then(({ data: desk }) => {
-        commit(types.UPDATE_DESK, { desk });
-      });
+  [types.DELETE_DESK]: async function({ commit }, { desk }) {
+    await api.desks.delete({ desk });
+
+    commit(types.DELETE_DESK, { desk });
   },
 
-  [types.DELETE_DESK]: function({ commit }, { desk }) {
-    return axios.delete(`/api/desks/${desk.id}`)
-      .then (() => {
-        commit(types.DELETE_DESK, { desk });
-      });
-  },
-
-  [types.CREATE_CHANGESET_ITEM]: async function({ commit }, { changesetItem }) {
-    const { changeset } = changesetItem;
+  [types.CREATE_CHANGESET_ITEM]: async function({ state, commit }, { changesetItem }) {
+    let { changeset } = changesetItem;
 
     if (changeset.isNew) {
-      const { data: { id }} = await axios.post('/api/changesets', changeset);
-      changeset.id = id;
+      const created = await api.changesets.create({
+        changeset: _.omit(changeset, ['id', 'isNew'])
+      });
+
+      commit(types.REPLACE_PLAN_CHANGESET, {
+        changeset,
+        withChangeset: {
+          ...created,
+          changesetItems: []
+        }
+      });
+
+      changesetItem.changeset = created;
     }
 
-    const { data: createdChangesetItem } = await axios.post('/api/changeset-items', changesetItem);
+    const created = await api.changesetItems.create({ changesetItem });
 
     commit(types.CREATE_CHANGESET_ITEM, {
-      changesetItem: createdChangesetItem
+      changesetItem: changesetItem
     });
   },
 

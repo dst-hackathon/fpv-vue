@@ -37,6 +37,18 @@ export default {
     Vue.set(plan, 'changesets', changesets);
   },
 
+  [types.REPLACE_PLAN_CHANGESET]: function(state, { changeset, withChangeset }) {
+    const plan = _.find(state.plans, { id: changeset.plan.id });
+
+    plan.changesets = plan.changesets.map(cs => {
+      if (cs.id === changeset.id) {
+        return withChangeset;
+      } else {
+        return cs;
+      }
+    });
+  },
+
   [types.UPDATE_CHANGESET_ITEMS]: function(state, { changesetId, changesetItems }) {
     const changeset = _
       .chain(state.plans)
@@ -88,8 +100,8 @@ export default {
       .find({ id: changesetItem.changeset.id })
       .value();
 
-    const { changesetItems } = changeset;
+    const items = changeset.changesetItems || [];
 
-    changesetItems.push(changesetItem);
+    Vue.set(changeset, 'changesetItems', items.concat(changesetItem));
   }
 };
