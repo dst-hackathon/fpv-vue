@@ -81,11 +81,11 @@ export default {
     floor.desks = _.reject(floor.desks, { id: desk.id });
   },
 
-  'CREATE_CHANGESET_ITEM': function(state, { changesetId, changesetItem }) {
+  'CREATE_CHANGESET_ITEM': function(state, { changesetItem }) {
     const changeset = _
       .chain(state.plans)
       .flatMap('changesets')
-      .find({ id: changesetId })
+      .find({ id: changesetItem.changeset.id })
       .value();
 
     const { changesetItems } = changeset;

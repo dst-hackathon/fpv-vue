@@ -46,6 +46,7 @@
   import FloorPlanSelector from './floor-plan-selector';
   import PlanActivity from './plan-activity';
   import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET } from 'store/types';
+  import axios from 'axios';
 
   export default {
 
@@ -150,18 +151,17 @@
          });
       },
 
-      updateDeskOwner: async function({ desk, owner }) {
-        // TODO: WIP
-        // const currentDesk = await this.getCurrentDesk({ owner });
-        // const recentActivity = _.findLast(this.activities, [ 'toDesk.employee', owner.id ]);
-        // const fromDesk = recentActivity && recentActivity.desk || currentDesk;
-        //
-        // this.$store.dispatch('UPDATE_DESK_OWNER', {
-        //   changeset: this.changeset,
-        //   owner,
-        //   fromDesk,
-        //   toDesk: desk,
-        //  });
+      updateDeskOwner: async function({ desk: targetDesk, owner }) {
+        const recentOwnerActivity = _.findLast(this.activities, [ 'employee.id', owner.id ]);
+        const ownerCurrentDesk = recentOwnerActivity && recentOwnerActivity.toDesk || await this.getCurrentDesk({ owner });
+
+        this.$store.dispatch('ASSIGN_DESK_OWNER', {
+          changeset: this.changeset,
+
+          owner,
+          fromDesk: ownerCurrentDesk,
+          toDesk: targetDesk,
+         });
       },
 
       getCurrentDesk: function({ owner }) {
@@ -170,7 +170,7 @@
             employeeId: owner.id,
             planId: this.selectedPlan.id
           }
-        }).then(({ data: desk }) => desk);
+        }).then(({ data: desk }) => desk || null);
       }
     },
   };
