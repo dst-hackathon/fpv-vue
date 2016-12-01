@@ -48,6 +48,7 @@
   import PlanActivity from './plan-activity';
   import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
   import compactChangeset from 'components/helpers/compact-changeset';
+  import api from 'api';
 
   export default {
 
@@ -155,7 +156,9 @@
 
       updateDeskOwner: async function({ desk: targetDesk, owner }) {
         const recentOwnerActivity = _.findLast(this.activities, [ 'employee.id', owner.id ]);
-        const ownerCurrentDesk = recentOwnerActivity ? recentOwnerActivity.toDesk : await this.getCurrentDesk({ owner });
+        const ownerCurrentDesk = recentOwnerActivity
+          ? recentOwnerActivity.toDesk
+          : await this.findCurrentDesk({ owner });
 
         this.$store.dispatch(ASSIGN_DESK_OWNER, {
           changeset: this.changeset,
@@ -166,13 +169,11 @@
          });
       },
 
-      getCurrentDesk: function({ owner }) {
-        return axios.get('/api/desk-assignments/search/desk', {
-          params: {
-            employeeId: owner.id,
-            planId: this.selectedPlan.id
-          }
-        }).then(({ data: desk }) => desk || null);
+      findCurrentDesk: async function({ owner }) {
+        return await api.desks.findOne({
+          employeeId: owner.id,
+          planId: this.selectedPlan.id
+        });
       }
     },
   };
