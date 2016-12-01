@@ -145,13 +145,23 @@ export default {
       });
   },
 
-  'REMOVE_DESK_OWNER': function({ commit }, { changeset, desk }) {
+  'REMOVE_DESK_OWNER': function({ commit }, { changeset, fromDesk }) {
     commit('CREATE_CHANGESET_ITEM', {
       changesetId: changeset.id,
       changesetItem: {
         employee: desk.employee,
-        fromDesk: desk,
+        fromDesk,
         toDesk: null
+      }
+    });
+  },
+
+  'UPDATE_DESK_OWNER': function({ commit }, { changeset, toDesk, owner }) {
+    commit('CREATE_CHANGESET_ITEM', {
+      changesetId: changeset.id,
+      changesetItem: {
+        employee: owner,
+        toDesk
       }
     });
   }

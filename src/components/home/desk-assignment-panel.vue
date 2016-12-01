@@ -6,9 +6,12 @@
       <img class="owner-image" :src="ownerImage">
 
       <div v-if="isEditing">
-        <p class="owner-query title is-4" placeholder="Enter name ..." contenteditable="true" @input="searchOwners"></p>
+        <p class="owner-query title is-4" placeholder="Enter name ..." contenteditable="true"
+          @input="({ target }) => query = target.innerHTML"
+          @focus="setQuerySelection">
+        </p>
         <footer class="card-footer owner-action">
-          <span class="card-footer-item" v-if="selectingOwner">
+          <span class="card-footer-item" v-if="selectingOwner" @click="save">
             <a>Save</a>
           </span>
           <span class="card-footer-item" @click="reset">
@@ -32,8 +35,21 @@
           </span>
         </footer>
       </div>
-
     </figure>
+
+    <div class="search-result" v-show="resultingOwners.length > 0">
+      <div class="menu">
+        <p class="menu-label">Search Result</p>
+      </div>
+      <ul class="menu-list">
+        <li v-for="result in resultingOwners" @click="selectOwner(result)">
+          <a>
+            {{ result.firstname }} {{ result.lastname }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </template>
 
@@ -48,7 +64,8 @@
         isEditing: false,
         editingOwner: null,
         selectingOwner: null,
-        resultingOwners: []
+        resultingOwners: [],
+        query: ''
       };
     },
 
@@ -67,16 +84,37 @@
         }
 
         return `/api/employees/${this.owner.id}/image`;
+      },
+
+      selectingOwnerId() {
+        return this.selectingOwner && this.selectingOwner.id;
       }
     },
 
     watch: {
       desk() {
         this.reset();
+      },
+
+      query: async function(query) {
+        if (query.length >= 2) {
+          const { data: owners } = await axios.get(`/api/employees/search?name=${query}`);
+
+          this.resultingOwners = owners || [];
+        } else {
+          this.resultingOwners = [];
+        }
       }
     },
 
     methods: {
+      updateOwner() {
+        this.$emit('updateOwner', {
+          desk: this.desk,
+          owner: this.owner
+        });
+      },
+
       removeOwner() {
         this.$emit('removeOwner', {
           desk: this.desk
@@ -87,32 +125,59 @@
         this.isEditing = true;
         this.editingOwner = this.owner;
 
-        this.$nextTick().then(() => {
-          this.$el.querySelector('.owner-query').focus();
-        });
+        this.$nextTick().then(this.focusQuery);
       },
 
       reset() {
         this.isEditing = false;
         this.editingOwner = null;
         this.selectingOwner = null;
+        this.resultingOwners = [];
+        this.query = '';
       },
 
-      searchOwners({ target }) {
+      selectOwner(owner) {
+        this.selectingOwner = owner;
         this.resultingOwners = [];
 
-        const query = target.innerHTML || '';
-        if (query.length >= 3) {
-          axios.get(`/api/employees/search?name=${query}`)
-            .then(({ data: owners }) => this.resultingOwners = owners);
-        }
+        const queryEl = this.getQueryEl();
+        queryEl.innerHTML = `${owner.firstname} ${owner.lastname}`;
+
+      },
+
+      getQueryEl() {
+        return this.$el.querySelector('.owner-query');
+      },
+
+      focusQuery() {
+        const queryEl = this.getQueryEl();
+
+        queryEl.focus();
+      },
+
+      setQuerySelection({ target }) {
+        setTimeout(() => {
+          const range = document.createRange();
+          range.selectNodeContents(target);
+
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }, 0);
+      },
+
+      save() {
+        this.updateOwner();
+
+        // this.reset();
       }
-    }
+    },
   };
 </script>
 
 <style lang="scss" scoped>
   @import '~bulma/sass/utilities/variables';
+
   .image-wrapper {
     text-align: center;
     border: 1px solid $grey-lighter;
@@ -156,5 +221,14 @@
     margin-left: 10px;
     margin-right: 10px;
     outline: none;
+  }
+
+  .search-result {
+    margin-top: 10px;
+
+    .menu-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
   }
 </style>

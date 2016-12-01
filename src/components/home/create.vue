@@ -29,7 +29,8 @@
 
     <detail-panel :width="detailWidth" v-show="showInfo">
       <desk-assignment-panel :desk="selectedDesk" v-show="showOwnerInfo" :style="{ 'margin-bottom': '20px' }" :editable="changeset"
-        @removeOwner="removeDeskOwner" />
+        @removeOwner="removeDeskOwner"
+        @updateOwner="updateDeskOwner" />
 
       <plan-activity :activities="activities" v-show="!showOwnerInfo && showActivityInfo" />
     </detail-panel>
@@ -145,8 +146,31 @@
       removeDeskOwner({ desk }) {
         this.$store.dispatch('REMOVE_DESK_OWNER', {
           changeset: this.changeset,
-          desk
+          fromDesk: desk,
          });
+      },
+
+      updateDeskOwner: async function({ desk, owner }) {
+        // TODO: WIP
+        // const currentDesk = await this.getCurrentDesk({ owner });
+        // const recentActivity = _.findLast(this.activities, [ 'toDesk.employee', owner.id ]);
+        // const fromDesk = recentActivity && recentActivity.desk || currentDesk;
+        //
+        // this.$store.dispatch('UPDATE_DESK_OWNER', {
+        //   changeset: this.changeset,
+        //   owner,
+        //   fromDesk,
+        //   toDesk: desk,
+        //  });
+      },
+
+      getCurrentDesk: function({ owner }) {
+        return axios.get('/api/desk-assignments/search/desk', {
+          params: {
+            employeeId: owner.id,
+            planId: this.selectedPlan.id
+          }
+        }).then(({ data: desk }) => desk);
       }
     },
   };
