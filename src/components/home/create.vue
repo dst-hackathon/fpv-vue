@@ -153,7 +153,7 @@
 
       updateDeskOwner: async function({ desk: targetDesk, owner }) {
         const recentOwnerActivity = _.findLast(this.activities, [ 'employee.id', owner.id ]);
-        const ownerCurrentDesk = recentOwnerActivity && recentOwnerActivity.toDesk || await this.getCurrentDesk({ owner });
+        const ownerCurrentDesk = recentOwnerActivity ? recentOwnerActivity.toDesk : await this.getCurrentDesk({ owner });
 
         this.$store.dispatch('ASSIGN_DESK_OWNER', {
           changeset: this.changeset,
