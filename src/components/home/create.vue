@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import moment from 'moment';
   import FloorCanvas from './canvas/floor-canvas';
   import DetailPanel from './detail-panel';
@@ -46,7 +47,7 @@
   import FloorPlanSelector from './floor-plan-selector';
   import PlanActivity from './plan-activity';
   import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
-  import axios from 'axios';
+  import compactChangeset from 'components/helpers/compact-changeset';
 
   export default {
 
@@ -84,10 +85,11 @@
         }
 
         const changesets = this.selectedPlan.changesets;
-
-        return _.find(changesets, changeset => {
+        const changeset = _.find(changesets, changeset => {
           return moment(changeset.effectiveDate).isSame(this.effectiveDate);
         });
+
+        return compactChangeset(changeset);
       },
 
       activities() {
