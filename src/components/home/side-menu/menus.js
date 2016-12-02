@@ -10,7 +10,7 @@ const MENUS = [
   }, {
     name: 'Building',
     component: BuildingManagement,
-    icon: 'fa-building'
+    icon: 'fa-building-o'
   }, {
     name: 'Review',
     icon: 'fa-check'

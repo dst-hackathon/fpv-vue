@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <side-panel location="left" width="250px" offset="40px" v-if="show.left" ref="sideLeft">
+    <side-panel location="left" width="250px" offset="50px" v-if="show.left" ref="sideLeft">
       <slot name="left">
       </slot>
     </side-panel>
@@ -44,7 +44,7 @@ export default {
     style() {
       return {
         content: {
-          'margin-left': this.show.left ? '290px' : 0,
+          'margin-left': this.show.left ? '300px' : 0,
           'margin-right': this.show.right ? '300px' : 0,
         }
       };

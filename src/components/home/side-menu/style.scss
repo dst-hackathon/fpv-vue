@@ -15,17 +15,17 @@ section.main {
   left: 0;
   bottom: 0;
   padding: 20px 0;
-  width: 40px;
+  width: 50px;
   text-align: center;
   max-height: 100vh;
   box-shadow: 0 2px 3px hsla(0,0%,7%,.1),0 0 0 1px hsla(0,0%,7%,.1);
   overflow: hidden;
-  background: $grey-darker;
+  background: $black-ter;
   z-index: 1000;
 }
 
 .icon {
-  color: $grey-dark;
+  color: $grey;
   cursor: pointer;
   margin-bottom: 20px;
 }
@@ -35,5 +35,5 @@ section.main {
 }
 
 .icon.is-active {
-  color: $white;
+  color: $primary;
 }
