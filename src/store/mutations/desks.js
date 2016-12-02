@@ -1,37 +1,22 @@
 import _ from 'lodash';
 import * as types from 'store/types';
+import { findFloorById, findDeskById } from './helpers';
 
 export default {
   [types.CREATE_DESK]: function(state, { desk }) {
-    const floor = _
-      .chain(state.plans)
-      .flatMap('buildings')
-      .flatMap('floors')
-      .find({ id: desk.floor.id })
-      .value();
+    const floor = findFloorById(state, desk.floor.id);
 
     floor.desks.push(desk);
   },
 
   [types.UPDATE_DESK]: function(state, { desk }) {
-    const storedDesk = _
-      .chain(state.plans)
-      .flatMap('buildings')
-      .flatMap('floors')
-      .flatMap('desks')
-      .find({ id: desk.id })
-      .value();
+    const storedDesk = findDeskById(state, desk.id);
 
     _.assignIn(storedDesk, desk);
   },
 
   [types.DELETE_DESK]: function(state, { desk }) {
-    const floor = _
-      .chain(state.plans)
-      .flatMap('buildings')
-      .flatMap('floors')
-      .find({ id: desk.floor.id })
-      .value();
+    const floor = findFloorById(state, desk.floor.id);
 
     floor.desks = _.reject(floor.desks, { id: desk.id });
   },
