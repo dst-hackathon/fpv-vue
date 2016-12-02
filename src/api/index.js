@@ -8,6 +8,7 @@ import changesets from './changesets';
 import changesetItems from './changeset-items';
 import sessions from './sessions';
 import accounts from './accounts';
+import images from './images';
 
 export default {
   plans,
@@ -20,4 +21,5 @@ export default {
   employees,
   sessions,
   accounts,
+  images,
 };

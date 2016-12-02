@@ -23,6 +23,7 @@ import _ from 'lodash';
 import Canvas from 'components/fabric/canvas.fabric';
 import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import Desk from './desk';
+import api from 'api';
 
 export default {
   components: {
@@ -83,7 +84,7 @@ export default {
         return;
       }
 
-      this.canvas.setBackgroundImage(`/api/floors/${floorId}/image`, (img) => {
+      this.canvas.setBackgroundImage(api.images.floor(floorId), (img) => {
         if (img) {
           this.canvas.setDimensions({
             width: img.width,

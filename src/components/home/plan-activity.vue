@@ -24,12 +24,14 @@
 </template>
 
 <script>
+  import api from 'api';
+
   export default {
     props: ['activities'],
 
     methods: {
       employeeImage(employee) {
-        return `/api/employees/${employee.id}/image`;
+        return api.images.employee(employee.id);
       }
     }
   };

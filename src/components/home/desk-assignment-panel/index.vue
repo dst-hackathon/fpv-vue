@@ -83,7 +83,7 @@
           return 'http://placehold.it/256x341';
         }
 
-        return `/api/employees/${this.owner.id}/image`;
+        return api.images.employee(this.owner.id);
       },
 
       selectingOwnerId() {
