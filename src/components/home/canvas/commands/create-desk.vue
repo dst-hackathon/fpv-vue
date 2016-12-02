@@ -7,15 +7,16 @@
       <span>Add Desk</span>
     </button>
 
-    <desk-modal
+    <!-- <desk-modal
       :desk="pendingDesk"
       @ok="addPendingDesk"
-      @close="clearPendingDesk" />
+      @close="clearPendingDesk" /> -->
 
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import _ from 'lodash';
 import { CREATE_DESK } from 'store/types';
 import DeskShape from 'components/fabric/desk.fabric';
@@ -91,6 +92,8 @@ export default {
         code: '',
         floor: _.pick(this.floor, 'id')
       };
+
+      this.showModal();
     },
 
     canvasMousemove({ e }) {
@@ -111,6 +114,24 @@ export default {
 
       this.deskOverlay.setCoords();
       this.canvas.renderAll();
+    },
+
+    showModal: function() {
+      const Modal = Vue.extend(DeskModal);
+      const modal = this.modal = new Modal({
+        propsData: {
+          desk: this.pendingDesk
+        }
+      });
+
+      modal.$once('ok', this.addPendingDesk);
+      modal.$once('close', () => {
+        this.clearPendingDesk();
+
+        this.$nextTick().then(() => modal.$destroy());
+      });
+
+      document.getElementById('modals').appendChild(modal.$mount().$el);
     },
 
     addPendingDesk() {

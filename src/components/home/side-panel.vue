@@ -35,7 +35,7 @@ export default {
 
 <style lang="css" scoped>
   .main {
-    position: fixed;
+    position: absolute;
     top: 50px;
     bottom: 0;
     padding: 20px 0 50px;
@@ -43,8 +43,6 @@ export default {
     max-height: 100vh;
     background: #fff;
     box-shadow: 0 2px 3px hsla(0,0%,7%,.1),0 0 0 1px hsla(0,0%,7%,.1);
-    overflow-y: auto;
-    overflow-x: hidden;
     z-index: 1000;
   }
 </style>

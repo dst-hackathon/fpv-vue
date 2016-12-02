@@ -1,35 +1,37 @@
 <template>
 <div>
-  <side-menu />
+  <side-menu v-model="selectedMenu" />
 
-  <layout>
-    <div slot="left">
-      <h1 class="title is-2">Left</h1>
-    </div>
-
-    <div slot="right">
-      <h1 class="title is-2">Right</h1>
-    </div>
-
-    <div>
-      <view-plan />
-    </div>
-  </layout>
-
+  <keep-alive>
+    <component :is="homeComponent" />
+  </keep-alive>
 </div>
 </template>
+
 <script>
 import SideMenu from './side-menu';
-import SidePanel from './side-panel';
-import Layout from './layout';
-import ViewPlan from './view-master-plan';
+import { findMenuByName } from './side-menu/menus';
 
 export default {
   components: {
     SideMenu,
-    Layout,
-    ViewPlan
   },
+
+  data() {
+    return {
+      selectedMenu: 'Plan'
+    };
+  },
+
+  computed: {
+    homeComponent() {
+      if (!this.selectedMenu) {
+        return null;
+      }
+
+      return findMenuByName(this.selectedMenu).component;
+    }
+  }
 };
 </script>
 

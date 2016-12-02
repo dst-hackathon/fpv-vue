@@ -5,6 +5,10 @@
   <section class="route-outlet">
     <router-view></router-view>
   </section>
+
+  <div id="modals">
+
+  </div>
 </div>
 </template>
 
@@ -27,7 +31,7 @@ export default {
 <style>
 html {
   /*override bulma's*/
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 </style>
 

@@ -7,7 +7,6 @@
     className="plan"
     valueProp="id"
     textProp="name"
-    width="120px"
     @input="reset('buildingId')" />
 
   <dropdown
@@ -17,7 +16,6 @@
     className="building"
     valueProp="id"
     textProp="name"
-    width="150px"
     @input="reset('floorId')" />
 
   <dropdown
@@ -26,8 +24,7 @@
     label="Floor"
     className="floor"
     valueProp="id"
-    textProp="name"
-    width="80px" />
+    textProp="name" />
 
 </div>
 </template>
@@ -111,18 +108,6 @@ export default {
 
 <style lang="scss" scoped>
 .component > * {
-    margin-right: 5px;
-}
-
-.plan {
-    width: 100px;
-}
-
-.building {
-    width: 150px;
-}
-
-.floor {
-    width: 60px;
+    margin-bottom: 5px;
 }
 </style>
