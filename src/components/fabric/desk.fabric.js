@@ -1,6 +1,5 @@
 import fabric from 'fabric';
 import store from 'store';
-import { SELECT_DESK, DESELECT_DESK } from 'store/floor-management/types';
 import { UPDATE_DESK } from 'store/types';
 
 const defaultOptions = {
