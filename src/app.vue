@@ -24,6 +24,13 @@ export default {
 };
 </script>
 
+<style>
+html {
+  /*override bulma's*/
+  overflow-y: auto;
+}
+</style>
+
 <style scoped>
 
 .route-outlet {

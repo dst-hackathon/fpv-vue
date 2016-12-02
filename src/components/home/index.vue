@@ -1,72 +1,37 @@
-<template lang="html">
+<template>
 <div>
-  <!-- Left side -->
-  <menu-list :title="'Menu'" :menuList="menuList" :selection="menuSelected" @selected="onMenuSelected" />
+  <side-menu />
 
-  <!-- Page Content -->
-  <div class="page-content">
-    <keep-alive>
-      <component :is="componentSelected" />
-    </keep-alive>
-  </div>
+  <layout>
+    <div slot="left">
+      <h1 class="title is-2">Left</h1>
+    </div>
+
+    <div slot="right">
+      <h1 class="title is-2">Right</h1>
+    </div>
+
+    <div>
+      <view-plan />
+    </div>
+  </layout>
 
 </div>
 </template>
-
 <script>
-import _ from 'lodash';
-import MenuList from './menu-list';
+import SideMenu from './side-menu';
+import SidePanel from './side-panel';
+import Layout from './layout';
+import ViewPlan from './view-master-plan';
 
 export default {
-  name: 'app',
   components: {
-    MenuList,
+    SideMenu,
+    Layout,
+    ViewPlan
   },
-
-  data() {
-    return {
-      menuSelected: 'view',
-      menuList: [{
-        name: 'View Master Plan',
-        value: 'view',
-        component: require('./view-master-plan')
-      }, {
-        name: 'Create/Edit Future Plan',
-        value: 'create',
-        component: require('./create')
-      }, {
-        name: 'Approve Future Plan',
-        value: 'approve',
-        component: require('./approve')
-      }, {
-        name: 'Manage Floor Plan',
-        value: 'manage',
-        component: require('./manage')
-      }, {
-        name: 'Log out',
-        value: 'logout'
-      }, ],
-    };
-  },
-
-  computed: {
-    componentSelected() {
-      const menu = _.find(this.menuList, { value: this.menuSelected });
-
-      return menu.component;
-    }
-  },
-
-  methods: {
-    onMenuSelected(menu) {
-      this.menuSelected = menu.value;
-    }
-  }
 };
 </script>
 
-<style lang="scss" scoped>
-  .page-content {
-    margin-left: 200px;
-  }
+<style scoped>
 </style>
