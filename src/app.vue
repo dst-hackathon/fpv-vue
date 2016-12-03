@@ -31,6 +31,7 @@ export default {
 <style lang="scss">
 @import '~tooltipster/dist/css/tooltipster.bundle';
 // @import '~tooltipster-follower/dist/css/tooltipster-follower.min';
+@import '~Flatpickr/dist/flatpickr.min';
 
 html {
   /*override bulma's*/

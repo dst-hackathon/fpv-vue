@@ -5,7 +5,10 @@
         <h4 class="title is-4">Manage Plan</h4>
 
         <floor-plan-selector />
-        <effective-date-selector v-model="effectiveDate" />
+        <!-- <effective-date-selector v-model="effectiveDate" /> -->
+        <label class="label">Effective Date</label>
+        <datepicker v-model="effectiveDate"
+          :minDate="new Date()" />
       </div>
     </div>
 
@@ -40,10 +43,10 @@ import moment from 'moment';
 
 import Layout from 'components/home/layout';
 import FloorPlanSelector from 'components/home/floor-plan-selector';
-import EffectiveDateSelector from './effective-date-selector';
 import FloorCanvas from 'components/home/canvas/floor-canvas';
 import DeskAssignmentPanel from 'components/home/desk-assignment-panel';
 import PlanActivity from 'components/home/plan-activity';
+import Datepicker from './datepicker';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
@@ -54,17 +57,17 @@ export default {
   data() {
     return {
       selectedDesk: null,
-      effectiveDate: '',
+      effectiveDate: moment().format(),
     };
   },
 
   components: {
     Layout,
     FloorPlanSelector,
-    EffectiveDateSelector,
     FloorCanvas,
     DeskAssignmentPanel,
     PlanActivity,
+    Datepicker,
   },
 
   computed: {
