@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bulma": "^0.2.3",
+    "dragula": "^3.7.2",
     "flatpickr": "git+https://git@github.com/chmln/flatpickr.git",
     "jquery": "^3.1.1",
     "lodash": "^4.17.2",

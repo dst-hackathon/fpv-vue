@@ -5,7 +5,6 @@
         <h4 class="title is-4">Manage Plan</h4>
 
         <floor-plan-selector />
-        <!-- <effective-date-selector v-model="effectiveDate" /> -->
         <label class="label">Effective Date</label>
         <datepicker v-model="effectiveDate"
           :minDate="new Date()" />
@@ -34,8 +33,11 @@
         :scrollTarget="scrollTarget"
         :showOwner="true"
         :changeset="changeset"
+        :enableDeskDrop="!!changeset"
         @deskSelected="selectedDesk = $event.desk"
-        @deskDeselected="selectedDesk = null" />
+        @deskDeselected="selectedDesk = null"
+        @removeOwner="removeDeskOwner"
+        @updateOwner="updateDeskOwner" />
     </div>
   </layout>
 </template>

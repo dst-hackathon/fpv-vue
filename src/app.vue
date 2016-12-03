@@ -32,6 +32,7 @@ export default {
 @import '~tooltipster/dist/css/tooltipster.bundle';
 // @import '~tooltipster-follower/dist/css/tooltipster-follower.min';
 @import '~Flatpickr/dist/flatpickr.min';
+@import '~dragula/dist/dragula.min';
 
 html {
   /*override bulma's*/

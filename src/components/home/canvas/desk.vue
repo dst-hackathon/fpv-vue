@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="desk" :style="deskStyle" @click="onClick">
+  <div class="desk" :style="deskStyle" @click="onClick" :data-id="desk.id">
     <div class="name" v-if="showOwner && owner">
       {{ ownerTag }}
     </div>
@@ -27,7 +27,9 @@ export default {
     return {
       deskStyle: {
         top: 0,
-        left: 0
+        left: 0,
+        width: 0,
+        height: 0,
       }
     };
   },
@@ -87,32 +89,27 @@ export default {
         this.$nextTick(() => {
           this.deskShape.entity = this.desk;
 
-          this.updateOwnerTag();
+          this.updateMaskPosition();
         });
       }
     },
   },
 
   methods: {
-    updateOwnerTag() {
-      if (!this.showOwner || !this.owner) {
+    updateMaskPosition() {
+      if (!this.showOwner) {
         return;
       }
 
-      // can't calculate from el as sometimes it will be in the memory
-      // when we are on the different route.
-      const elWidth = this.ownerTag.length * 9;
-      const elHeight = 25;
-
+      // position desk mask
       const { left: shapeLeft, top: shapeTop } = this.deskShape.getAbsolutePosition();
       const shapeWidth = this.deskShape.getWidth();
       const shapeHeight = this.deskShape.getHeight();
 
-      const left = shapeLeft + (shapeWidth / 2) - (elWidth / 2);
-      const top = shapeTop + (shapeHeight / 2) - (elHeight / 2);
-
-      this.deskStyle.left = `${left}px`;
-      this.deskStyle.top = `${top}px`;
+      this.deskStyle.left = `${shapeLeft}px`;
+      this.deskStyle.top = `${shapeTop}px`;
+      this.deskStyle.width = `${shapeWidth}px`;
+      this.deskStyle.height = `${shapeHeight}px`;
     },
 
     onClick() {
@@ -135,10 +132,10 @@ export default {
     });
 
     if (this.showOwner) {
-      this.updateOwnerTag();
+      this.updateMaskPosition();
 
       this.deskShape.on('moving', () => {
-        this.updateOwnerTag();
+        this.updateMaskPosition();
       });
     }
 

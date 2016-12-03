@@ -5,6 +5,7 @@
 
     <div class="desks">
       <desk v-for="desk in effectiveDesks"
+        class="draggable"
         ref="desks"
         :desk="desk"
         :key="desk.id"
@@ -28,6 +29,8 @@ import api from 'api';
 import ScrollableCanvas from './scrollable-canvas';
 import ResponsiveCanvas from './responsive-canvas';
 
+import dragula from 'dragula';
+
 export default {
   mixins: [ScrollableCanvas, ResponsiveCanvas],
 
@@ -35,7 +38,7 @@ export default {
     Desk
   },
 
-  props: ['readOnly', 'floor', 'showOwner', 'changeset'],
+  props: ['readOnly', 'floor', 'showOwner', 'changeset', 'enableDeskDrop'],
 
   computed: {
     effectiveDesks() {
@@ -56,6 +59,50 @@ export default {
         this.$emit('deskSelected', { desk: selectedDesk });
       }
     },
+
+    enableDeskDrop(enabled) {
+      if (enabled) {
+        this.drake = dragula({
+          removeOnSpill: true,
+          copy: true,
+
+          isContainer: function (el) {
+            const classList = el.classList;
+            const dragable = classList.contains('desk') && classList.contains('draggable');
+
+            return dragable;
+          },
+        });
+
+        this.drake.on('drop', (el, to, from) => {
+          const fromId = parseInt(from.dataset.id, 10);
+          const fromDesk = _.find(this.effectiveDesks, { id: fromId });
+
+          const toId = parseInt(to.dataset.id, 10);
+          const toDesk = _.find(this.effectiveDesks, { id: toId });
+
+          el.remove();
+
+          this.$emit('updateOwner', {
+            desk: toDesk,
+            owner: fromDesk.employee
+          });
+        });
+
+        this.drake.on('cancel', (el, to, from) => {
+          const fromId = parseInt(from.dataset.id, 10);
+          const fromDesk = _.find(this.effectiveDesks, { id: fromId });
+
+          this.$emit('removeOwner', {
+            desk: fromDesk
+          });
+        });
+
+      } else {
+        this.drake.destroy();
+        this.drake = null;
+      }
+    }
   },
 
   mounted() {
