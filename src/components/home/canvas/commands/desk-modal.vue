@@ -22,15 +22,19 @@ export default {
   props: ['desk'],
 
   watch: {
-    desk(desk) {
-      this.show = !!desk;
+    desk: {
+      immediate: true,
+      handler: function(desk) {
+        this.show = !!desk;
+      }
     }
   },
 
   data() {
     return {
       deskCode: "",
-      show: this.active,
+      active: false,
+      show: false,
     };
   },
 

@@ -1,72 +1,39 @@
-<template lang="html">
+<template>
 <div>
-  <!-- Left side -->
-  <menu-list :title="'Menu'" :menuList="menuList" :selection="menuSelected" @selected="onMenuSelected" />
+  <side-menu v-model="selectedMenu" />
 
-  <!-- Page Content -->
-  <div class="page-content">
-    <keep-alive>
-      <component :is="componentSelected" />
-    </keep-alive>
-  </div>
-
+  <keep-alive>
+    <component :is="homeComponent" />
+  </keep-alive>
 </div>
 </template>
 
 <script>
-import _ from 'lodash';
-import MenuList from './menu-list';
+import SideMenu from './side-menu';
+import { findMenuByName } from './side-menu/menus';
 
 export default {
-  name: 'app',
   components: {
-    MenuList,
+    SideMenu,
   },
 
   data() {
     return {
-      menuSelected: 'view',
-      menuList: [{
-        name: 'View Master Plan',
-        value: 'view',
-        component: require('./view-master-plan')
-      }, {
-        name: 'Create/Edit Future Plan',
-        value: 'create',
-        component: require('./create')
-      }, {
-        name: 'Approve Future Plan',
-        value: 'approve',
-        component: require('./approve')
-      }, {
-        name: 'Manage Floor Plan',
-        value: 'manage',
-        component: require('./manage')
-      }, {
-        name: 'Log out',
-        value: 'logout'
-      }, ],
+      selectedMenu: 'Plan'
     };
   },
 
   computed: {
-    componentSelected() {
-      const menu = _.find(this.menuList, { value: this.menuSelected });
+    homeComponent() {
+      if (!this.selectedMenu) {
+        return null;
+      }
 
-      return menu.component;
-    }
-  },
-
-  methods: {
-    onMenuSelected(menu) {
-      this.menuSelected = menu.value;
+      return findMenuByName(this.selectedMenu).component;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-  .page-content {
-    margin-left: 200px;
-  }
+<style scoped>
 </style>

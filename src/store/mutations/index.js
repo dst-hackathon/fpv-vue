@@ -4,6 +4,7 @@ import deskAssignments from './desk-assignments';
 import changesets from './changesets';
 import changesetItems from './changeset-items';
 import desks from './desks';
+import selections from './selections';
 
 export default {
   ...plans,
@@ -12,4 +13,5 @@ export default {
   ...changesets,
   ...changesetItems,
   ...desks,
+  ...selections,
 };

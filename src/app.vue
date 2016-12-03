@@ -5,6 +5,10 @@
   <section class="route-outlet">
     <router-view></router-view>
   </section>
+
+  <div id="modals">
+
+  </div>
 </div>
 </template>
 
@@ -23,6 +27,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+@import '~tooltipster/dist/css/tooltipster.bundle';
+// @import '~tooltipster-follower/dist/css/tooltipster-follower.min';
+
+html {
+  /*override bulma's*/
+  overflow-y: hidden;
+}
+</style>
 
 <style scoped>
 

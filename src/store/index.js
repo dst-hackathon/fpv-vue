@@ -19,6 +19,12 @@ export default new Vuex.Store({
     }],
 
     login: {},
+
+    selection: {
+      planId: null,
+      buildingId: null,
+      floorId: null,
+    }
   },
 
   getters: {
@@ -32,6 +38,24 @@ export default new Vuex.Store({
 
     desks: function(state, getters) {
       return _.flatMap(getters.floors, 'desks');
+    },
+
+    selectedPlan: function(state) {
+      return _.find(state.plans, { id: state.selection.planId });
+    },
+
+    selectedBuilding: function(state, getters) {
+      const selectedPlan = getters.selectedPlan;
+      const buildings = selectedPlan && selectedPlan.buildings;
+
+      return _.find(buildings, { id: state.selection.buildingId });
+    },
+
+    selectedFloor: function(state, getters) {
+      const selectedBuilding = getters.selectedBuilding;
+      const floors = selectedBuilding && selectedBuilding.floors;
+
+      return _.find(floors, { id: state.selection.floorId });
     }
   },
 

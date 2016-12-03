@@ -1,15 +1,13 @@
 <template lang="html">
-  <div>
+  <div class="control">
     <label class="label">{{ label }}</label>
-    <p class="control">
-      <span class="select">
-        <select :style="{ width: this.width || 'auto' }" @change="updateValue($event.target.value)" :selectedIndex="-1">
-          <option>{{ placeholder }}</option>
-          <option v-for="option in options" :selected="isSelected(option)" :value="option[valueProp]">
-            {{ option[textProp] }}
-          </option>
-        </select>
-      </span>
+    <p class="select">
+      <select @change="updateValue($event.target.value)" :selectedIndex="-1">
+        <option>{{ placeholder }}</option>
+        <option v-for="option in options" :selected="isSelected(option)" :value="option[valueProp]">
+          {{ option[textProp] }}
+        </option>
+      </select>
     </p>
   </div>
 </template>
@@ -24,7 +22,6 @@ export default {
     'textProp',
     'className',
     'placeholder',
-    'width',
   ],
 
   methods: {
@@ -39,8 +36,12 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-  .control {
-    padding-right: 10px;
+<style lang="scss" scoped>
+  .select {
+    display: block;
+
+    > select {
+      width: 100%;
+    }
   }
 </style>
