@@ -87,6 +87,11 @@ export default {
       const floorId = floor && floor.id;
       if (!floorId) {
         this.canvas.setBackgroundImage(null);
+        this.canvas.setDimensions({
+          width: 0,
+          height: 0
+        });
+
         this.invalidate();
 
         return;
@@ -141,5 +146,6 @@ export default {
     max-height: 100%;
     overflow: auto;
     position: relative;
+    margin: 0 10px;
   }
 </style>
