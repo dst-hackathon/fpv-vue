@@ -1,24 +1,41 @@
 <template>
   <div>
     <h3 class="title is-4">Plan Activity</h3>
-    <hr>
 
-    <div v-for="activity in activities">
-      <div class="media">
-        <div class="media-left">
-          <figure class="">
-            <img class="employee-image" :src="employeeImage(activity.employee)">
+    <div>
+      <div v-for="activity in activities" class="activity">
+        <div class="media">
+          <figure class="media-left">
+            <p>
+              <img class="employee-image" :src="employeeImage(activity.employee)">
+            </p>
           </figure>
+
+          <div class="media-content">
+            <div class="content">
+              <strong>{{ activity.employee.firstname }} {{ activity.employee.lastname }}</strong>
+              <br>
+              <span>{{ activity.employee.code }}</span>
+            </div>
+          </div>
         </div>
-        <div class="media-content">
-          <p class="title is-5">{{ activity.employee.firstname }} {{ activity.employee.lastname }}</p>
-          <p class="subtitle is-6">{{ activity.employee.code }}</p>
+
+        <div class="activity-movement">
+          <div v-if="activityType(activity) === 'assigned-to'">
+            <span class="icon is-small"><i class="fa fa-map-marker"></i></span>
+            assigned to <a>{{ deskCodeFor(activity.toDesk) }}</a>
+          </div>
+          <div v-else-if="activityType(activity) === 'removed-from'">
+            <span class="icon is-small"><i class="fa fa-remove"></i></span>
+            removed from <a>{{ deskCodeFor(activity.fromDesk ) }}</a>
+          </div>
+          <div v-else>
+            <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+            moved from <a>{{ deskCodeFor(activity.fromDesk ) }}</a>
+            to <a>{{ deskCodeFor(activity.toDesk) }}</a>
+          </div>
         </div>
       </div>
-
-      <p>From: {{ activity.fromDesk && activity.fromDesk.code }}</p>
-      <p>To: {{ activity.toDesk && activity.toDesk.code }}</p>
-      <hr>
     </div>
   </div>
 </template>
@@ -32,15 +49,48 @@
     methods: {
       employeeImage(employee) {
         return api.images.employee(employee.id);
-      }
-    }
+      },
+
+      activityType(activity) {
+        if (!activity.fromDesk) {
+          return 'assigned-to';
+        }
+
+        if (!activity.toDesk) {
+          return 'removed-from';
+        }
+
+        return 'moved';
+      },
+
+      deskCodeFor(desk) {
+        return desk && desk.code;
+      },
+    },
+
   };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import '~bulma/sass/utilities/variables';
+
   .employee-image {
     height: 48px;
     width: 48px;
     object-fit: cover;
+  }
+
+  .activity {
+    border-bottom: 1px solid $grey-lighter;
+    padding-bottom: 5px;
+  }
+
+  .activity:not(:first-child) {
+    padding-top: 10px;
+  }
+
+  .activity-movement .icon {
+    line-height: 18px;
+    color: $info-invert;
   }
 </style>
