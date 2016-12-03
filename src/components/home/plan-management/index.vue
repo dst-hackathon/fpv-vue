@@ -17,7 +17,7 @@
         v-show="showOwnerInfo"
         :desk="selectedDesk"
         :style="{ 'margin-bottom': '20px' }"
-        :editable="true"
+        :editable="effectiveDateIsFuture"
         @removeOwner="removeDeskOwner"
         @updateOwner="updateDeskOwner" />
 
@@ -75,7 +75,8 @@ export default {
 
   computed: {
     changeset() {
-      if (!this.selectedPlan || !this.effectiveDate) {
+      // no change should be allowed for the past or today
+      if (!this.selectedPlan || !this.effectiveDateIsFuture) {
         return null;
       }
 
@@ -105,6 +106,12 @@ export default {
 
     selectedFloor() {
       return this.$store.getters.selectedFloor;
+    },
+
+    effectiveDateIsFuture() {
+      const now = moment();
+
+      return moment(this.effectiveDate).isAfter(now);
     },
   },
 
