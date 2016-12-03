@@ -32,18 +32,11 @@
 <script>
 import _ from 'lodash';
 import Dropdown from './dropdown';
+import { SELECT_PLAN, SELECT_BUILDING, SELECT_FLOOR } from 'store/types';
 
 export default {
   components: {
     Dropdown,
-  },
-
-  data() {
-    return {
-      planId: null,
-      buildingId: null,
-      floorId: null,
-    };
   },
 
   computed: {
@@ -52,56 +45,49 @@ export default {
     },
 
     buildings() {
-      if (!this.planId) {
-        return [];
-      }
+      const selectedPlan = this.$store.getters.selectedPlan;
 
-      const buildings = this.$store.getters.buildings;
-
-      return _.filter(buildings, [ 'plan.id', this.planId ]);
+      return selectedPlan && selectedPlan.buildings;
     },
 
     floors() {
-      if (!this.buildingId) {
-        return [];
+      const selectedBuilding = this.$store.getters.selectedBuilding;
+
+      return selectedBuilding && selectedBuilding.floors;
+    },
+
+    planId: {
+      get() {
+        return this.$store.state.selection.planId;
+      },
+      set(planId) {
+        this.$store.dispatch(SELECT_PLAN, { planId });
       }
-
-      const floors = this.$store.getters.floors;
-
-      return _.filter(floors, [ 'building.id', this.buildingId ]);
     },
 
-    plan() {
-      return _.find(this.plans, { id: this.planId });
+    buildingId: {
+      get() {
+        return this.$store.state.selection.buildingId;
+      },
+      set(buildingId) {
+        this.$store.dispatch(SELECT_BUILDING, { buildingId });
+      }
     },
 
-    building() {
-      return _.find(this.buildings, { id: this.buildingId });
+    floorId: {
+      get() {
+        return this.$store.state.selection.floorId;
+      },
+      set(floorId) {
+        this.$store.dispatch(SELECT_FLOOR, { floorId });
+      }
     },
-
-    floor() {
-      return _.find(this.floors, { id: this.floorId });
-    }
-  },
-
-  watch: {
-    plan: 'emitSelected',
-    building: 'emitSelected',
-    floor: 'emitSelected'
   },
 
   methods: {
     reset(prop) {
       this[prop] = null;
     },
-
-    emitSelected() {
-      this.$emit('selected', {
-        plan: this.plan,
-        building: this.building,
-        floor: this.floor
-      });
-    }
   },
 };
 </script>

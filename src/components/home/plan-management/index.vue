@@ -4,7 +4,7 @@
       <div>
         <h4 class="title is-4">Manage Plan</h4>
 
-        <floor-plan-selector @selected="onFloorPlanSelected" />
+        <floor-plan-selector />
         <effective-date-selector v-model="effectiveDate" />
       </div>
     </div>
@@ -53,8 +53,6 @@ export default {
 
   data() {
     return {
-      selectedPlan: null,
-      selectedFloor: null,
       selectedDesk: null,
       effectiveDate: '',
     };
@@ -103,7 +101,15 @@ export default {
       const now = moment();
 
       return moment(this.effectiveDate).isAfter(now);
-    }
+    },
+
+    selectedPlan() {
+      return this.$store.getters.selectedPlan;
+    },
+
+    selectedFloor() {
+      return this.$store.getters.selectedFloor;
+    },
   },
 
   watch: {
@@ -138,11 +144,6 @@ export default {
   },
 
   methods: {
-    onFloorPlanSelected({ plan, floor }) {
-      this.selectedPlan = plan;
-      this.selectedFloor = floor;
-    },
-
     removeDeskOwner({ desk }) {
       this.$store.dispatch(REMOVE_DESK_OWNER, {
         changeset: this.changeset,

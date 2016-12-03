@@ -59,6 +59,10 @@ export default {
     }
   },
 
+  created() {
+    window.addEventListener('resize', () => this.reposition());
+  },
+
   mounted() {
     this.canvas = new Canvas(this.$refs.canvas, {
       uniScaleTransform: true,
@@ -74,13 +78,17 @@ export default {
       canvas: this.canvas
     });
 
+    this.storeInitialPosition();
     this.reposition();
   },
 
   methods: {
-    async updateImage(floor) {
+    updateImage(floor) {
       const floorId = floor && floor.id;
       if (!floorId) {
+        this.canvas.setBackgroundImage(null);
+        this.invalidate();
+
         return;
       }
 
@@ -107,11 +115,17 @@ export default {
       });
     },
 
-    reposition() {
+    storeInitialPosition() {
       const wrapper = this.$refs.wrapper;
       const boundingRect = wrapper.getBoundingClientRect();
 
-      this.height = `${boundingRect.height - boundingRect.top}px`;
+      this.initialPosition = boundingRect;
+    },
+
+    reposition() {
+      const boundingRect = this.initialPosition;
+
+      this.height = `${window.innerHeight - boundingRect.top}px`;
     },
 
     relayEvent(eventName, e) {

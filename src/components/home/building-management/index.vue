@@ -4,7 +4,7 @@
       <div>
         <h4 class="title is-4">Manage Building</h4>
 
-        <floor-plan-selector @selected="selectedFloor = $event.floor" />
+        <floor-plan-selector />
       </div>
     </div>
 
@@ -52,7 +52,6 @@ export default {
     return {
       canvas: null,
       activeCommand: '',
-      selectedFloor: null,
       selectedDesk: null,
     };
   },
@@ -65,6 +64,10 @@ export default {
         lastName: { hidden: true },
         employeeImage: { hidden: true },
       };
+    },
+
+    selectedFloor() {
+      return this.$store.getters.selectedFloor;
     },
   },
 

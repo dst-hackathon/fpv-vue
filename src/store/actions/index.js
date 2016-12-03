@@ -4,6 +4,7 @@ import changesetItems from './changeset-items';
 import sessions from './sessions';
 import desks from './desks';
 import plans from './plans';
+import selections from './selections';
 
 export default {
   ...plans,
@@ -12,4 +13,5 @@ export default {
   ...changesets,
   ...changesetItems,
   ...sessions,
+  ...selections,
 };
