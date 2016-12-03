@@ -187,7 +187,9 @@ export default {
       await this.$store.dispatch("SELECT_FLOOR", { floorId: floor.id });
       await this.$store.dispatch("SELECT_BUILDING", { buildingId: building.id });
 
-      this.scrollTarget = desk;
+      // get desk from state as a desk in passed from activity panel is a clone.
+      const desks = this.$store.getters.desks;
+      this.scrollTarget = _.find(desks, { id: desk.id });
     }
   },
 };
