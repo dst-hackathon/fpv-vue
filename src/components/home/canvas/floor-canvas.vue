@@ -30,7 +30,7 @@ export default {
     Desk
   },
 
-  props: ['readOnly', 'floor', 'showOwner', 'changeset'],
+  props: ['readOnly', 'floor', 'showOwner', 'changeset', 'scrollTarget'],
 
   data() {
     return {
@@ -56,7 +56,9 @@ export default {
       if (selectedDesk) {
         this.$emit('deskSelected', { desk: selectedDesk });
       }
-    }
+    },
+
+    scrollTarget: 'onScrollTargetChange'
   },
 
   created() {
@@ -117,6 +119,11 @@ export default {
       // use nextTick to wait for this.canvas as it requires mounting the DOM element
       this.$nextTick(() => {
         this.canvas.add(shape);
+
+
+        if (this.scrollTarget && shape.entity.id === this.scrollTarget.id) {
+          this.canvas.setActiveObject(shape);
+        }
       });
     },
 
@@ -135,6 +142,41 @@ export default {
 
     relayEvent(eventName, e) {
       this.$emit(eventName, e);
+    },
+
+    onScrollTargetChange(target) {
+      if (!target) {
+        return;
+      }
+
+      this.selectDeskInCanvas(target);
+      this.scrollToTarget(target);
+    },
+
+    selectDeskInCanvas(desk) {
+      if (!this.canvas) {
+        return;
+      }
+
+      const objects = this.canvas.getObjects();
+      const object = _.find(objects, [ 'entity.id', desk.id ]);
+
+      if (object) {
+        this.canvas.setActiveObject(object);
+      }
+    },
+
+    scrollToTarget(desk) {
+      const wrapper = this.$refs.wrapper;
+
+      if (!wrapper) {
+        return;
+      }
+
+      const boundingRect = wrapper.getBoundingClientRect();
+
+      wrapper.scrollLeft = desk.x + (desk.width / 2) - (boundingRect.width / 2);
+      wrapper.scrollTop = desk.y + (desk.height / 2) - (boundingRect.height / 2);
     }
   }
 };

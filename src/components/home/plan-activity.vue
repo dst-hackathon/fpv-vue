@@ -23,16 +23,16 @@
         <div class="activity-movement">
           <div v-if="activityType(activity) === 'assigned-to'">
             <span class="icon is-small"><i class="fa fa-map-marker"></i></span>
-            assigned to <a>{{ deskCodeFor(activity.toDesk) }}</a>
+            assigned to <a @click.prevent="scrollTo(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
           </div>
           <div v-else-if="activityType(activity) === 'removed-from'">
             <span class="icon is-small"><i class="fa fa-remove"></i></span>
-            removed from <a>{{ deskCodeFor(activity.fromDesk ) }}</a>
+            removed from <a @click.prevent="scrollTo(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
           </div>
           <div v-else>
             <span class="icon is-small"><i class="fa fa-refresh"></i></span>
-            moved from <a>{{ deskCodeFor(activity.fromDesk ) }}</a>
-            to <a>{{ deskCodeFor(activity.toDesk) }}</a>
+            moved from <a @click.prevent="scrollTo(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
+            to <a @click.prevent="scrollTo(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
           </div>
         </div>
       </div>
@@ -66,6 +66,10 @@
       deskCodeFor(desk) {
         return desk && desk.code;
       },
+
+      scrollTo(desk) {
+        this.$emit('scrollTo', { desk });
+      }
     },
 
   };

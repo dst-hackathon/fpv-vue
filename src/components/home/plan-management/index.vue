@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout :showRight="showInfo">
+  <layout :showRight="showOwnerInfo || showActivityInfo">
     <div slot="left">
       <div>
         <h4 class="title is-4">Manage Plan</h4>
@@ -17,12 +17,13 @@
         v-show="showOwnerInfo"
         :desk="selectedDesk"
         :style="{ 'margin-bottom': '20px' }"
-        :editable="effectiveDateIsFuture"
+        :editable="true"
         @removeOwner="removeDeskOwner"
         @updateOwner="updateDeskOwner" />
 
       <plan-activity
         :activities="activities"
+        @scrollTo="scrollTo"
         v-show="!showOwnerInfo && showActivityInfo" />
     </div>
 
@@ -30,6 +31,7 @@
       <floor-canvas
         :readOnly="true"
         :floor="selectedFloor"
+        :scrollTarget="scrollTarget"
         :showOwner="true"
         :changeset="changeset"
         @deskSelected="selectedDesk = $event.desk"
@@ -58,6 +60,7 @@ export default {
     return {
       selectedDesk: null,
       effectiveDate: moment().format(),
+      scrollTarget: null,
     };
   },
 
@@ -96,16 +99,6 @@ export default {
       return this.activities.length;
     },
 
-    showInfo() {
-      return this.showOwnerInfo || this.showActivityInfo;
-    },
-
-    effectiveDateIsFuture() {
-      const now = moment();
-
-      return moment(this.effectiveDate).isAfter(now);
-    },
-
     selectedPlan() {
       return this.$store.getters.selectedPlan;
     },
@@ -125,6 +118,17 @@ export default {
         floorId
       });
     },
+
+    selectedDesk(desk) {
+      const deskId = desk && desk.id;
+      const targetId = this.scrollTarget && this.scrollTarget.id;
+
+      // target was scrolled to and selected
+      // done!
+      if (deskId === targetId) {
+        this.scrollTarget = null;
+      }
+    }
   },
 
   created() {
@@ -174,6 +178,16 @@ export default {
         employeeId: owner.id,
         planId: this.selectedPlan.id
       });
+    },
+
+    scrollTo: async function({ desk }) {
+      const floor = desk.floor;
+      const building = floor.building;
+
+      await this.$store.dispatch("SELECT_FLOOR", { floorId: floor.id });
+      await this.$store.dispatch("SELECT_BUILDING", { buildingId: building.id });
+
+      this.scrollTarget = desk;
     }
   },
 };
