@@ -14,8 +14,6 @@
         :desk="selectedDesk"
         :fieldOptions="deskFieldOptions"
         @discardChange="selectedDesk = null" />
-
-      <remove-desk :desk="selectedDesk"/>
     </div>
 
     <div ref="content">
@@ -26,6 +24,7 @@
         @deskDeselected="selectedDesk = null" />
 
       <!-- create-desk command is always active -->
+      <!-- TODO: extract as a JS component / service instead of being Vue -->
       <create-desk v-show="false" :canvas="canvas" :floor="selectedFloor" :active="!!selectedFloor" />
     </div>
 
@@ -34,7 +33,6 @@
 
 <script>
 import CreateDesk from 'components/home/canvas/commands/create-desk';
-import RemoveDesk from 'components/home/canvas/commands/remove-desk';
 
 import FloorCanvas from 'components/home/canvas/floor-canvas';
 import DeskDetailPanel from 'components/home/desk-detail-panel';
@@ -44,7 +42,6 @@ import FloorPlanSelector from 'components/home/floor-plan-selector';
 export default {
   components: {
     CreateDesk,
-    RemoveDesk,
     FloorCanvas,
     Layout,
     DeskDetailPanel,

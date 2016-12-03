@@ -6,12 +6,6 @@
       </span>
       <span>Add Desk</span>
     </button>
-
-    <!-- <desk-modal
-      :desk="pendingDesk"
-      @ok="addPendingDesk"
-      @close="clearPendingDesk" /> -->
-
   </div>
 </template>
 

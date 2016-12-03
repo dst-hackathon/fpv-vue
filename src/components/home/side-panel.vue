@@ -42,7 +42,7 @@ export default {
     min-width: 45px;
     max-height: 100vh;
     background: #fff;
-    box-shadow: 0 2px 3px hsla(0,0%,7%,.1),0 0 0 1px hsla(0,0%,7%,.1);
+    box-shadow: 0 0 .5rem #9da5ab;
     z-index: 1000;
   }
 </style>
