@@ -46,7 +46,7 @@ import moment from 'moment';
 import Layout from 'components/home/layout';
 import FloorPlanSelector from 'components/home/floor-plan-selector';
 import FloorCanvas from 'components/home/canvas/floor-canvas';
-import DeskAssignmentPanel from 'components/home/desk-assignment-panel';
+import DeskAssignmentPanel from './desk-assignment-panel';
 import PlanActivity from 'components/home/plan-activity';
 import Datepicker from './datepicker';
 
