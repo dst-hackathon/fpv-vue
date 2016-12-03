@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout :showRight="!!selectedFloor">
+  <layout :showRight="!!selectedDesk">
     <div slot="left">
       <div>
         <h4 class="title is-4">Manage Building</h4>
@@ -9,23 +9,26 @@
     </div>
 
     <div slot="right">
-      <create-desk :canvas="canvas" :active="activeCommand === 'create-desk'" @click="toggleCommand('create-desk')" :floor="selectedFloor" />
-      <remove-desk :desk="selectedDesk"/>
-
       <desk-detail-panel
         v-show="selectedDesk"
         :desk="selectedDesk"
         :fieldOptions="deskFieldOptions"
         @discardChange="selectedDesk = null" />
+
+      <remove-desk :desk="selectedDesk"/>
     </div>
 
-    <div>
+    <div ref="content">
       <floor-canvas
         :floor="selectedFloor"
         @ready="canvas = $event.canvas"
         @deskSelected="selectedDesk = $event.desk"
         @deskDeselected="selectedDesk = null" />
+
+      <!-- create-desk command is always active -->
+      <create-desk v-show="false" :canvas="canvas" :floor="selectedFloor" :active="!!selectedFloor" />
     </div>
+
   </layout>
 </template>
 

@@ -28,7 +28,10 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import '~tooltipster/dist/css/tooltipster.bundle';
+// @import '~tooltipster-follower/dist/css/tooltipster-follower.min';
+
 html {
   /*override bulma's*/
   overflow-y: hidden;
