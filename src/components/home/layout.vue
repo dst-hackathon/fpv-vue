@@ -44,7 +44,7 @@ export default {
     style() {
       return {
         content: {
-          'margin-left': this.show.left ? '300px' : 0,
+          'margin-left': this.show.left ? '300px' : '50px',
           'margin-right': this.show.right ? '300px' : 0,
         }
       };

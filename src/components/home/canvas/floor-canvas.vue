@@ -26,9 +26,9 @@ import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import Desk from './desk';
 import api from 'api';
 
-import ScrollableCanvas from './scrollable-canvas';
-import ResponsiveCanvas from './responsive-canvas';
-import DragDropCanvas from './dnd-canvas';
+import ScrollableCanvas from './mixins/scrollable-canvas';
+import ResponsiveCanvas from './mixins/responsive-canvas';
+import DragDropCanvas from './mixins/dnd-canvas';
 
 export default {
   mixins: [

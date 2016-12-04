@@ -1,11 +1,16 @@
 <template lang="html">
-  <div>
-    This is Approve page
-  </div>
+  <layout>
+    <div>Hello</div>
+  </layout>
 </template>
 
 <script>
+import Layout from 'components/home/layout';
+
 export default {
+  components: {
+    Layout,
+  }
 };
 </script>
 

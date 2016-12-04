@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import PlanManagement from 'components/home/plan-management';
 import BuildingManagement from 'components/home/building-management';
+import PlanReview from 'components/home/plan-review';
 
 const MENUS = [
   {
@@ -13,6 +14,7 @@ const MENUS = [
     icon: 'fa-building-o'
   }, {
     name: 'Review',
+    component: PlanReview,
     icon: 'fa-check'
   }
 ];
