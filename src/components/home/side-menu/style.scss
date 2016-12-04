@@ -1,0 +1,39 @@
+@import '~bulma/sass/utilities/variables';
+
+section.main {
+  background: none;
+}
+
+.box {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  padding: 20px 0;
+  width: 50px;
+  text-align: center;
+  max-height: 100vh;
+  box-shadow: 0 2px 3px hsla(0,0%,7%,.1),0 0 0 1px hsla(0,0%,7%,.1);
+  overflow: hidden;
+  background: $grey-darker;
+  z-index: 1000;
+}
+
+.icon {
+  color: $grey;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.icon:hover {
+  color: $grey;
+}
+
+.icon.is-active {
+  color: $primary;
+}

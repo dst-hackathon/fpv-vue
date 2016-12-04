@@ -1,11 +1,11 @@
 import fabric from 'fabric';
 import store from 'store';
-import { SELECT_DESK, DESELECT_DESK } from 'store/floor-management/types';
 import { UPDATE_DESK } from 'store/types';
 
 const defaultOptions = {
   fill: 'green',
-  opacity: 0.2
+  opacity: 0.2,
+  selectionBackgroundColor: 'rgba(0,0,255,0.5)'
 };
 
 export default fabric.util.createClass(fabric.Rect, {
@@ -16,23 +16,11 @@ export default fabric.util.createClass(fabric.Rect, {
       ...options
     });
 
-    this.on('selected', () => {
-      store.dispatch(SELECT_DESK, {
+    this.on('modified', () => {
+      store.dispatch(UPDATE_DESK, {
         desk: this.toEntity()
       });
     });
-
-    this.on('deselected', () => {
-      store.dispatch(DESELECT_DESK, {
-        desk: this.toEntity()
-      });
-    });
-
-    // this.on('modified', () => {
-    //   store.dispatch(UPDATE_DESK, {
-    //     desk: this.toEntity()
-    //   });
-    // });
   },
 
   setAbsolutePosition(position) {
@@ -84,7 +72,8 @@ export default fabric.util.createClass(fabric.Rect, {
     const absolutePosition = this.getAbsolutePosition();
 
     return {
-      id: this.id,
+      ...this.entity,
+
       x: absolutePosition.left,
       y: absolutePosition.top,
 

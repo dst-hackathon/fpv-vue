@@ -1,173 +1,85 @@
-<template>
-  <div v-if="!panelHidden">
-    <p v-if="!computeFieldHidden('deskCode')" class="control">
-      <label>Desk Code</label>
-      <span>
-        <input class="input" name="deskCode" :value="deskCode" :readonly="computeInputReadonly('deskCode')"
-            v-on:click="onClickInput"
-            v-on:blur="onBlurInput">
-      </span>
-    </p>
-    <p v-if="!computeFieldHidden('employeeId')" class="control">
-      <label>Employee ID</label>
-      <span>
-        <input class="input" name="employeeId" :value="employeeId" :readonly="computeInputReadonly('employeeId')"
-            v-on:click="onClickInput"
-            v-on:blur="onBlurInput">
-      </span>
-    </p>
-    <p v-if="!computeFieldHidden('firstName')" class="control">
-      <label>First Name</label>
-      <span>
-        <input class="input" name="firstName" :value="firstName" :readonly="computeInputReadonly('firstName')"
-            v-on:click="onClickInput"
-            v-on:blur="onBlurInput">
-      </span>
-    </p>
-    <p v-if="!computeFieldHidden('lastName')" class="control">
-      <label>Last Name</label>
-      <span>
-        <input class="input" name="lastName" :value="lastName" :readonly="computeInputReadonly('lastName')"
-            v-on:click="onClickInput"
-            v-on:blur="onBlurInput">
-      </span>
-    </p>
-    <p v-if="!panelReadonly" class="control">
-      <button class="button is-primary" v-on:click="onSubmit">submit</button>
-      <button class="button" v-on:click="onCancel">cancel</button>
+<template lang="html">
+  <div class="">
+    <h3 class="desk-code title is-4">Desk #<strong>{{ desk.code }}</strong></h3>
+
+    <div v-if="!!editingDesk">
+      <label class="label">Desk Code</label>
+      <p class="control">
+        <input type="text"
+          class="input"
+          v-model="editingDesk.code"
+          @keyup.enter="commitEdit"
+          ref="deskCode">
+      </p>
+
+      <p class="control">
+        <button class="button is-primary" @click="commitEdit">Update</button>
+        <button class="button is-link" @click="cancelEdit">Cancel</button>
+      </p>
+    </div>
+
+    <p class="control has-addons action-buttons" v-show="!editingDesk">
+
+      <button class="button" @click="startEdit">
+        <span class="icon is-small">
+          <i class="fa fa-pencil"></i>
+        </span>
+        <span>Edit</span>
+      </button>
+
+      <button class="button" @click="startRemove()">
+        <span class="icon is-small">
+          <i class="fa fa-trash"></i>
+        </span>
+        <span>Remove</span>
+      </button>
     </p>
   </div>
 </template>
 
 <script>
 import _ from 'lodash';
-import * as types from 'store/types';
+import { UPDATE_DESK, DELETE_DESK } from 'store/types';
 
 export default {
-  name: 'desk-detail-panel',
-  props: [ 'desk', 'employee', 'fieldOptions', 'panelOptions', 'options' ],
+  props: ['desk'],
+
   data() {
     return {
-      readonly: false,
-      fields: {
-        deskCode: { mode: { editing: false } },
-        employeeId: { mode: { editing: false } },
-        firstName: { mode: { editing: false } },
-        lastName: { mode: { editing: false } },
-      },
+      editingDesk: null
     };
   },
-  computed: {
-    deskCode() {
-      return this.desk ? this.desk.code : '';
-    },
-    employeeId() {
-      return ''; // FIXME
-    },
-    firstName() {
-      return ''; // FIXME
-    },
-    lastName() {
-      return ''; // FIXME
-    },
-    panelHidden() {
-      return this.actualPanelOptions.hidden;
-    },
-    panelReadonly() {
-      if (this.actualPanelOptions.readonly) {
-        return true;
-      }
 
-      return !_.some(this.actualOptions, function (option) {
-        return option.hidden !== true && option.readonly !== true;
-      });
-    },
-    actualPanelOptions() {
-      var defaultOptions = { hidden: false, readonly: false };
-      return _.merge(defaultOptions, this.panelOptions);
-    },
-    actualFieldOptions() {
-      var defaultOptions = {
-        deskCode: { hidden: false, readonly: false },
-        employeeId: { hidden: false, readonly: false },
-        firstName: { hidden: false, readonly: false },
-        lastName: { hidden: false, readonly: false },
-      };
-      return _.merge(defaultOptions, this.fieldOptions);
-    },
-    actualOptions() {
-      var defaultOptions = {
-        panel: { hidden: false, readonly: false },
-        fields: {
-          deskCode: { hidden: false, readonly: false },
-          employeeId: { hidden: false, readonly: false },
-          firstName: { hidden: false, readonly: false },
-          lastName: { hidden: false, readonly: false },
-        }
-      };
-      return _.merge(defaultOptions, this.options);
-    }
-  },
   methods: {
-    onSubmit: function (event) {
-      this.saveDeskInfo();
-    },
-    onCancel: function (event) {
-      this.discardChange();
-    },
-    onClickInput: function (event) {
-      var fieldName = this.getFieldName(event.target);
-      this.setEditingMode(fieldName, true);
-    },
-    onBlurInput: function (event) {
-      var fieldName = this.getFieldName(event.target);
-      this.setEditingMode(fieldName, false);
-    },
-    saveDeskInfo: function () {
-      var updatedDesks = _.assignIn(this.desk, {
-        code: this.deskCode
+    startEdit() {
+      this.editingDesk = _.cloneDeep(this.desk);
+
+      this.$nextTick(() => {
+        this.$refs.deskCode.focus();
       });
+    },
 
-      this.$store.dispatch(types.UPDATE_DESKS, updatedDesk);
+    cancelEdit() {
+      this.editingDesk = null;
     },
-    setEditingMode: function (fieldName, value) {
-      this.getFieldMode(fieldName).editing = value;
+
+    commitEdit() {
+      this.$store.dispatch(UPDATE_DESK, { desk: this.editingDesk });
+      this.editingDesk = null;
     },
-    getFieldMode: function (fieldName) {
-      return this.fields[fieldName].mode;
-    },
-    getActualFieldOption: function (fieldName) {
-      return this.actualFieldOptions[fieldName];
-    },
-    getFieldName: function (target) {
-      return target.name;
-    },
-    computeFieldHidden: function (fieldName) {
-      return this.getActualFieldOption(fieldName).hidden;
-    },
-    computeInputReadonly: function (fieldName) {
-      // The flag readonly of the panel has highest priority
-      // Every field is in readonly mode regardless of the readonly option of itself
-      if (this.panelReadonly) {
-        return true;
+
+    startRemove() {
+      if (confirm(`Do you want to remove desk: ${this.desk.code}?`)) {
+        this.$store
+          .dispatch(DELETE_DESK, { desk: this.desk })
+          .catch(() => {
+            alert('Cannot remove this desk.');
+          });
       }
-
-      return this.getActualFieldOption(fieldName).readonly || !this.getFieldMode(fieldName).editing;
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style scoped>
-  label {
-    font-weight: bold;
-  }
-  label:after {
-    content: ":";
-  }
-  input[readonly] {
-    background: none;
-    border: none;
-    box-shadow: none;
-  }
+<style lang="css">
 </style>

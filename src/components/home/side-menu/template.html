@@ -1,0 +1,9 @@
+<aside class="sidebar">
+  <ul>
+    <li v-for="menu in menus" @click="select(menu)">
+      <span class="icon" :class="{ 'is-active': selectedMenu === menu.name }">
+        <i class="fa" :class="menu.icon"></i>
+      </span>
+    </li>
+  </ul>
+</aside>

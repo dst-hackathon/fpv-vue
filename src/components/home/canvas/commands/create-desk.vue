@@ -1,20 +1,40 @@
 <template lang="html">
-  <button class="button" :class="{ 'is-primary': active }">
-    <span class="icon">
-      <i class="fa fa-plus"></i>
-    </span>
-    <span>Add Desk</span>
-  </button>
+  <div class="">
+    <button class="button" :class="{ 'is-primary': active }" @click="$emit('click')">
+      <span class="icon">
+        <i class="fa fa-plus"></i>
+      </span>
+      <span>Add Desk</span>
+    </button>
+  </div>
 </template>
 
 <script>
-import { CREATE_DESK, SHOW_MODAL } from 'store/floor-management/types';
+import Vue from 'vue';
+import _ from 'lodash';
+import { CREATE_DESK } from 'store/types';
 import DeskShape from 'components/fabric/desk.fabric';
+import DeskModal from './desk-modal';
+
 export default {
-  props: ['title', 'active', 'canvas'],
+  components: {
+    DeskModal,
+  },
+
+  props: ['title', 'active', 'canvas', 'floor'],
+  data() {
+    return {
+      pendingDesk: null,
+    };
+  },
+
   watch: {
-    active(active) {
-      if (active) {
+    canvas(canvas) {
+      if (!canvas) {
+        return;
+      }
+
+      if (this.active) {
         this.activate();
       } else {
         this.deactivate();
@@ -27,18 +47,15 @@ export default {
       'mouse:down': (args) => this.canvasMousedown(args),
       'mouse:up': (args) => this.canvasMouseup(args),
       'mouse:move': (args) => this.canvasMousemove(args),
-      'object:added': (args) => this.canvasObjectAdded(args),
     };
   },
 
   methods: {
     activate() {
-      this.canvas.selection = false;
       this.canvas.on(this.canvasEvents);
     },
 
     deactivate() {
-      this.canvas.selection = true;
       this.canvas.off(this.canvasEvents);
     },
 
@@ -58,23 +75,23 @@ export default {
       if (!deskOverlay) {
         return;
       }
-      var desk = deskOverlay.toEntity();
-      this.deskOverlay.remove();
-      this.deskOverlay = null;
-      
-      //Ask for Desk Code
-      this.$store.dispatch(SHOW_MODAL).then( (a) => {
-        this.$store.dispatch(CREATE_DESK, {
-          floorId: 1,
-          deskCode: this.$store.state.floorManagement.modal.deskCode,
-          desk: desk,
-        });
-      });
 
-    },
+      if(deskOverlay.width < 10 || deskOverlay.height < 10)
+      {
+        //desk too small, probably user click canvas but not want to add a desk
+        this.deskOverlay.remove();
+        this.deskOverlay = null;
+        return;
+      }
 
-    canvasObjectAdded(e) {
-      console.log(e);
+      this.pendingDesk = {
+        ...this.deskOverlay.toEntity(),
+
+        code: '',
+        floor: _.pick(this.floor, 'id')
+      };
+
+      this.showModal();
     },
 
     canvasMousemove({ e }) {
@@ -95,6 +112,36 @@ export default {
 
       this.deskOverlay.setCoords();
       this.canvas.renderAll();
+    },
+
+    showModal: function() {
+      const Modal = Vue.extend(DeskModal);
+      const modal = this.modal = new Modal({
+        propsData: {
+          desk: this.pendingDesk
+        }
+      });
+
+      modal.$once('ok', this.addPendingDesk);
+      modal.$once('close', () => {
+        this.clearPendingDesk();
+
+        this.$nextTick().then(() => modal.$destroy());
+      });
+
+      document.getElementById('modals').appendChild(modal.$mount().$el);
+    },
+
+    addPendingDesk() {
+      this.$store.dispatch(CREATE_DESK, {
+        desk: this.pendingDesk
+      });
+    },
+
+    clearPendingDesk() {
+      this.deskOverlay.remove();
+      this.deskOverlay = null;
+      this.pendingDesk = null;
     }
   }
 };

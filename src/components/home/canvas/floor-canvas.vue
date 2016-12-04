@@ -1,77 +1,106 @@
 <template lang="html">
-  <div class="canvas-wrapper" ref="wrapper" :style="{ height }">
+  <div class="canvas-wrapper" ref="wrapper">
     <canvas ref="canvas">
     </canvas>
 
     <div class="desks">
-      <desk v-for="desk in desks" :desk="desk" :modificationLocked="readOnly" @invalidated="invalidate()" @created="deskCreated($event)" ref="desks" :key="desk.id"/>
+      <desk v-for="desk in effectiveDesks"
+        class="draggable"
+        ref="desks"
+        :desk="desk"
+        :key="desk.id"
+        :modificationLocked="readOnly"
+        :showOwner="showOwner"
+        @invalidated="invalidate()"
+        @created="deskCreated($event)"
+        @selected="$emit('deskSelected', $event)"
+        @deselected="$emit('deskDeselected', $event)" />
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import _ from 'lodash';
 import Canvas from 'components/fabric/canvas.fabric';
+import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import Desk from './desk';
+import api from 'api';
+
+import ScrollableCanvas from './mixins/scrollable-canvas';
+import ResponsiveCanvas from './mixins/responsive-canvas';
+import DragDropCanvas from './mixins/dnd-canvas';
 
 export default {
+  mixins: [
+    ScrollableCanvas,
+    ResponsiveCanvas,
+    DragDropCanvas({
+      findDeskById(id) {
+        return _.find(this.effectiveDesks, { id: id });
+      }
+    })
+  ],
+
   components: {
     Desk
   },
 
-  props: ['floor', 'top', 'readOnly'],
-
-  data() {
-    return {
-      height: null,
-      image: null,
-      imageContentType: null,
-    };
-  },
+  props: ['readOnly', 'floor', 'showOwner', 'changeset'],
 
   computed: {
-    desks() {
-      return _.get(this, 'floor.desks');
+    effectiveDesks() {
+      const currentDesks = this.floor && this.floor.desks;
+      const futureDesks = resolveFutureDesks(currentDesks, this.changeset);
+
+      return futureDesks;
     }
   },
 
   watch: {
-    floor(floor) {
-      // TODO: create api layer?
-      axios.get(`/api/floors/${floor.id}/image`)
-        .then(({ data }) => {
-          this.image = data.image;
-          this.imageContentType = data.imageContentType;
-        });
-    }
+    effectiveDesks(effectiveDesks) {
+      const activeObject = this.canvas.getActiveObject() || {};
+      const activeEntityId = activeObject.entity && activeObject.entity.id;
+      const selectedDesk = _.find(effectiveDesks, { id: activeEntityId });
+
+      if (selectedDesk) {
+        this.$emit('deskSelected', { desk: selectedDesk });
+      }
+    },
   },
 
   mounted() {
     this.canvas = new Canvas(this.$refs.canvas, {
-      uniScaleTransform: true
+      uniScaleTransform: true,
+      selection: false,
+      hoverCursor: this.readOnly ? 'pointer' : 'move'
     });
 
-    this.$watch('image', this.updateImage, {
+    this.$watch('floor', this.updateImage, {
       immediate: true
     });
 
     this.$emit('ready', {
       canvas: this.canvas
     });
-
-    this.height = `${this.$refs.wrapper.clientHeight - this.top}px`;
   },
 
   methods: {
-    updateImage(image) {
-      if (!this.image) {
+    updateImage(floor) {
+      const floorId = floor && floor.id;
+
+      if (!floorId) {
+        this.canvas
+          .setBackgroundImage(null)
+          .setDimensions({
+            width: 0,
+            height: 0
+          });
+
+        this.invalidate();
         return;
       }
 
-      const imageUrl = `data:${this.imageContentType};base64,${this.image}`;
-
-      this.canvas.setBackgroundImage(imageUrl, (img) => {
+      this.canvas.setBackgroundImage(api.images.floor(floorId), (img) => {
         if (img) {
           this.canvas.setDimensions({
             width: img.width,
@@ -80,6 +109,7 @@ export default {
         }
 
         this.invalidate();
+        this.$emit('imageLoaded');
       });
     },
 
@@ -91,18 +121,21 @@ export default {
       // use nextTick to wait for this.canvas as it requires mounting the DOM element
       this.$nextTick(() => {
         this.canvas.add(shape);
+
+        if (this.scrollTarget && shape.entity.id === this.scrollTarget.id) {
+          this.canvas.setActiveObject(shape);
+        }
       });
-    }
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
   .canvas-wrapper {
-    // need to manually set the top margin
-    // height: calc(100vh - 110px);
     height: 100vh;
     max-height: 100%;
     overflow: auto;
+    position: relative;
   }
 </style>

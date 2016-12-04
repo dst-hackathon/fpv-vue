@@ -3,44 +3,62 @@ import Vuex from 'vuex';
 import _ from 'lodash';
 import actions from './actions';
 import mutations from './mutations';
-import floorManagement from './floor-management';
-import desksMock from '../../static/json/desks-mock.json';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
 
-  modules: {
-    floorManagement
-  },
-
   state: {
     plans: [{
-      id: 1,
       buildings: [{
-        id: 1,
         floors: [{
-          ...desksMock[0].floor,
-
-          desks: _.map(desksMock, desk => _.omit(desk, 'image'))
+          // desk
         }]
       }]
     }],
+
     login: {},
 
-    masterPlanId: null,
+    selection: {
+      planId: null,
+      buildingId: null,
+      floorId: null,
+    }
+  },
+
+  getters: {
+    buildings: function(state) {
+      return _.flatMap(state.plans, 'buildings');
+    },
+
+    floors: function(state, getters) {
+      return _.flatMap(getters.buildings, 'floors');
+    },
+
+    desks: function(state, getters) {
+      return _.flatMap(getters.floors, 'desks');
+    },
+
+    selectedPlan: function(state) {
+      return _.find(state.plans, { id: state.selection.planId });
+    },
+
+    selectedBuilding: function(state, getters) {
+      const selectedPlan = getters.selectedPlan;
+      const buildings = selectedPlan && selectedPlan.buildings;
+
+      return _.find(buildings, { id: state.selection.buildingId });
+    },
+
+    selectedFloor: function(state, getters) {
+      const selectedBuilding = getters.selectedBuilding;
+      const floors = selectedBuilding && selectedBuilding.floors;
+
+      return _.find(floors, { id: state.selection.floorId });
+    }
   },
 
   actions,
   mutations,
-
-  getters: {
-    masterPlan(state) {
-      const plans = state.plans;
-      const masterPlanId = state.masterPlanId;
-
-      return _.find(plans, { id: masterPlanId});
-    }
-  }
 });

@@ -1,5 +1,8 @@
 <template lang="html">
-  <div>
+  <div class="desk" :style="deskStyle" @click="onClick" :data-id="desk.id">
+    <div class="name" v-if="showOwner && owner">
+      {{ ownerTag }}
+    </div>
   </div>
 </template>
 
@@ -14,7 +17,21 @@ export default {
     },
     desk: {
       default: {}
+    },
+    showOwner: {
+      type: Boolean
     }
+  },
+
+  data() {
+    return {
+      deskStyle: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+      }
+    };
   },
 
   computed: {
@@ -39,6 +56,14 @@ export default {
         left: this.desk.x,
         top: this.desk.y
       };
+    },
+
+    owner() {
+      return this.desk.employee;
+    },
+
+    ownerTag() {
+      return this.owner && this.owner.firstname || '';
     }
   },
 
@@ -55,67 +80,98 @@ export default {
       this.deskShape.setAbsolutePosition(position);
 
       this.$emit('invalidated');
-    }
+    },
+
+    // TODO: revise this
+    desk: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {
+          this.deskShape.entity = this.desk;
+
+          this.updateMaskPosition();
+        });
+      }
+    },
   },
 
   methods: {
-    lockPosition() {
-      this.deskShape.lockMovementX = true;
-      this.deskShape.lockMovementY = true;
+    updateMaskPosition() {
+      if (!this.showOwner) {
+        return;
+      }
+
+      // position desk mask
+      const { left: shapeLeft, top: shapeTop } = this.deskShape.getAbsolutePosition();
+      const shapeWidth = this.deskShape.getWidth();
+      const shapeHeight = this.deskShape.getHeight();
+
+      this.deskStyle.left = `${shapeLeft}px`;
+      this.deskStyle.top = `${shapeTop}px`;
+      this.deskStyle.width = `${shapeWidth}px`;
+      this.deskStyle.height = `${shapeHeight}px`;
     },
 
-    lockSize() {
-      this.deskShape.lockScalingX = true;
-      this.deskShape.lockScalingY = true;
-      this.deskShape.setControlsVisibility({
-         mt: false,
-         mb: false,
-         ml: false,
-         mr: false,
-         bl: false,
-         br: false,
-         tl: false,
-         tr: false,
-       });
-    },
+    onClick() {
+      const canvas = this.deskShape.canvas;
 
-    lockRotation() {
-      this.deskShape.lockRotation = true;
-      this.deskShape.setControlsVisibility({
-         mtr: false,
-      });
+      canvas.setActiveObject(this.deskShape);
     }
   },
 
   created() {
     this.deskShape = new DeskShape({
-      id: this.desk.id,
+      entity: this.desk,
+
+      hasControls: !this.modificationLocked,
+      lockMovementX: this.modificationLocked,
+      lockMovementY: this.modificationLocked,
 
       ...this.dimensions,
-      ...this.position
+      ...this.position,
     });
 
-    // var person = new fabric.Image.fromURL('/static/img/location.png', (img) => {
-    //   img.setLeft(this.position.left + this.dimensions.width/2 - 25);
-    //   img.setTop(this.position.top - this.dimensions.height/2);
-    //   img.setWidth(50);
-    //   img.setHeight(50);
-    //   var group = new fabric.Group([this.deskShape, img]);
-    //   this.$emit('created', { shape: group });
-    // });
+    if (this.showOwner) {
+      this.updateMaskPosition();
 
-    this.$emit('created', { shape: this.deskShape });
-
-    if(this.modificationLocked) {
-      this.lockPosition();
-      this.lockSize();
-      this.lockRotation();
+      this.deskShape.on('moving', () => {
+        this.updateMaskPosition();
+      });
     }
 
+    this.deskShape.on('selected', () => {
+      this.$emit('selected', {
+        desk: this.desk,
+      });
+    });
+
+    this.deskShape.on('deselected', () => {
+      this.$emit('deselected', {
+        desk: this.desk,
+      });
+    });
+
+    this.$emit('created', { shape: this.deskShape });
   },
 
   destroyed() {
     this.deskShape.remove();
-  }
+  },
 };
 </script>
+
+<style>
+  .desk {
+    position: absolute;
+    cursor: pointer;
+  }
+
+  .name {
+    background: black;
+    color: white;
+    padding: 5px;
+
+    font-size: 10px;
+    transform: perspective(1px) scale(0.9);
+  }
+</style>
