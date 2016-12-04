@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import * as types from 'store/types';
-import { findChangesetById } from './helpers';
+import { findChangesetById } from 'store/helpers';
 
 export default {
   [types.CREATE_CHANGESET_ITEM]: function(state, { changesetItem }) {

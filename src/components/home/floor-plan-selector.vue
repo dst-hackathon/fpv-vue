@@ -1,13 +1,6 @@
 <template lang="html">
 <div class="component">
-  <dropdown
-    v-model.number="planId"
-    :options="plans"
-    label="Plan"
-    className="plan"
-    valueProp="id"
-    textProp="name"
-    @input="reset('buildingId')" />
+  <plan-selector v-model="planId" />
 
   <dropdown
     v-model.number="buildingId"
@@ -15,8 +8,7 @@
     label="Building"
     className="building"
     valueProp="id"
-    textProp="name"
-    @input="reset('floorId')" />
+    textProp="name" />
 
   <dropdown
     v-model.number="floorId"
@@ -31,12 +23,14 @@
 
 <script>
 import _ from 'lodash';
-import Dropdown from './dropdown';
+import Dropdown from 'components/dropdown';
+import PlanSelector from 'components/home/plan-selector';
 import { SELECT_PLAN, SELECT_BUILDING, SELECT_FLOOR } from 'store/types';
 
 export default {
   components: {
     Dropdown,
+    PlanSelector,
   },
 
   computed: {
@@ -81,12 +75,6 @@ export default {
       set(floorId) {
         this.$store.dispatch(SELECT_FLOOR, { floorId });
       }
-    },
-  },
-
-  methods: {
-    reset(prop) {
-      this[prop] = null;
     },
   },
 };

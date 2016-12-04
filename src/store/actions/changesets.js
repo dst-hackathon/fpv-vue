@@ -1,11 +1,13 @@
-import uuid from 'uuid/v1';
 import moment from 'moment';
 import api from 'api';
 import * as types from 'store/types';
+import { findPlanById } from 'store/helpers';
+import createNewChangeset from 'store/helpers/create-new-changeset';
 
 export default {
-  [types.FETCH_PLAN_CHANGESETS]: async function({ commit }, { planId }) {
-    const changesets = await api.changesets.find({ planId });
+  [types.FETCH_PLAN_CHANGESETS]: async function({ state, commit }, { planId }) {
+    const plan = findPlanById(state, planId);
+    const changesets = plan.changesets || await api.changesets.find({ planId });
 
     commit(types.UPDATE_PLAN_CHANGESETS, {
       planId,
@@ -17,9 +19,12 @@ export default {
   },
 
   [types.FETCH_PLAN_CHANGESET]: async function({ commit, state, dispatch }, { planId, effectiveDate }) {
-    const changesets = await dispatch(types.FETCH_PLAN_CHANGESETS, { planId });
+    const plan = findPlanById(state, planId);
+    const changesets = plan.changesets || await dispatch(types.FETCH_PLAN_CHANGESETS, { planId });
     const changeset = _.find(changesets, changeset => {
-      return moment(changeset.effectiveDate).isSame(effectiveDate);
+      const sameDay = moment(changeset.effectiveDate).isSame(effectiveDate);
+
+      return !changeset.isNew && sameDay;
     });
 
     if (changeset) {
@@ -29,16 +34,10 @@ export default {
       return changeset;
     }
     else {
-      const newChangeset = {
-        effectiveDate: effectiveDate,
-        status: 'IN_PROGRESS',
-        plan: {
-          id: planId
-        },
-        changesetItems: [],
-        id: uuid(),
-        isNew: true,
-      };
+      const newChangeset = createNewChangeset({
+        effectiveDate,
+        planId
+      });
 
       commit(types.UPDATE_PLAN_CHANGESETS, {
         planId,

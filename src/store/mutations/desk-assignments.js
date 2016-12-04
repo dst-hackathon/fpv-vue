@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import * as types from 'store/types';
-import { findFloorById } from './helpers';
+import { findFloorById } from 'store/helpers';
 
 export default {
   [types.UPDATE_DESK_ASSIGNMENTS]: function(state, { floorId, assignments }) {

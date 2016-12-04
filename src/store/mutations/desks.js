@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as types from 'store/types';
-import { findFloorById, findDeskById } from './helpers';
+import { findFloorById, findDeskById } from 'store/helpers';
 
 export default {
   [types.CREATE_DESK]: function(state, { desk }) {

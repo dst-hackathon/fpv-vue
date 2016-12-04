@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import * as types from 'store/types';
-import { findPlanById } from './helpers';
+import { findPlanById } from 'store/helpers';
 
 export default {
   [types.UPDATE_PLAN_CHANGESETS]: function(state, { planId, changesets }) {

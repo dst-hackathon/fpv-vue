@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout :showRight="showOwnerInfo || showActivityInfo">
+  <layout :showRight="hasSelectedDesk || hasActivities">
     <div slot="left">
       <div>
         <h4 class="title is-4">Manage Plan</h4>
@@ -13,7 +13,7 @@
 
     <div slot="right">
       <desk-assignment-panel
-        v-show="showOwnerInfo"
+        v-show="hasSelectedDesk"
         :desk="selectedDesk"
         :style="{ 'margin-bottom': '20px' }"
         :editable="effectiveDateIsFuture"
@@ -23,7 +23,7 @@
       <plan-activity
         :activities="activities"
         @scrollTo="scrollTo"
-        v-show="!showOwnerInfo && showActivityInfo" />
+        v-show="!hasSelectedDesk && hasActivities" />
     </div>
 
     <div>
@@ -54,7 +54,8 @@ import Datepicker from './datepicker';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
-import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
+import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
+import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
 
 export default {
 
@@ -94,11 +95,11 @@ export default {
       return this.changeset && this.changeset.changesetItems || [];
     },
 
-    showOwnerInfo() {
+    hasSelectedDesk() {
       return this.selectedDesk;
     },
 
-    showActivityInfo() {
+    hasActivities() {
       return this.activities.length;
     },
 
@@ -137,7 +138,7 @@ export default {
       if (deskId === targetId) {
         this.scrollTarget = null;
       }
-    }
+    },
   },
 
   created() {
@@ -193,8 +194,8 @@ export default {
       const floor = desk.floor;
       const building = floor.building;
 
-      await this.$store.dispatch("SELECT_FLOOR", { floorId: floor.id });
       await this.$store.dispatch("SELECT_BUILDING", { buildingId: building.id });
+      await this.$store.dispatch("SELECT_FLOOR", { floorId: floor.id });
 
       // get desk from state as a desk in passed from activity panel is a clone.
       const desks = this.$store.getters.desks;
