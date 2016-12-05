@@ -72,7 +72,9 @@ export default function (config) {
       },
 
       onDeskDropOut(el, container, source) {
-        this.dragDropSameSource = (container !== source);
+        if (container === source) {
+          this.dragDropSameSource = false;
+        }
       }
     }
   };
