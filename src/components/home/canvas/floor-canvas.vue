@@ -41,6 +41,22 @@ export default {
     })
   ],
 
+  created() {
+    const one = DragDropCanvas({
+      findDeskById(id) {
+        return _.find(this.effectiveDesks, { id: id });
+      }
+    });
+
+    const two = DragDropCanvas({
+      findDeskById(id) {
+        return _.find(this.effectiveDesks, { id: id });
+      }
+    });
+
+    debugger;
+  },
+
   components: {
     Desk
   },
