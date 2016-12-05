@@ -14,7 +14,8 @@ export default function compactChangeset(changeset) {
     return {
       employee: firstItem.employee,
       fromDesk: firstItem.fromDesk,
-      toDesk: lastItem.toDesk
+      toDesk: lastItem.toDesk,
+      items
     };
   });
 

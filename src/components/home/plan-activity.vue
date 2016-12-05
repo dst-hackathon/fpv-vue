@@ -35,6 +35,9 @@
             to <a @click.prevent="scrollTo(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
           </div>
         </div>
+
+        <slot name="footer" :activity="activity">
+        </slot>
       </div>
     </div>
   </div>
@@ -86,11 +89,9 @@
 
   .activity {
     border-bottom: 1px solid $grey-lighter;
-    padding-bottom: 5px;
-  }
+    margin: 0 -5px;
+    padding: 10px 5px;
 
-  .activity:not(:first-child) {
-    padding-top: 10px;
   }
 
   .activity-movement .icon {
