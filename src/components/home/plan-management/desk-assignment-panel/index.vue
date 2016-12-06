@@ -97,7 +97,7 @@
       },
 
       query: async function(query) {
-        if (query.length >= 2) {
+        if (query.length >= 1) {
           this.resultingOwners = await api.employees.search({ query }) || [];
         } else {
           this.resultingOwners = [];

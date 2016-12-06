@@ -4,21 +4,7 @@
 
     <div>
       <div v-for="activity in activities" class="activity">
-        <div class="media">
-          <figure class="media-left">
-            <p>
-              <img class="employee-image" :src="employeeImage(activity.employee)">
-            </p>
-          </figure>
-
-          <div class="media-content">
-            <div class="content">
-              <strong>{{ activity.employee.firstname }} {{ activity.employee.lastname }}</strong>
-              <br>
-              <span>{{ activity.employee.code }}</span>
-            </div>
-          </div>
-        </div>
+        <employee-info :employee="activity.employee" />
 
         <div class="activity-movement">
           <div v-if="activityType(activity) === 'assigned-to'">
@@ -45,14 +31,16 @@
 
 <script>
   import api from 'api';
+  import EmployeeInfo from 'components/home/employee-info';
 
   export default {
+    components: {
+      EmployeeInfo
+    },
+
     props: ['activities'],
 
     methods: {
-      employeeImage(employee) {
-        return api.images.employee(employee.id);
-      },
 
       activityType(activity) {
         if (!activity.fromDesk) {
@@ -80,12 +68,6 @@
 
 <style scoped lang="scss">
   @import '~bulma/sass/utilities/variables';
-
-  .employee-image {
-    height: 48px;
-    width: 48px;
-    object-fit: cover;
-  }
 
   .activity {
     border-bottom: 1px solid $grey-lighter;

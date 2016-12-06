@@ -8,6 +8,11 @@
         <label class="label">Effective Date</label>
         <datepicker v-model="effectiveDate"
           :minDate="new Date()" />
+
+        <div  v-if="!!selectedPlan">
+          <hr>
+          <employee-search @employeeClick="scrollToEmployeeDesk"/>
+        </div>
       </div>
     </div>
 
@@ -51,6 +56,7 @@ import FloorCanvas from 'components/home/canvas/floor-canvas';
 import DeskAssignmentPanel from './desk-assignment-panel';
 import PlanActivity from 'components/home/plan-activity';
 import Datepicker from './datepicker';
+import EmployeeSearch from 'components/home/employee-search';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
@@ -74,6 +80,7 @@ export default {
     DeskAssignmentPanel,
     PlanActivity,
     Datepicker,
+    EmployeeSearch,
   },
 
   computed: {
@@ -169,10 +176,7 @@ export default {
     },
 
     updateDeskOwner: async function({ desk: targetDesk, owner }) {
-      const recentOwnerActivity = _.findLast(this.activities, ['employee.id', owner.id]);
-      const ownerCurrentDesk = recentOwnerActivity ?
-        recentOwnerActivity.toDesk :
-        await this.findCurrentDesk({ owner });
+      const ownerCurrentDesk = await this.findCurrentDesk({ owner });
 
       this.$store.dispatch(ASSIGN_DESK_OWNER, {
         changeset: this.changeset,
@@ -184,10 +188,16 @@ export default {
     },
 
     findCurrentDesk: async function({ owner }) {
-      return await api.desks.findOne({
-        employeeId: owner.id,
-        planId: this.selectedPlan.id
-      });
+      const recentOwnerActivity = _.findLast(this.activities, ['employee.id', owner.id]);
+
+      if (recentOwnerActivity) {
+        return recentOwnerActivity.toDesk;
+      } else {
+        return await api.desks.findOne({
+          employeeId: owner.id,
+          planId: this.selectedPlan.id
+        });
+      }
     },
 
     scrollTo: async function({ desk }) {
@@ -200,6 +210,14 @@ export default {
       // get desk from state as a desk in passed from activity panel is a clone.
       const desks = this.$store.getters.desks;
       this.scrollTarget = _.find(desks, { id: desk.id });
+    },
+
+    scrollToEmployeeDesk: async function({ employee }) {
+      const desk = await this.findCurrentDesk({ owner: employee });
+
+      if (desk) {
+        this.scrollTo({ desk });
+      }
     }
   },
 };
