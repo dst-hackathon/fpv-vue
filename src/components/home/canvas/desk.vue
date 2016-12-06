@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="desk" :style="deskStyle" @click="onClick" :data-id="desk.id">
     <div class="name" v-if="showOwner && owner">
-      {{ ownerTag }}
+      <span>{{ ownerTag }}</span>
+      <br>
+      <span>{{ ownerPhone }}</span>
     </div>
   </div>
 </template>
@@ -64,6 +66,10 @@ export default {
 
     ownerTag() {
       return this.owner && this.owner.firstname || '';
+    },
+
+    ownerPhone() {
+      return this.owner && this.owner.work || '';
     }
   },
 
@@ -171,7 +177,6 @@ export default {
     color: white;
     padding: 5px;
 
-    font-size: 10px;
-    transform: perspective(1px) scale(0.9);
+    font-size: 14px;
   }
 </style>

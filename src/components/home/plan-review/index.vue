@@ -67,8 +67,8 @@
                 <td>{{ activity.employee.lastname }}</td>
                 <td>{{ activity.employee.work }}</td>
                 <td>{{ activity.employee.businessUnit }}</td>
-                <td>{{ deskCodeFor(activity.fromDesk) }}</td>
                 <td>{{ floorFor(activity.fromDesk) }}</td>
+                <td>{{ deskCodeFor(activity.fromDesk) }}</td>
                 <td>{{ deskCodeFor(activity.toDesk) }}</td>
               </tr>
             </tbody>
