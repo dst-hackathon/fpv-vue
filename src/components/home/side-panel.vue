@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="main" :style="style.main">
+  <div class="side-panel-container" :style="style.container">
     <div class="container is-fluid">
       <slot></slot>
     </div>
@@ -23,7 +23,7 @@ export default {
   computed: {
     style() {
       return {
-        main: {
+        container: {
           width: this.width,
           [this.location]: this.offset,
         }
@@ -34,15 +34,25 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  .main {
+  .side-panel-container {
     position: absolute;
     top: 50px;
     bottom: 0;
-    padding: 20px 0 50px;
+    padding-top: 20px;
     min-width: 45px;
     max-height: 100vh;
     background: #fff;
     box-shadow: 0 0 .5rem #9da5ab;
     z-index: 1000;
+  }
+
+  .container {
+    height: 100%;
+  }
+
+  .container > * {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 </style>

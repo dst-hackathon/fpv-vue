@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout :showRight="hasSelectedDesk || hasActivities">
+  <layout :showRight="!!selectedPlan">
     <div slot="left">
       <div>
         <h4 class="title is-4">Manage Plan</h4>
@@ -8,27 +8,23 @@
         <label class="label">Effective Date</label>
         <datepicker v-model="effectiveDate"
           :minDate="new Date()" />
-
-        <div  v-if="!!selectedPlan">
-          <hr>
-          <employee-search @employeeClick="scrollToEmployeeDesk"/>
-        </div>
       </div>
     </div>
 
     <div slot="right">
       <desk-assignment-panel
-        v-show="hasSelectedDesk"
+        v-show="selectedDesk"
         :desk="selectedDesk"
         :style="{ 'margin-bottom': '20px' }"
         :editable="effectiveDateIsFuture"
         @removeOwner="removeDeskOwner"
         @updateOwner="updateDeskOwner" />
 
-      <plan-activity
+      <action-tabs
+        v-show="!selectedDesk"
         :activities="activities"
-        @scrollTo="scrollTo"
-        v-show="!hasSelectedDesk && hasActivities" />
+        @clickEmployee="scrollToEmployee"
+        @clickDesk="scrollToDesk" />
     </div>
 
     <div>
@@ -54,9 +50,8 @@ import Layout from 'components/home/layout';
 import FloorPlanSelector from 'components/home/floor-plan-selector';
 import FloorCanvas from 'components/home/canvas/floor-canvas';
 import DeskAssignmentPanel from './desk-assignment-panel';
-import PlanActivity from 'components/home/plan-activity';
 import Datepicker from './datepicker';
-import EmployeeSearch from 'components/home/employee-search';
+import ActionTabs from './action-tabs';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
@@ -78,9 +73,8 @@ export default {
     FloorPlanSelector,
     FloorCanvas,
     DeskAssignmentPanel,
-    PlanActivity,
     Datepicker,
-    EmployeeSearch,
+    ActionTabs,
   },
 
   computed: {
@@ -100,14 +94,6 @@ export default {
 
     activities() {
       return this.changeset && this.changeset.changesetItems || [];
-    },
-
-    hasSelectedDesk() {
-      return this.selectedDesk;
-    },
-
-    hasActivities() {
-      return this.activities.length;
     },
 
     selectedPlan() {
@@ -200,7 +186,7 @@ export default {
       }
     },
 
-    scrollTo: async function({ desk }) {
+    scrollToDesk: async function({ desk }) {
       const floor = desk.floor;
       const building = floor.building;
 
@@ -212,16 +198,16 @@ export default {
       this.scrollTarget = _.find(desks, { id: desk.id });
     },
 
-    scrollToEmployeeDesk: async function({ employee }) {
+    scrollToEmployee: async function({ employee }) {
       const desk = await this.findCurrentDesk({ owner: employee });
 
       if (desk) {
-        this.scrollTo({ desk });
+        this.scrollToDesk({ desk });
       }
     }
   },
 };
 </script>
 
-<style lang="css">
+<style lang="scss">
 </style>

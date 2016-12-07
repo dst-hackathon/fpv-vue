@@ -1,30 +1,33 @@
 <template>
-  <div>
+  <div class="plan-activity">
     <h3 class="title is-4">Plan Activity</h3>
 
-    <div>
+    <div v-if="hasActivities" class="activities">
       <div v-for="activity in activities" class="activity">
         <employee-info :employee="activity.employee" />
 
         <div class="activity-movement">
           <div v-if="activityType(activity) === 'assigned-to'">
             <span class="icon is-small"><i class="fa fa-map-marker"></i></span>
-            assigned to <a @click.prevent="scrollTo(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
+            assigned to <a @click.prevent="clickDesk(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
           </div>
           <div v-else-if="activityType(activity) === 'removed-from'">
             <span class="icon is-small"><i class="fa fa-remove"></i></span>
-            removed from <a @click.prevent="scrollTo(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
+            removed from <a @click.prevent="clickDesk(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
           </div>
           <div v-else>
             <span class="icon is-small"><i class="fa fa-refresh"></i></span>
-            moved from <a @click.prevent="scrollTo(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
-            to <a @click.prevent="scrollTo(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
+            moved from <a @click.prevent="clickDesk(activity.fromDesk)">{{ deskCodeFor(activity.fromDesk ) }}</a>
+            to <a @click.prevent="clickDesk(activity.toDesk)">{{ deskCodeFor(activity.toDesk) }}</a>
           </div>
         </div>
 
         <slot name="footer" :activity="activity">
         </slot>
       </div>
+    </div>
+    <div v-else>
+      <h5 class="title is-5">No activity on this date.</h5>
     </div>
   </div>
 </template>
@@ -39,6 +42,12 @@
     },
 
     props: ['activities'],
+
+    computed: {
+      hasActivities() {
+        return this.activities && this.activities.length;
+      }
+    },
 
     methods: {
 
@@ -58,8 +67,8 @@
         return desk && desk.code;
       },
 
-      scrollTo(desk) {
-        this.$emit('scrollTo', { desk });
+      clickDesk(desk) {
+        this.$emit('clickDesk', { desk });
       }
     },
 
@@ -68,6 +77,16 @@
 
 <style scoped lang="scss">
   @import '~bulma/sass/utilities/variables';
+
+  .plan-activity {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .activities {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   .activity {
     border-bottom: 1px solid $grey-lighter;

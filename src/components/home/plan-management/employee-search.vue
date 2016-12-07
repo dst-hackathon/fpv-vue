@@ -1,17 +1,22 @@
 <template lang="html">
-  <div>
+  <div class="employee-search">
     <p class="control has-icon">
-      <input type="text" class="input"
+      <input type="text"
+      class="input"
       placeholder="Search for associates"
       v-model="query"
+      ref="input"
       @focus="$event.target.select()">
+
       <i class="fa fa-search"></i>
     </p>
 
-    <div v-for="employee in results"
-      @click="$emit('employeeClick', { employee })">
+    <div class="results">
+      <div v-for="employee in results"
+        @click="$emit('clickEmployee', { employee })">
 
       <employee-info :employee="employee" class="employee-info"/>
+    </div>
     </div>
   </div>
 </template>
@@ -25,6 +30,8 @@ export default {
   components: {
     EmployeeInfo,
   },
+
+  props: ['focus'],
 
   data() {
     return {
@@ -43,19 +50,32 @@ export default {
 
       api.employees.search({ query })
         .then(results => this.results = results);
-    }, 100)
-  },
+    }, 100),
 
-  methods: {
-    onClick() {
-      console.log('clicked');
+    focus(focus) {
+      if (focus) {
+        this.$refs.input.focus();
+      }
     }
-  }
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '~bulma/sass/utilities/variables';
+
+.employee-search {
+  display: flex;
+  flex-direction: column;
+}
+
 .employee-info {
   cursor: pointer;
+  border-bottom: 1px solid $grey-lighter;
+  padding: 5px 0px;
+}
+
+.results {
+  overflow-y: auto;
 }
 </style>
