@@ -56,7 +56,7 @@ export default function (config) {
         }
 
         const fromId = parseInt(from.dataset.id, 10);
-        const fromDesk = findDeskById(fromId);
+        const fromDesk = this.findDeskById(fromId);
 
         this.$emit('removeOwner', {
           desk: fromDesk

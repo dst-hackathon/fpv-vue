@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="desk" :style="deskStyle" @click="onClick" :data-id="desk.id">
-    <div class="name" v-if="showOwner && owner">
+    <div class="employee-tag" v-if="showOwner && owner">
       <span>{{ ownerTag }}</span>
       <br>
       <span>{{ ownerPhone }}</span>
@@ -166,13 +166,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .desk {
     position: absolute;
     cursor: pointer;
   }
 
-  .name {
+  .employee-tag {
     background: black;
     color: white;
     padding: 5px;

@@ -58,6 +58,8 @@ import compactChangeset from 'components/helpers/compact-changeset';
 import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
 import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
 
+import dragula from 'dragula';
+
 export default {
 
   data() {
@@ -109,6 +111,10 @@ export default {
 
       return moment(this.effectiveDate).isAfter(now);
     },
+
+    hasChangeset() {
+      return !!this.changeset;
+    }
   },
 
   watch: {
@@ -132,6 +138,14 @@ export default {
         this.scrollTarget = null;
       }
     },
+
+    hasChangeset(hasChangeset) {
+      if (hasChangeset) {
+        this.enableDragAndDrop();
+      } else {
+        this.disableDragAndDrop();
+      }
+    }
   },
 
   created() {
@@ -203,6 +217,44 @@ export default {
 
       if (desk) {
         this.scrollToDesk({ desk });
+      }
+    },
+
+    enableDragAndDrop() {
+      this.drake = dragula({
+        copy: true,
+        removeOnSpill: true,
+        isContainer(el) {
+          return el.classList.contains('desk') || el.classList.contains('employee-info');
+        },
+        moves(el) {
+          return el.classList.contains('draggable');
+        },
+        accepts(el, target) {
+          return target.classList.contains('desk');
+        }
+      });
+
+      this.drake.on('drop', (el, target) => {
+        el.classList.add('dropped');
+        el.remove();
+
+        const desks = this.$store.getters.desks;
+        const deskId = parseInt(target.dataset.id);
+        const desk = _.find(desks, { id: deskId });
+        const owner = JSON.parse(el.dataset.employee);
+
+        this.updateDeskOwner({
+          desk,
+          owner,
+        });
+      });
+    },
+
+    disableDragAndDrop() {
+      if (this.drake) {
+        this.drake.destroy();
+        this.drake = null;
       }
     }
   },
