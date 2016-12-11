@@ -41,6 +41,37 @@ html {
   /*override bulma's*/
   overflow-y: hidden;
 }
+
+@media print {
+  .app-nav {
+    display: none;
+  }
+
+  .route-outlet {
+    padding: 0 !important;
+
+    .sidebar {
+      display: none;
+    }
+
+    .side-panel-container {
+      display: none;
+    }
+
+    .content {
+      margin: 0 !important;
+    }
+  }
+
+  .paper-wrapper {
+    height: auto;
+    overflow-y: visible;
+
+    .paper {
+      margin: 0;
+    }
+  }
+}
 </style>
 
 <style scoped>

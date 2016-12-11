@@ -153,13 +153,10 @@ export default {
     },
 
     canChangeSelectedFloor: async function(canChange) {
-      console.log(canChange);
       if (!canChange) {
         this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
           message: `You are viewing today's plan. No changes are allowed.`
         });
-
-        console.log(this.noChangeWarning);
       } else if (this.noChangeWarning) {
         this.$store.dispatch(DISMISS_NOTIFICATION, {
           id: this.noChangeWarning.id

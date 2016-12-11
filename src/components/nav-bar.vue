@@ -1,5 +1,5 @@
 <template lang="html">
-  <nav class="nav has-shadow">
+  <nav class="app-nav nav has-shadow">
     <div class="container is-fluid">
       <div class="nav-left">
         <a class="nav-item is-brand" href="#">

@@ -220,9 +220,4 @@ export default {
     }
   }
 
-  .deny {
-    margin-left: 20px;
-    color: $red;
-  }
-
 </style>
