@@ -29,6 +29,24 @@
 
     <div class="paper-wrapper">
       <div class="paper">
+        <div class="paper-actions">
+          <!-- disabled for now, need feedback on when changeset can be made completed -->
+          <a class="paper-action"
+            v-show="changesetNotCompleted && false"
+            @click="markComplete">
+            <span class="icon is-small">
+              <i class="fa fa-check"></i>
+            </span>
+            <span>mark complete</span>
+          </a>
+
+          <a class="paper-action" @click="print">
+            <span class="icon is-small">
+              <i class="fa fa-print"></i>
+            </span>
+            <span>print</span>
+          </a>
+        </div>
         <div class="content">
           <h3><strong>Desk Moving Form</strong></h3>
 
@@ -74,7 +92,7 @@ import PlanSelector from 'components/home/plan-selector';
 import PlanActivity from 'components/home/plan-activity';
 import ChangesetList from 'components/home/plan-review/changeset-list';
 
-import { FETCH_PLAN_CHANGESETS, FETCH_CHANGESET_ITEMS } from 'store/types';
+import { FETCH_PLAN_CHANGESETS, FETCH_CHANGESET_ITEMS, COMPLETE_CHANGESET } from 'store/types';
 import sortChangesetsByDate from 'components/helpers/sort-changesets-by-date';
 import compactChangeset from 'components/helpers/compact-changeset';
 
@@ -143,7 +161,11 @@ export default {
       const emptyActivities = _.times(stubbedRows, _.constant(emptyActivity));
 
       return this.activities.concat(emptyActivities);
-    }
+    },
+
+    changesetNotCompleted() {
+      return this.changeset && this.changeset.status !== 'COMPLETE';
+    },
   },
 
   watch: {
@@ -172,11 +194,21 @@ export default {
     deskCodeFor(desk) {
       return desk && desk.code;
     },
+
+    print() {
+      window.print();
+    },
+
+    markComplete() {
+      this.$store.dispatch(COMPLETE_CHANGESET, {
+        changeset: this.changeset
+      });
+    }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~bulma/sass/utilities/variables';
 
   .paper-wrapper {
@@ -192,6 +224,24 @@ export default {
     margin: 30px auto;
     box-shadow: 0 0 .5rem #9da5ab;
     padding: 45px;
+    position: relative;
+  }
+
+  .paper-actions {
+    position: absolute;
+    right: 45px;
+    top: 15px;
+    display: flex;
+  }
+
+  .paper-action {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+
+    .icon {
+      margin-right: 5px;
+    }
   }
 
   .desk-moving.table {

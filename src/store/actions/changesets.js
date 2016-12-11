@@ -3,6 +3,7 @@ import api from 'api';
 import * as types from 'store/types';
 import { findPlanById } from 'store/helpers';
 import createNewChangeset from 'store/helpers/create-new-changeset';
+import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 
 export default {
   [types.FETCH_PLAN_CHANGESETS]: async function({ state, commit }, { planId }) {
@@ -44,5 +45,17 @@ export default {
         changesets: changesets.concat(newChangeset)
       });
     }
+  },
+
+  [types.COMPLETE_CHANGESET]: async function({ commit, getters }, { changeset }) {
+    await api.changesets.approve({ changesetId: changeset.id });
+
+    commit(types.COMPLETE_CHANGESET, { changeset });
+
+    const desks = resolveFutureDesks(getters.desks, changeset);
+
+    desks.forEach(desk => {
+      commit(types.UPDATE_DESK, { desk });
+    });
   },
 };

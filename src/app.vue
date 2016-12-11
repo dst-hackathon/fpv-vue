@@ -58,17 +58,21 @@ html {
       display: none;
     }
 
-    .content {
+    .layout-content {
       margin: 0 !important;
     }
   }
 
   .paper-wrapper {
-    height: auto;
-    overflow-y: visible;
+    height: auto !important;
+    overflow-y: visible !important;
 
     .paper {
       margin: 0;
+    }
+
+    .paper-actions {
+      display: none;
     }
   }
 }

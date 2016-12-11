@@ -66,7 +66,14 @@
       },
 
       deskCodeFor(desk) {
-        return desk && desk.code;
+        if (!desk) {
+          return '';
+        }
+
+        const desks = this.$store.getters.desks;
+        const stateDesk = _.find(desks, { id: desk.id });
+
+        return stateDesk.code;
       },
 
       clickDesk(desk) {
