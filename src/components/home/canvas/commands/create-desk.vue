@@ -29,12 +29,12 @@ export default {
   },
 
   watch: {
-    canvas(canvas) {
-      if (!canvas) {
-        return;
-      }
+    active(active) {
+      // if (!this.canvas) {
+      //   return;
+      // }
 
-      if (this.active) {
+      if (active) {
         this.activate();
       } else {
         this.deactivate();

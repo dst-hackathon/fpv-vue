@@ -165,7 +165,8 @@ export default {
 
       if (!canChange && !this.noChangeWarning) {
         this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
-          message: `You are viewing today's plan. No changes are allowed.`
+          message: `You are viewing today's plan. No changes are allowed.`,
+          route: this.$router.resolve('plan').resolved.path
         });
       }
     }
