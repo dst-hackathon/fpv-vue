@@ -43,6 +43,10 @@ html {
 }
 
 @media print {
+  html {
+    background-color: white;
+  }
+
   .app-nav {
     display: none;
   }
