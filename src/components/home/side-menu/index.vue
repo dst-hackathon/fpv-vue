@@ -8,16 +8,18 @@ export default {
   data() {
     return {
       menus,
-
-      selectedMenu: 'Plan'
     };
+  },
+
+  computed: {
+    selectedMenu() {
+      return this.$route.name;
+    }
   },
 
   methods: {
     select(menu) {
-      this.selectedMenu = menu.name;
-
-      this.$emit('input', this.selectedMenu);
+      this.$router.push({ name: menu.name });
     }
   }
 };

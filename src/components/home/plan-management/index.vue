@@ -57,6 +57,7 @@ import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
 import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
 import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
+import { BROADCAST_NOTIFICATION } from 'store/types';
 
 import dragula from 'dragula';
 
@@ -217,6 +218,11 @@ export default {
 
       if (desk) {
         this.scrollToDesk({ desk });
+      } else {
+        this.$store.dispatch(BROADCAST_NOTIFICATION, {
+          message: `${employee.firstname} ${employee.lastname} has not been assigned to any desk`,
+          timeout: 10000
+        });
       }
     },
 

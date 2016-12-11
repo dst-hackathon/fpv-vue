@@ -1,20 +1,14 @@
 import _ from 'lodash';
-import PlanManagement from 'components/home/plan-management';
-import BuildingManagement from 'components/home/building-management';
-import PlanReview from 'components/home/plan-review';
 
 const MENUS = [
   {
-    name: 'Plan',
-    component: PlanManagement,
+    name: 'plan',
     icon: 'fa-calendar'
   }, {
-    name: 'Building',
-    component: BuildingManagement,
+    name: 'building',
     icon: 'fa-building-o'
   }, {
-    name: 'Review',
-    component: PlanReview,
+    name: 'review',
     icon: 'fa-check'
   }
 ];

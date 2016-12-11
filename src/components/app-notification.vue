@@ -1,47 +1,40 @@
 <template lang="html">
-  <div class="notification is-primary" v-show="!!message">
+  <div class="notification is-info" v-show="!!notification">
     <button class="delete" @click="dismiss"></button>
-    {{ message }}
+    {{ notification && notification.message }}
   </div>
 </template>
 
 <script>
+import { DISMISS_NOTIFICATION } from 'store/types';
+
 export default {
   computed: {
-    routeMessages() {
+    notifications() {
       const notifications = this.$store.state.notifications;
-      const route = this.$route.name;
+      const route = this.$route.path;
       const routeNotifications = notifications[route];
 
-      if (routeNotifications) {
-        return routeNotifications.map(note => note.message);
-      }
-      else {
-        return [];
-      }
+      return routeNotifications || [];
     },
 
-    message() {
-      return this.routeMessages && this.routeMessages[0];
+    notification() {
+      return this.notifications[this.notifications.length - 1];
     },
   },
 
   methods: {
     dismiss() {
-      this.$store.dispatch('DISMISS_NOTIFICATION');
+      this.$store.dispatch(DISMISS_NOTIFICATION);
     }
   },
-
-  created() {
-    // this.$store.dispatch('BROADCAST_NOTIFICATION', { message: 'Hello World' });
-  }
 };
 </script>
 
 <style lang="scss" scoped>
 .notification {
     position: fixed;
-    top: 55px;
+    top: 65px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
