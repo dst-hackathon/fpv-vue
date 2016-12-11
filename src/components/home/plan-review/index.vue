@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout>
+  <layout :showRight="false">
     <div slot="left">
       <div>
         <h4 class="title is-4">Review Plan</h4>
@@ -10,34 +10,34 @@
           <hr>
 
           <div class="menu">
-            <p class="menu-label">Change Requests</p>
-            <ul class="menu-list">
-              <li v-for="changeset in changesets">
-                <a
-                  @click.prevent="selectChangeset(changeset)"
-                  :class="{ 'is-active': changesetId === changeset.id }">
-                  {{ changeset.effectiveDate }}
-                </a>
-              </li>
-            </ul>
+            <template v-if="pendingChangesets.length > 0">
+              <p class="menu-label">Pending Requests</p>
+              <ul class="menu-list">
+                <li v-for="changeset in pendingChangesets">
+                  <a
+                    @click.prevent="selectChangeset(changeset)"
+                    :class="{ 'is-active': changesetId === changeset.id }">
+                    {{ changeset.effectiveDate }}
+                  </a>
+                </li>
+              </ul>
+            </template>
+
+            <template v-if="completedChangesets.length > 0">
+              <p class="menu-label">Completed Requests</p>
+              <ul class="menu-list">
+                <li v-for="changeset in completedChangesets">
+                  <a
+                    @click.prevent="selectChangeset(changeset)"
+                    :class="{ 'is-active': changesetId === changeset.id }">
+                    {{ changeset.effectiveDate }}
+                  </a>
+                </li>
+              </ul>
+            </template>
           </div>
         </div>
       </div>
-    </div>
-
-    <div slot="right">
-      <plan-activity :activities="activities">
-
-        <template slot="footer" scope="props">
-          <a class="accept">
-            <span class="icon"><i class="fa fa-check"></i></span>
-          </a>
-
-          <a class="deny">
-            <span class="icon"><i class="fa fa-remove"></i></span>
-          </a>
-        </template>
-      </plan-activity>
     </div>
 
     <div class="paper-wrapper">
@@ -114,6 +114,14 @@ export default {
       // TODO: changesets with no change? i.e. moving in circle
 
       return sortedChangesets;
+    },
+
+    pendingChangesets() {
+      return _.reject(this.changesets, { status: 'COMPLETE' });
+    },
+
+    completedChangesets() {
+      return _.filter(this.changesets, { status: 'COMPLETE' });
     },
 
     changeset() {
