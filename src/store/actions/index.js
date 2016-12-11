@@ -5,6 +5,7 @@ import sessions from './sessions';
 import desks from './desks';
 import plans from './plans';
 import selections from './selections';
+import notifications from './notifications';
 
 export default {
   ...plans,
@@ -14,4 +15,5 @@ export default {
   ...changesetItems,
   ...sessions,
   ...selections,
+  ...notifications,
 };

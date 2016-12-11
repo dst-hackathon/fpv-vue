@@ -24,6 +24,11 @@ export default new Vuex.Store({
       planId: null,
       buildingId: null,
       floorId: null,
+    },
+
+    notifications: {
+      // key: route name
+      // value: messages for the route
     }
   },
 

@@ -7,19 +7,22 @@
   </section>
 
   <div id="modals">
-
   </div>
+
+  <app-notification />
 </div>
 </template>
 
 <script>
 import NavBar from 'components/nav-bar';
+import AppNotification from 'components/app-notification';
 import { FETCH_ALL } from 'store/types';
 
 export default {
   name: 'app',
   components: {
-    NavBar
+    NavBar,
+    AppNotification,
   },
 
   created() {
