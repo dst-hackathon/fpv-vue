@@ -37,9 +37,9 @@ export default {
 @import '~Flatpickr/dist/flatpickr.min';
 @import '~dragula/dist/dragula.min';
 
-html {
-  /*override bulma's*/
-  overflow-y: hidden;
+// flatpickr allocates some space causing scroll bar
+.flatpickr-calendar:not(.open) {
+  display: none;
 }
 
 @media print {
