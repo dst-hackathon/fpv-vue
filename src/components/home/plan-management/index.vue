@@ -55,6 +55,7 @@ import ActionTabs from './action-tabs';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
+import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
 import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
 import { BROADCAST_NOTIFICATION, DISMISS_NOTIFICATION } from 'store/types';
@@ -266,10 +267,14 @@ export default {
         el.classList.add('dropped');
         el.remove();
 
-        const desks = this.$store.getters.desks;
+        const desks = resolveFutureDesks(this.$store.getters.desks, this.changeset);
         const deskId = parseInt(target.dataset.id);
         const desk = _.find(desks, { id: deskId });
         const owner = JSON.parse(el.dataset.employee);
+
+        if (desk.employee && desk.employee.id === owner.id) {
+          return;
+        }
 
         this.updateDeskOwner({
           desk,

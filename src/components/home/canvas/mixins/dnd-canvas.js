@@ -55,12 +55,13 @@ export default function (config) {
           return;
         }
 
-        const fromId = parseInt(from.dataset.id, 10);
-        const fromDesk = this.findDeskById(fromId);
-
-        this.$emit('removeOwner', {
-          desk: fromDesk
-        });
+        // FIXME: should we enable owner remove?
+        // const fromId = parseInt(from.dataset.id, 10);
+        // const fromDesk = this.findDeskById(fromId);
+        //
+        // this.$emit('removeOwner', {
+        //   desk: fromDesk
+        // });
       },
 
       onDeskDropOver(el, container, source) {

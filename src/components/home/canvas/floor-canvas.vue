@@ -113,9 +113,9 @@ export default {
       });
     },
 
-    invalidate() {
+    invalidate: _.debounce(function() {
       this.canvas.renderAll();
-    },
+    }, 500),
 
     deskCreated({ shape }) {
       // use nextTick to wait for this.canvas as it requires mounting the DOM element
