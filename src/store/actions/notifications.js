@@ -21,6 +21,8 @@ export default {
         });
       }, timeout);
     }
+
+    return { id };
   },
 
   [types.DISMISS_NOTIFICATION]: function({ commit }, payload = {}) {

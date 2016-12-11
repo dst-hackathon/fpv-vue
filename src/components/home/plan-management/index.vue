@@ -57,7 +57,7 @@ import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
 import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
 import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
-import { BROADCAST_NOTIFICATION } from 'store/types';
+import { BROADCAST_NOTIFICATION, DISMISS_NOTIFICATION } from 'store/types';
 
 import dragula from 'dragula';
 
@@ -115,6 +115,10 @@ export default {
 
     hasChangeset() {
       return !!this.changeset;
+    },
+
+    canChangeSelectedFloor() {
+      return this.selectedFloor && this.effectiveDateIsFuture;
     }
   },
 
@@ -145,6 +149,23 @@ export default {
         this.enableDragAndDrop();
       } else {
         this.disableDragAndDrop();
+      }
+    },
+
+    canChangeSelectedFloor: async function(canChange) {
+      console.log(canChange);
+      if (!canChange) {
+        this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
+          message: `You are viewing today's plan. No changes are allowed.`
+        });
+
+        console.log(this.noChangeWarning);
+      } else if (this.noChangeWarning) {
+        this.$store.dispatch(DISMISS_NOTIFICATION, {
+          id: this.noChangeWarning.id
+        });
+
+        this.noChangeWarning = null;
       }
     }
   },
