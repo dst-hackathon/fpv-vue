@@ -153,16 +153,19 @@ export default {
     },
 
     canChangeSelectedFloor: async function(canChange) {
-      if (!canChange) {
-        this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
-          message: `You are viewing today's plan. No changes are allowed.`
-        });
-      } else if (this.noChangeWarning) {
+      if (canChange && this.noChangeWarning) {
         this.$store.dispatch(DISMISS_NOTIFICATION, {
           id: this.noChangeWarning.id
         });
 
         this.noChangeWarning = null;
+      }
+
+
+      if (!canChange && !this.noChangeWarning) {
+        this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
+          message: `You are viewing today's plan. No changes are allowed.`
+        });
       }
     }
   },
