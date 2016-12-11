@@ -15,7 +15,7 @@
       <div v-for="employee in results"
         @click="$emit('clickEmployee', { employee })">
 
-      <employee-info :employee="employee" class="employee-info"/>
+      <employee-info :employee="employee" />
     </div>
     </div>
   </div>
@@ -70,7 +70,6 @@ export default {
 }
 
 .employee-info {
-  cursor: pointer;
   border-bottom: 1px solid $grey-lighter;
   padding: 5px 0px;
 }

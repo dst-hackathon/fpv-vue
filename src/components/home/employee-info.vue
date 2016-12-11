@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="media">
+  <div class="employee-info media">
     <figure class="media-left draggable" :data-employee="employeeJson">
       <div class="employee-tag">
         <span>{{employee.firstname}}</span>
@@ -46,6 +46,10 @@ export default {
   .employee-tag {
     display: block;
   }
+}
+
+.employee-info {
+  cursor: pointer;
 }
 
 .employee-image {

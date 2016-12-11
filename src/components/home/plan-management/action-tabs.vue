@@ -8,6 +8,7 @@
     <plan-activity
       :activities="activities"
       @clickDesk="relayEvent('clickDesk', $event)"
+      @clickEmployee="relayEvent('clickEmployee', $event)"
       v-show="selectedTab === 'activity'" />
 
     <div class="tabs is-centered">

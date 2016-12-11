@@ -4,7 +4,9 @@
 
     <div v-if="hasActivities" class="activities">
       <div v-for="activity in activities" class="activity">
-        <employee-info :employee="activity.employee" />
+        <div @click="$emit('clickEmployee', { employee: activity.employee })">
+          <employee-info :employee="activity.employee" class="employee-info" />
+        </div>
 
         <div class="activity-movement">
           <div v-if="activityType(activity) === 'assigned-to'">
