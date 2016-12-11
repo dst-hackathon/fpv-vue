@@ -9,32 +9,19 @@
         <div v-if="changesets && changesets.length > 0">
           <hr>
 
-          <div class="menu">
-            <template v-if="pendingChangesets.length > 0">
-              <p class="menu-label">Pending Requests</p>
-              <ul class="menu-list">
-                <li v-for="changeset in pendingChangesets">
-                  <a
-                    @click.prevent="selectChangeset(changeset)"
-                    :class="{ 'is-active': changesetId === changeset.id }">
-                    {{ changeset.effectiveDate }}
-                  </a>
-                </li>
-              </ul>
-            </template>
+          <changeset-list
+            v-show="pendingChangesets.length > 0"
+            title="Pending Requests"
+            :changesets="pendingChangesets"
+            :selectedId="changesetId"
+            @selectChangeset="selectChangeset" />
 
-            <template v-if="completedChangesets.length > 0">
-              <p class="menu-label">Completed Requests</p>
-              <ul class="menu-list">
-                <li v-for="changeset in completedChangesets">
-                  <a
-                    @click.prevent="selectChangeset(changeset)"
-                    :class="{ 'is-active': changesetId === changeset.id }">
-                    {{ changeset.effectiveDate }}
-                  </a>
-                </li>
-              </ul>
-            </template>
+          <changeset-list
+            v-show="completedChangesets.length > 0"
+            title="Completed Requests"
+            :changesets="completedChangesets"
+            :selectedId="changesetId"
+            @selectChangeset="selectChangeset" />
           </div>
         </div>
       </div>
@@ -85,6 +72,7 @@ import _ from 'lodash';
 import Layout from 'components/home/layout';
 import PlanSelector from 'components/home/plan-selector';
 import PlanActivity from 'components/home/plan-activity';
+import ChangesetList from 'components/home/plan-review/changeset-list';
 
 import { FETCH_PLAN_CHANGESETS, FETCH_CHANGESET_ITEMS } from 'store/types';
 import sortChangesetsByDate from 'components/helpers/sort-changesets-by-date';
@@ -95,6 +83,7 @@ export default {
     Layout,
     PlanSelector,
     PlanActivity,
+    ChangesetList,
   },
 
   data() {
@@ -170,7 +159,7 @@ export default {
   },
 
   methods: {
-    selectChangeset(changeset) {
+    selectChangeset({ changeset }) {
       this.changesetId = changeset.id;
 
       this.$store.dispatch(FETCH_CHANGESET_ITEMS, { changesetId: this.changesetId });
