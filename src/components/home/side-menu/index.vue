@@ -3,6 +3,7 @@
 
 <script>
 import menus from './menus';
+import { LOGOUT } from 'store/types';
 
 export default {
   data() {
@@ -20,6 +21,10 @@ export default {
   methods: {
     select(menu) {
       this.$router.push({ name: menu.name });
+    },
+
+    logout() {
+      this.$store.dispatch(LOGOUT);
     }
   }
 };

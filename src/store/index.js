@@ -18,7 +18,11 @@ export default new Vuex.Store({
       }]
     }],
 
-    login: {},
+    login: {
+      status: '',
+      user: null,
+      authenticated: false,
+    },
 
     selection: {
       planId: null,

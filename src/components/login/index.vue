@@ -38,7 +38,7 @@ export default {
   methods: {
     login() {
       data.loginStatus = "Attempt to Login ...";
-      
+
       var _this = this;
       _this.$store.dispatch(types.LOGIN, {'username':data.username,'password': data.password })
       .then(function (response) {
@@ -49,7 +49,6 @@ export default {
       .then(function (response){
         console.log('login: fetch account data success');
         data.loginStatus = "";
-        _this.$router.push('home');
       })
       .catch(function (error) {
         if(error.response && error.response.status===500)
@@ -71,7 +70,7 @@ export default {
     cancel() {
       data.loginStatus = "";
       data.username = "";
-      data.password = "";      
+      data.password = "";
     }
   },
 };

@@ -13,4 +13,10 @@ export default {
       user: await api.accounts.getCurrent()
     });
   },
+
+  [types.LOGOUT]: async function({ commit }) {
+    await api.sessions.logout();
+
+    commit(types.LOGOUT);
+  }
 };

@@ -8,4 +8,8 @@ export default {
       'j_password': password,
     }));
   },
+
+  logout: async function() {
+    await axios.post('/api/logout');
+  }
 };

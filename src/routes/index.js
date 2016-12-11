@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store';
 import Login from 'components/login/index';
 import Home from 'components/home/index';
 import PlanManagement from 'components/home/plan-management';
@@ -12,10 +13,21 @@ const routes = [{
   name: 'login',
   path: '/login',
   component: Login,
+  beforeEnter: (to, from, next) => {
+    if (store.state.login.authenticated) {
+      next(false);
+    } else {
+      next();
+    }
+  }
 }, {
   name: 'home',
   path: '/home',
   redirect: 'plan',
+
+  meta: {
+    requiresAuth: true
+  },
 
   component: Home,
   children: [
@@ -40,6 +52,26 @@ const routes = [{
   redirect: 'login',
 }];
 
-export default new VueRouter({
+const router = new VueRouter({
   routes,
 });
+
+router.beforeEach(function redirectToLoginWhenNotAuth(to, from, next) {
+  const requiresAuth = to.matched.some(route => route.meta.requiresAuth);
+
+  if (requiresAuth && !store.state.login.authenticated) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
+
+store.watch(state => store.state.login.authenticated, function redirectToHomeWhenAuth(authenticated) {
+  if (authenticated) {
+    router.push({ name: 'home' });
+  } else {
+    router.push({ name: 'login' });
+  }
+});
+
+export default router;

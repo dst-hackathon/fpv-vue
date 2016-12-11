@@ -1,4 +1,5 @@
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const GET_CURRENT_ACCOUNT = 'GET_CURRENT_ACCOUNT';
 
 export const FETCH_ALL = 'FETCH_ALL';

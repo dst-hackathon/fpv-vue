@@ -1,8 +1,16 @@
 <aside class="sidebar">
-  <ul>
+  <ul class="main-actions">
     <li v-for="menu in menus" @click="select(menu)">
       <span class="icon" :class="{ 'is-active': selectedMenu === menu.name }">
         <i class="fa" :class="menu.icon"></i>
+      </span>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <span class="icon sign-out" @click="logout">
+        <i class="fa fa-sign-out"></i>
       </span>
     </li>
   </ul>
