@@ -59,16 +59,24 @@ const router = new VueRouter({
 router.beforeEach(function redirectToLoginWhenNotAuth(to, from, next) {
   const requiresAuth = to.matched.some(route => route.meta.requiresAuth);
 
+
   if (requiresAuth && !store.state.login.authenticated) {
-    next({ name: 'login' });
+    next({
+      name: 'login',
+      query: {
+        from: to.fullPath
+      }
+    });
   } else {
     next();
   }
 });
 
 store.watch(state => store.state.login.authenticated, function redirectToHomeWhenAuth(authenticated) {
+  const redirectFrom = store.state.route.query.from;
+
   if (authenticated) {
-    router.push({ name: 'home' });
+    router.push(redirectFrom || { name: 'home' });
   } else {
     router.push({ name: 'login' });
   }
