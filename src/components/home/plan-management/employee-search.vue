@@ -43,7 +43,7 @@ export default {
   watch: {
     query: _.debounce(function(query) {
       if (query.length < 1) {
-        this.results = [];
+        this.results = this.initialResults || [];
 
         return;
       }
@@ -58,6 +58,12 @@ export default {
       }
     }
   },
+
+  created: async function() {
+    this.results = this.initialResults = await api.employees.find({
+      sort: 'firstname'
+    });
+  }
 };
 </script>
 

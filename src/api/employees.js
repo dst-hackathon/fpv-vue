@@ -9,5 +9,17 @@ export default {
     });
 
     return employees;
+  },
+
+  find: async function({ page = 0, size = 30, sort } = {}) {
+    const { data: employees } = await axios.get(`/api/employees`, {
+      params: {
+        page,
+        size,
+        sort
+      }
+    });
+
+    return employees;
   }
 };
