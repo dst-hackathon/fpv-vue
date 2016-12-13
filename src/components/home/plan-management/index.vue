@@ -35,6 +35,7 @@
         :showOwner="true"
         :changeset="changeset"
         :enableDeskDrop="!!changeset"
+        :pannable="true"
         @deskSelected="selectedDesk = $event.desk"
         @deskDeselected="selectedDesk = null"
         @removeOwner="removeDeskOwner"

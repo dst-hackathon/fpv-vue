@@ -29,6 +29,7 @@ import api from 'api';
 import ScrollableCanvas from './mixins/scrollable-canvas';
 import ResponsiveCanvas from './mixins/responsive-canvas';
 import DragDropCanvas from './mixins/dnd-canvas';
+import PannableCanvas from './mixins/pannable-canvas';
 
 export default {
   mixins: [
@@ -38,7 +39,8 @@ export default {
       findDeskById(id) {
         return _.find(this.effectiveDesks, { id: id });
       }
-    })
+    }),
+    PannableCanvas,
   ],
 
   components: {
