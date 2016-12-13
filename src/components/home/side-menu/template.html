@@ -1,7 +1,10 @@
 <aside class="sidebar">
   <ul class="main-actions">
     <li v-for="menu in menus" @click="select(menu)">
-      <span class="icon" :class="{ 'is-active': selectedMenu === menu.name }">
+      <span
+        class="icon"
+        :class="{ 'is-active': selectedMenu === menu.name }"
+        :title="menu.title">
         <i class="fa" :class="menu.icon"></i>
       </span>
     </li>
@@ -9,7 +12,7 @@
 
   <ul>
     <li>
-      <span class="icon sign-out" @click="logout">
+      <span class="icon sign-out" @click="logout" title="Log Out">
         <i class="fa fa-sign-out"></i>
       </span>
     </li>

@@ -33,6 +33,7 @@ export default {
 
 <style lang="scss">
 @import '~tooltipster/dist/css/tooltipster.bundle';
+@import '~tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-borderless.min';
 // @import '~tooltipster-follower/dist/css/tooltipster-follower.min';
 @import '~Flatpickr/dist/flatpickr.min';
 @import '~dragula/dist/dragula.min';

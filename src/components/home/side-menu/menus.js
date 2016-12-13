@@ -3,13 +3,16 @@ import _ from 'lodash';
 const MENUS = [
   {
     name: 'plan',
-    icon: 'fa-calendar'
+    icon: 'fa-calendar',
+    title: 'Plan Management'
   }, {
     name: 'building',
-    icon: 'fa-building-o'
+    icon: 'fa-building-o',
+    title: 'Building Management'
   }, {
     name: 'review',
-    icon: 'fa-check'
+    icon: 'fa-check',
+    title: 'Plan Review'
   }
 ];
 

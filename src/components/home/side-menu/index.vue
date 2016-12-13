@@ -2,8 +2,11 @@
 <style scoped lang="scss" src="./style.scss"></style>
 
 <script>
+import $ from 'jquery';
 import menus from './menus';
 import { LOGOUT } from 'store/types';
+
+require('tooltipster');
 
 export default {
   data() {
@@ -26,6 +29,17 @@ export default {
     logout() {
       this.$store.dispatch(LOGOUT);
     }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      $(this.$el).find('[title]').tooltipster({
+        side: 'right',
+        theme: 'tooltipster-borderless',
+        distance: 15,
+        delay: 100
+      });
+    });
   }
 };
 </script>
