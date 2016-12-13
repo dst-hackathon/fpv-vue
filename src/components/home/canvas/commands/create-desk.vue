@@ -30,10 +30,6 @@ export default {
 
   watch: {
     active(active) {
-      // if (!this.canvas) {
-      //   return;
-      // }
-
       if (active) {
         this.activate();
       } else {

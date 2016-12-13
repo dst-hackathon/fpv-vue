@@ -25,7 +25,7 @@
 
       <!-- create-desk command is always active -->
       <!-- TODO: extract as a JS component / service instead of being Vue -->
-      <create-desk v-show="false" :canvas="canvas" :floor="selectedFloor" :active="canvas && selectedFloor" />
+      <create-desk v-show="false" :canvas="canvas" :floor="selectedFloor" :active="!!(canvas && selectedFloor)" />
     </div>
 
   </layout>
