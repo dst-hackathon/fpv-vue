@@ -10,7 +10,8 @@
                   v-model="desk.code"
                   type="text"
                   placeholder="Enter desk code" ref="deskCode"
-                  @keyup.enter="ok">
+                  @keyup.enter="ok"
+                  @keyup.esc="close">
             </p>
         </section>
         <footer class="modal-card-foot">
