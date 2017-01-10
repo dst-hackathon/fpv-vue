@@ -30,9 +30,8 @@
     <div class="paper-wrapper">
       <div class="paper">
         <div class="paper-actions">
-          <!-- disabled for now, need feedback on when changeset can be made completed -->
           <a class="paper-action"
-            v-show="changesetNotCompleted && false"
+            v-show="changesetNotCompleted"
             @click="markComplete">
             <span class="icon is-small">
               <i class="fa fa-check"></i>
