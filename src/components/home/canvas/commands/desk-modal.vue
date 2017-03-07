@@ -5,7 +5,13 @@
         <section class="modal-card-body">
             <label class="label">Desk Code</label>
             <p class="control">
-                <input class="input" v-model="desk.code" type="text" placeholder="Enter desk code">
+                <input
+                  class="input"
+                  v-model="desk.code"
+                  type="text"
+                  placeholder="Enter desk code" ref="deskCode"
+                  @keyup.enter="ok"
+                  @keyup.esc="close">
             </p>
         </section>
         <footer class="modal-card-foot">
@@ -48,6 +54,10 @@ export default {
 
   methods: {
     ok() {
+      if (this.deskCodeEmpty) {
+        return;
+      }
+
       this.$emit('ok', {
         code: this.deskCode
       });
@@ -59,6 +69,12 @@ export default {
       this.show = false;
       this.$emit('close');
     }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.deskCode.focus();
+    });
   }
 };
 </script>

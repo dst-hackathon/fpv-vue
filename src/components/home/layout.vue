@@ -5,7 +5,7 @@
       </slot>
     </side-panel>
 
-    <div class="content" :style="style.content">
+    <div class="layout-content" :style="style.content">
       <slot></slot>
     </div>
 

@@ -12,7 +12,7 @@ export default {
   },
 
   [types.REMOVE_DESK_OWNER]: async function({ commit, dispatch }, { changeset, fromDesk }) {
-    dispatch(types.CREATE_CHANGESET_ITEM, {
+    await dispatch(types.CREATE_CHANGESET_ITEM, {
       changesetItem: {
         changeset,
         employee: fromDesk.employee,

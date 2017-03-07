@@ -2,23 +2,44 @@
 <style scoped lang="scss" src="./style.scss"></style>
 
 <script>
+import $ from 'jquery';
 import menus from './menus';
+import { LOGOUT } from 'store/types';
+
+require('tooltipster');
 
 export default {
   data() {
     return {
       menus,
-
-      selectedMenu: 'Plan'
     };
+  },
+
+  computed: {
+    selectedMenu() {
+      return this.$route.name;
+    }
   },
 
   methods: {
     select(menu) {
-      this.selectedMenu = menu.name;
+      this.$router.push({ name: menu.name });
+    },
 
-      this.$emit('input', this.selectedMenu);
+    logout() {
+      this.$store.dispatch(LOGOUT);
     }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      $(this.$el).find('[title]').tooltipster({
+        side: 'right',
+        theme: 'tooltipster-borderless',
+        distance: 15,
+        delay: 100
+      });
+    });
   }
 };
 </script>

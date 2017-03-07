@@ -1,9 +1,9 @@
 <template>
 <div>
-  <side-menu v-model="selectedMenu" />
+  <side-menu />
 
   <keep-alive>
-    <component :is="homeComponent" />
+    <router-view></router-view>
   </keep-alive>
 </div>
 </template>
@@ -16,22 +16,6 @@ export default {
   components: {
     SideMenu,
   },
-
-  data() {
-    return {
-      selectedMenu: 'Plan'
-    };
-  },
-
-  computed: {
-    homeComponent() {
-      if (!this.selectedMenu) {
-        return null;
-      }
-
-      return findMenuByName(this.selectedMenu).component;
-    }
-  }
 };
 </script>
 

@@ -2,8 +2,6 @@ import _ from 'lodash';
 import dragula from 'dragula';
 
 export default function (config) {
-  let findDeskById;
-
   return {
     props: ['enableDeskDrop'],
 
@@ -34,17 +32,15 @@ export default function (config) {
       }
     },
 
-    created() {
-      findDeskById = config.findDeskById.bind(this);
-    },
-
     methods: {
+      findDeskById: config.findDeskById,
+
       onDeskDrop(el, to, from) {
         const fromId = parseInt(from.dataset.id, 10);
-        const fromDesk = findDeskById(fromId);
+        const fromDesk = this.findDeskById(fromId);
 
         const toId = parseInt(to.dataset.id, 10);
-        const toDesk = findDeskById(toId);
+        const toDesk = this.findDeskById(toId);
 
         el.remove();
 
@@ -59,12 +55,13 @@ export default function (config) {
           return;
         }
 
-        const fromId = parseInt(from.dataset.id, 10);
-        const fromDesk = findDeskById(fromId);
-
-        this.$emit('removeOwner', {
-          desk: fromDesk
-        });
+        // FIXME: should we enable owner remove?
+        // const fromId = parseInt(from.dataset.id, 10);
+        // const fromDesk = this.findDeskById(fromId);
+        //
+        // this.$emit('removeOwner', {
+        //   desk: fromDesk
+        // });
       },
 
       onDeskDropOver(el, container, source) {
@@ -72,7 +69,9 @@ export default function (config) {
       },
 
       onDeskDropOut(el, container, source) {
-        this.dragDropSameSource = (container !== source);
+        if (container === source) {
+          this.dragDropSameSource = false;
+        }
       }
     }
   };

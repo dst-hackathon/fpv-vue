@@ -1,5 +1,5 @@
 <template lang="html">
-  <layout :showRight="hasSelectedDesk || hasActivities">
+  <layout :showRight="!!selectedPlan">
     <div slot="left">
       <div>
         <h4 class="title is-4">Manage Plan</h4>
@@ -13,17 +13,18 @@
 
     <div slot="right">
       <desk-assignment-panel
-        v-show="hasSelectedDesk"
+        v-show="selectedDesk"
         :desk="selectedDesk"
         :style="{ 'margin-bottom': '20px' }"
         :editable="effectiveDateIsFuture"
         @removeOwner="removeDeskOwner"
         @updateOwner="updateDeskOwner" />
 
-      <plan-activity
+      <action-tabs
+        v-show="!selectedDesk"
         :activities="activities"
-        @scrollTo="scrollTo"
-        v-show="!hasSelectedDesk && hasActivities" />
+        @clickEmployee="scrollToEmployee"
+        @clickDesk="scrollToDesk" />
     </div>
 
     <div>
@@ -34,6 +35,7 @@
         :showOwner="true"
         :changeset="changeset"
         :enableDeskDrop="!!changeset"
+        :pannable="true"
         @deskSelected="selectedDesk = $event.desk"
         @deskDeselected="selectedDesk = null"
         @removeOwner="removeDeskOwner"
@@ -49,13 +51,17 @@ import Layout from 'components/home/layout';
 import FloorPlanSelector from 'components/home/floor-plan-selector';
 import FloorCanvas from 'components/home/canvas/floor-canvas';
 import DeskAssignmentPanel from './desk-assignment-panel';
-import PlanActivity from 'components/home/plan-activity';
 import Datepicker from './datepicker';
+import ActionTabs from './action-tabs';
 
 import api from 'api';
 import compactChangeset from 'components/helpers/compact-changeset';
+import resolveFutureDesks from 'components/helpers/resolve-future-desks';
 import { FETCH_DESK_ASSIGNMENTS, FETCH_PLAN_CHANGESET, FETCH_PLAN_CHANGESETS } from 'store/types';
 import { REMOVE_DESK_OWNER, ASSIGN_DESK_OWNER } from 'store/types';
+import { BROADCAST_NOTIFICATION, DISMISS_NOTIFICATION } from 'store/types';
+
+import dragula from 'dragula';
 
 export default {
 
@@ -72,8 +78,8 @@ export default {
     FloorPlanSelector,
     FloorCanvas,
     DeskAssignmentPanel,
-    PlanActivity,
     Datepicker,
+    ActionTabs,
   },
 
   computed: {
@@ -95,14 +101,6 @@ export default {
       return this.changeset && this.changeset.changesetItems || [];
     },
 
-    hasSelectedDesk() {
-      return this.selectedDesk;
-    },
-
-    hasActivities() {
-      return this.activities.length;
-    },
-
     selectedPlan() {
       return this.$store.getters.selectedPlan;
     },
@@ -116,6 +114,14 @@ export default {
 
       return moment(this.effectiveDate).isAfter(now);
     },
+
+    hasChangeset() {
+      return !!this.changeset;
+    },
+
+    canChangeSelectedFloor() {
+      return this.selectedFloor && this.effectiveDateIsFuture;
+    }
   },
 
   watch: {
@@ -139,6 +145,32 @@ export default {
         this.scrollTarget = null;
       }
     },
+
+    hasChangeset(hasChangeset) {
+      if (hasChangeset) {
+        this.enableDragAndDrop();
+      } else {
+        this.disableDragAndDrop();
+      }
+    },
+
+    canChangeSelectedFloor: async function(canChange) {
+      if (canChange && this.noChangeWarning) {
+        this.$store.dispatch(DISMISS_NOTIFICATION, {
+          id: this.noChangeWarning.id
+        });
+
+        this.noChangeWarning = null;
+      }
+
+
+      if (!canChange && !this.noChangeWarning) {
+        this.noChangeWarning = await this.$store.dispatch(BROADCAST_NOTIFICATION, {
+          message: `You are viewing today's plan. No changes are allowed.`,
+          route: this.$router.resolve('plan').resolved.path
+        });
+      }
+    }
   },
 
   created() {
@@ -169,10 +201,7 @@ export default {
     },
 
     updateDeskOwner: async function({ desk: targetDesk, owner }) {
-      const recentOwnerActivity = _.findLast(this.activities, ['employee.id', owner.id]);
-      const ownerCurrentDesk = recentOwnerActivity ?
-        recentOwnerActivity.toDesk :
-        await this.findCurrentDesk({ owner });
+      const ownerCurrentDesk = await this.findCurrentDesk({ owner });
 
       this.$store.dispatch(ASSIGN_DESK_OWNER, {
         changeset: this.changeset,
@@ -184,13 +213,19 @@ export default {
     },
 
     findCurrentDesk: async function({ owner }) {
-      return await api.desks.findOne({
-        employeeId: owner.id,
-        planId: this.selectedPlan.id
-      });
+      const recentOwnerActivity = _.findLast(this.activities, ['employee.id', owner.id]);
+
+      if (recentOwnerActivity) {
+        return recentOwnerActivity.toDesk;
+      } else {
+        return await api.desks.findOne({
+          employeeId: owner.id,
+          planId: this.selectedPlan.id
+        });
+      }
     },
 
-    scrollTo: async function({ desk }) {
+    scrollToDesk: async function({ desk }) {
       const floor = desk.floor;
       const building = floor.building;
 
@@ -200,10 +235,65 @@ export default {
       // get desk from state as a desk in passed from activity panel is a clone.
       const desks = this.$store.getters.desks;
       this.scrollTarget = _.find(desks, { id: desk.id });
+    },
+
+    scrollToEmployee: async function({ employee }) {
+      const desk = await this.findCurrentDesk({ owner: employee });
+
+      if (desk) {
+        this.scrollToDesk({ desk });
+      } else {
+        this.$store.dispatch(BROADCAST_NOTIFICATION, {
+          message: `${employee.firstname} ${employee.lastname} has not been assigned to any desk`,
+          timeout: 10000
+        });
+      }
+    },
+
+    enableDragAndDrop() {
+      this.drake = dragula({
+        copy: true,
+        removeOnSpill: true,
+        isContainer(el) {
+          return el.classList.contains('desk') || el.classList.contains('employee-info');
+        },
+        moves(el) {
+          return el.classList.contains('draggable');
+        },
+        accepts(el, target) {
+          return target.classList.contains('desk');
+        }
+      });
+
+      this.drake.on('drop', (el, target) => {
+        el.classList.add('dropped');
+        el.remove();
+
+        const desks = resolveFutureDesks(this.$store.getters.desks, this.changeset);
+        const deskId = parseInt(target.dataset.id);
+        const desk = _.find(desks, { id: deskId });
+        const owner = JSON.parse(el.dataset.employee);
+
+        if (desk.employee && desk.employee.id === owner.id) {
+          return;
+        }
+
+        this.updateDeskOwner({
+          desk,
+          owner,
+        });
+      });
+    },
+
+    disableDragAndDrop() {
+      if (this.drake) {
+        this.drake.destroy();
+        this.drake = null;
+      }
     }
   },
 };
 </script>
 
-<style lang="css">
+<style lang="scss">
 </style>

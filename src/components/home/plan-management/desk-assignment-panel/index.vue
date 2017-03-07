@@ -7,7 +7,7 @@
 
       <div v-if="isEditing">
         <p class="owner-query title is-4" placeholder="Enter name ..." contenteditable="true"
-          @input="({ target }) => query = target.innerHTML"
+          @input="updateQuery"
           @focus="setQuerySelection">
         </p>
         <footer class="card-footer owner-action">
@@ -97,7 +97,7 @@
       },
 
       query: async function(query) {
-        if (query.length >= 2) {
+        if (query.length >= 1) {
           this.resultingOwners = await api.employees.search({ query }) || [];
         } else {
           this.resultingOwners = [];
@@ -151,6 +151,10 @@
         const queryEl = this.getQueryEl();
 
         queryEl.focus();
+      },
+
+      updateQuery({ target }) {
+        this.query = target.innerHTML;
       },
 
       setQuerySelection({ target }) {

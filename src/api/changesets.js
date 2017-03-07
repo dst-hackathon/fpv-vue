@@ -15,5 +15,11 @@ export default {
     const { data: created } = await axios.post('/api/changesets', changeset);
 
     return created;
+  },
+
+  approve: async function({ changesetId }) {
+    const { data: approved } = await axios.put(`/api/changesets/${changesetId}/approve`);
+
+    return approved;
   }
 };

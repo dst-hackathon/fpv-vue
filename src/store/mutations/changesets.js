@@ -20,4 +20,12 @@ export default {
       }
     });
   },
+
+  [types.COMPLETE_CHANGESET]: function(state, { changeset }) {
+    const planId = changeset.plan.id;
+    const plan = findPlanById(state, planId);
+    const stateChangeset = _.find(plan.changesets, { id: changeset.id });
+
+    stateChangeset.status = 'COMPLETE';
+  }
 };
