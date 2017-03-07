@@ -23,7 +23,7 @@
         <div v-if="owner">
           <h4 class="owner-title title is-4">{{ owner.firstname }} {{ owner.lastname }}</h4>
           <h5 class="owner-subtitle subtitle is-5">
-            <span class="icon is-small"><i class="fa fa-phone"></span></i> {{ owner.work }}
+            <span class="icon is-small"><i class="fa fa-phone"></i></span> {{ owner.work }}
           </h5>
         </div>
         <footer class="card-footer owner-action" v-if="editable">
