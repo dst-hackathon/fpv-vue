@@ -15,7 +15,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.18.1",
     "bulma": "^0.2.3",
     "dragula": "^3.7.2",
     "flatpickr": "git+https://git@github.com/chmln/flatpickr.git",
